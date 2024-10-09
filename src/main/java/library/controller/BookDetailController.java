@@ -1,9 +1,26 @@
 package library.controller;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ByteArrayOutputStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 import library.model.*;
 
 public class BookDetailController {
@@ -23,6 +40,22 @@ public class BookDetailController {
     @FXML
     private ImageView bookImageView;
 
+    @FXML
+    private ImageView qrCodeImageView;  // ImageView để hiển thị mã QR
+
+
+    public Image generateQRCode(String text, int width, int height) throws WriterException, IOException {
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
+
+        // Chuyển BitMatrix thành hình ảnh
+        ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(pngOutputStream.toByteArray());
+        
+        return new Image(inputStream);  // Trả về hình ảnh QR dưới dạng Image
+    }
+
     public void setBookDetails(Book book) {
         titleLabel.setText(book.getTitle());
         authorLabel.setText(book.getAuthor());
@@ -41,6 +74,42 @@ public class BookDetailController {
             bookImageView.setImage(image);
         } else {
             bookImageView.setImage(null);
+        }
+
+        if (book.getQRcode() != null) {
+            // Tạo mã QR từ URL sách
+            try {
+                Image qrCodeImage = generateQRCode(book.getQRcode(), 150, 150);  // Kích thước 150x150 pixel
+                qrCodeImageView.setImage(qrCodeImage);  // Gửi mã QR sang BookDetailController
+            } catch (WriterException | IOException e) {
+                e.printStackTrace();
+                // Handle the exception, e.g., show an error message to the user
+            }
+        }
+    }
+
+    // public void setQRCodeImage(Image qrCodeImage) {
+    //     qrCodeImageView.setImage(qrCodeImage);  // Hiển thị mã QR trong ImageView
+    // }
+
+    public void showBookDetails(Book book) {
+        if (book != null) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/BookDetail.fxml"));
+                Parent root = loader.load();
+                ((BookDetailController) loader.getController()).setBookDetails(book);
+                Stage stage = new Stage();
+                stage.setScene(new Scene(root));
+                stage.setTitle("Book Details");
+                stage.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Failed to load book details.");
+                alert.showAndWait();
+            }
         }
     }
 }

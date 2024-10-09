@@ -13,7 +13,7 @@ import library.service.BookService;
 import java.util.List;
 
 public class UserController {
-
+    
     @FXML
     private TableView<Book> booksTable;
 
@@ -21,6 +21,9 @@ public class UserController {
     private TextField searchField;
 
     private final BookService bookService = new BookService(new BookDAO(getDatabaseConnection())); // Giả định đã có service xử lý logic mượn sách
+
+    public UserController() {
+    }
 
     private java.sql.Connection getDatabaseConnection() {
         // Implement your logic to get a database connection here

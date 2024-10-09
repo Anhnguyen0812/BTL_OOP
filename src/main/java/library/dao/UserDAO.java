@@ -14,13 +14,15 @@ public class UserDAO {
     }
 
     public void addUser(User user) throws SQLException {
-        String query = "INSERT INTO users (name, email, role) VALUES (?, ?, ?)";
+        String query = "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)";
         PreparedStatement stmt = connection.prepareStatement(query);
         stmt.setString(1, user.getName());
         stmt.setString(2, user.getEmail());
-        stmt.setString(3, user.getRole());
+        stmt.setString(3, user.getPassword());
+        stmt.setString(4, user.getRole());
         stmt.executeUpdate();
     }
+    
 
     public User getUserById(int id) throws SQLException {
         String query = "SELECT * FROM users WHERE id = ?";

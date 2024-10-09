@@ -19,8 +19,8 @@ public class ConcreteBook extends Book {
         this.year = year;
     }
 
-    public ConcreteBook(String title, String author, String isbn, String description, String imageUrl) {
-        super(title, author, isbn, description, imageUrl);
+    public ConcreteBook(String title, String author, String isbn, String description, String imageUrl, String QRcode) {
+            super(title, author, isbn, description, imageUrl, QRcode);
     }
 
     @Override

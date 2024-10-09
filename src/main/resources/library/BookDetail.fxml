@@ -13,6 +13,7 @@
             <Label fx:id="isbnLabel" />
             <Label fx:id="descriptionLabel" wrapText="true" />
             <ImageView fx:id="bookImageView" fitHeight="200" fitWidth="150" />
+            <ImageView fx:id="qrCodeImageView" fitHeight="150" fitWidth="150" /> <!-- Thêm ImageView để hiển thị mã QR -->
         </VBox>
     </children>
 </AnchorPane>
