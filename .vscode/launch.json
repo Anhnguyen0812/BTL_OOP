@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "AppLaunch",
+            "request": "launch",
+            "mainClass": "library.AppLaunch",
+            "projectName": "librarymanager",
+            "vmArgs": "--module-path \"C:/Java/javafx-sdk-23/lib\" --add-modules javafx.controls,javafx.fxml"
+        },
+        {
+            "type": "java",
+            "name": "Launch AppLauch",
+            "request": "launch",
+            "mainClass": "library.AppLauch",
+            "projectName": "library",
+            "vmArgs": "--module-path \"C:/Java/javafx-sdk-23/lib\" --add-modules javafx.controls,javafx.fxml"
+        }
+    ]
+}

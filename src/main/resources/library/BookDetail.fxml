@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.TextFlow?>
+
+<AnchorPane prefHeight="480.0" prefWidth="720.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/22" fx:controller="library.controller.BookDetailController">
+    <children>
+        <VBox layoutX="20.0" layoutY="20.0" prefHeight="448.0" prefWidth="690.0" spacing="10">
+            <Label fx:id="titleLabel" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+            <Label fx:id="authorLabel" />
+            <Label fx:id="isbnLabel" />
+            <ImageView fx:id="bookImageView" fitHeight="73.0" fitWidth="60.0" />
+         <ScrollPane prefHeight="265.0" prefWidth="690.0">
+           <content>
+             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="261.0" prefWidth="683.0">
+                  <children>
+                     <TextFlow prefHeight="258.0" prefWidth="679.0">
+                        <children>
+                           <Label fx:id="descriptionLabel" prefHeight="254.0" prefWidth="668.0" text="Label" />
+                        </children>
+                     </TextFlow>
+                  </children>
+               </AnchorPane>
+           </content>
+         </ScrollPane>
+        </VBox>
+    </children>
+</AnchorPane>
