@@ -1,8 +1,0 @@
-com\exam\App.class
-com\exam\SecondaryController.class
-com\exam\ApiBook.class
-com\databases\DatabaseManager.class
-com\exam\PrimaryController.class
-com\exam\LoginController.class
-com\exam\SigninController.class
-module-info.class
