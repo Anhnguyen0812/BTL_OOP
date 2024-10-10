@@ -22,8 +22,6 @@ public class GoogleBooksAPI {
             return response.body().string();
         }
     } 
-
     
-
 }
 

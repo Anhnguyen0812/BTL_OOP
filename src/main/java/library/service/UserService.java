@@ -1,18 +1,48 @@
 package library.service;
 
 import library.dao.*;
-import library.model.User;
-import library.model.ConcreteUser;
+import library.model.*;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.sql.Connection;
 
-public class UserService {
+import org.sqlite.SQLiteConnection;
+
+public class UserService{
     private UserDAO userDAO;
 
     public UserService(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
+
+    //     public boolean checkLogin(String email, String password) {
+    //     String query = "SELECT * FROM users WHERE email = ? AND password = ?";
+
+    //     try (Connection conn = userDAO.connection;
+    //          PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+    //         // Gán giá trị email và password vào các dấu ? trong câu lệnh SQL
+    //         pstmt.setString(1, email);
+    //         pstmt.setString(2, password);
+
+    //         // Thực thi câu lệnh SQL
+    //         ResultSet rs = pstmt.executeQuery();
+
+    //         // Kiểm tra xem có bản ghi nào được trả về hay không
+    //         if (rs.next()) {
+    //             // Nếu có, thông tin đăng nhập hợp lệ
+    //             return true;
+    //         } else {
+    //             // Nếu không có bản ghi nào, thông tin đăng nhập không hợp lệ
+    //             return false;
+    //         }
+
+    //     } catch (SQLException e) {
+    //         System.out.println(e.getMessage());
+    //         return false;
+    //     }
+    // }
 
     public void addUser(String name, String email) {
         try {

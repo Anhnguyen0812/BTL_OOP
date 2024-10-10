@@ -38,7 +38,6 @@
                 <Button fx:id="searchBookButton" styleClass="SearchButton" layoutX="345.0" layoutY="240.0" mnemonicParsing="false" onAction="#handleSearchBook" text="SearchBook" />
             </HBox>
             <!-- Add ListView here -->
-            <ListView fx:id="listView" prefHeight="200.0" prefWidth="300.0" />
             <ListView fx:id="searchResult" prefHeight="200.0" prefWidth="300.0" />
 
         </VBox>

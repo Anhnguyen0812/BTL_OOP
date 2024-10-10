@@ -113,7 +113,7 @@ public class AdminController {
         private void handleSearchBook() throws IOException {
                 // Thực hiện tìm kiếm sách (ví dụ sử dụng Google Books API)
                 // Sau khi tìm kiếm xong, hiển thị kết quả lên bảng sách
-                String title = searchBook.getText();
+            String title = searchBook.getText();
             String author = searchAuthor.getText();
             BookController bookController = new BookController();
             searchResult.getItems().clear();
