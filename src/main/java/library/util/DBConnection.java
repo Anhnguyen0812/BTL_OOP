@@ -12,45 +12,28 @@ public class DBConnection {
     private static Connection connection;
     private static DBConnection instance;
     
-    public static Connection getConnection() {
-        if (connection == null) {
-            try {
-                connection = DriverManager.getConnection(URL);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+    private DBConnection() {
+        try {
+            // Tạo kết nối
+            connection = DriverManager.getConnection(URL);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+    }
+
+    // Phương thức để lấy kết nối  
+    
+    public static DBConnection getInstance() {
+        if (instance == null) {
+            instance = new DBConnection();
+        }
+        return instance;
+    }
+
+    public Connection getConnection() {
         return connection;
     }
-    // Phương thức để lấy kết nối
-    // private DBConnection() {
-    //     try {
-    //         // Tạo kết nối
-    //         connection = DriverManager.getConnection(URL);
-    //     } catch (SQLException e) {
-    //         e.printStackTrace();
-    //     }
-    // }
-    // public static DBConnection getDBConnection() {
-    //     if (instance == null) {
-    //         instance = new DBConnection();
-    //     }
-    //     return instance;
-    // }
-
-    // public Connection getConnection() {
-    //     if (connection == null) {
-    //         try {
-    //             connection = DriverManager.getConnection(URL, USER, PASSWORD);
-    //         } catch (SQLException e) {
-    //             e.printStackTrace();
-    //         }
-    //     }
-    //     return connection;
-    // }
-
     
-
     // Phương thức để đóng kết nối
     public static void closeConnection() {
         if (connection != null) {

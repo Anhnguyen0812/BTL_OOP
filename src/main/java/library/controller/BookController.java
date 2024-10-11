@@ -6,7 +6,9 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
+import java.sql.Statement;
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -16,6 +18,7 @@ import org.json.JSONArray;
 import library.dao.BookDAO;
 import library.model.Book;
 import library.model.ConcreteBook;
+import library.model.ReferenceBook;
 import library.service.BookService;
 import library.util.DBConnection;
 import library.api.GoogleBooksAPI;
@@ -35,9 +38,13 @@ public class BookController {
     private BookService bookService;
     private GoogleBooksAPI googleBooksAPI;
 
+    // private ObservableList<Book> books = FXCollections.observableArrayList();
+
+    private DBConnection connection = DBConnection.getInstance();
+
     public BookController() {
         
-        this.bookService = new BookService(new BookDAO(DBConnection.getConnection()));
+        this.bookService = new BookService(new BookDAO(connection.getConnection()));
         this.googleBooksAPI = new GoogleBooksAPI();
     }
 
@@ -70,14 +77,14 @@ public class BookController {
         String selectedBook = bookListView.getSelectionModel().getSelectedItem();
         if (selectedBook != null) {
             int bookId = Integer.parseInt(selectedBook.split(" ")[0]); // Giả sử ID là số đầu tiên trong chuỗi
-            bookService.deleteBook(bookId, DBConnection.getConnection());
+            bookService.deleteBook(bookId, connection.getConnection());
             updateBookList();
         } else {
             showAlert("Please select a book to delete.");
         }
     }
 
-    public ObservableList<Book> searchBook(String query) throws IOException {
+    public ObservableList<Book> searchBook(String query) throws IOException, SQLException {
         // Task<ObservableList<Book>> task = new Task<ObservableList<Book>>() {
         //     @Override
         //     protected ObservableList<Book> call() throws Exception {
@@ -109,7 +116,7 @@ public class BookController {
         return parseBooks(response);
     }
 
-    private ObservableList<Book> parseBooks(String jsonData) {
+    private ObservableList<Book> parseBooks(String jsonData) throws SQLException {
         // ObservableList<Book> books = FXCollections.observableArrayList();
         ObservableList<Book> books = FXCollections.observableArrayList();
         JSONObject jsonObject = new JSONObject(jsonData);
@@ -128,11 +135,26 @@ public class BookController {
                 Book temp = new ConcreteBook(title, authorName, isbn, description, imageUrl, bookUrl);
                 // books.add(temp.getTitle() + " by " + temp.getAuthor() + " ISBN: " + temp.getIsbn());
                 books.add(temp);
+                Book temp2 = new ConcreteBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
+                BookDAO bookDAO = new BookDAO(connection.getConnection());
+                bookDAO.addBook(temp2);
+                
             }
         } else {
             System.out.println("No books found in JSON data.");
         }
         
+        return books;
+    }
+
+    public ObservableList<Book> getAllBooks() throws SQLException {
+        ObservableList<Book> books = FXCollections.observableArrayList();
+        String query = "SELECT * FROM books";
+        Statement stmt = connection.getConnection().createStatement();
+        ResultSet rs = stmt.executeQuery(query);
+        while (rs.next()) {
+            books.add(new ReferenceBook(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getString("isbn"), rs.getBoolean("available")));
+        }
         return books;
     }
 

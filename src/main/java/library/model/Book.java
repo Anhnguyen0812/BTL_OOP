@@ -28,6 +28,17 @@ public abstract class Book {
         this.QRcode = QRcode;
     }
 
+    public Book(int id, String title, String author, String isbn, boolean available, String description, String imageUrl, String QRcode) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.isbn = isbn;
+        this.available = available;
+        this.description = description;
+        this.imageUrl = imageUrl;
+        this.QRcode = QRcode; 
+    }
+
     public abstract String getType();
 
     // Getters và Setters

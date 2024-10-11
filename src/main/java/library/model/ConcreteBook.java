@@ -1,7 +1,6 @@
 package library.model;
 
 public class ConcreteBook extends Book {
-    private  String author;
     private  String publisher;
     private int year;
 
@@ -23,11 +22,11 @@ public class ConcreteBook extends Book {
             super(title, author, isbn, description, imageUrl, QRcode);
     }
 
-    @Override
-    public String getAuthor() {
-        return author;
+    public ConcreteBook(int id, String title, String author, String isbn, boolean available, String description, String imageUrl, String QRcode) {
+        super(id, title, author, isbn, available, description, imageUrl, QRcode);
     }
 
+    @Override
     public String getTitle() {
         return title;
     }

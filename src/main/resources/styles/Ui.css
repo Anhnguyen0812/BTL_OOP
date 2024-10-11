@@ -89,14 +89,6 @@
     -fx-border-color: transparent;
     -fx-background-color: transparent;
 }
-.button {
-    -fx-background-color: #3498db;
-    -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-padding: 10px;
-    -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
-}
 
 .text-field {
     -fx-font-size: 14px;

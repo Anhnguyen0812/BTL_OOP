@@ -38,10 +38,12 @@ public class LibraryController {
     private BorrowService borrowService;
     private GoogleBooksAPI googleBooksAPI;
 
+    DBConnection connection =  DBConnection.getInstance();
+
     public LibraryController() {
-        this.userService = new UserService(new UserDAO(DBConnection.getConnection()));
-        this.bookService = new BookService(new BookDAO(DBConnection.getConnection()));
-        this.borrowService = new BorrowService(new BorrowRecordDAO(DBConnection.getConnection()), new BookDAO(DBConnection.getConnection()));
+        this.userService = new UserService(new UserDAO(connection.getConnection()));
+        this.bookService = new BookService(new BookDAO(connection.getConnection()));
+        this.borrowService = new BorrowService(new BorrowRecordDAO(connection.getConnection()), new BookDAO(connection.getConnection()));
         this.googleBooksAPI = new GoogleBooksAPI();
     }
 

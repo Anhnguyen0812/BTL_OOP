@@ -6,8 +6,14 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import library.util.DBConnection;
+
 public class UserDAO {
-    private Connection connection;
+    private static Connection connection;
+
+    public UserDAO() {
+        this.connection = DBConnection.getInstance().getConnection();
+    }
 
     public UserDAO(Connection connection) {
         this.connection = connection;
@@ -31,7 +37,7 @@ public class UserDAO {
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
             if (rs.getString("role").equals("Librarian")) {
-                return new Librarian(rs.getInt("id"), rs.getString("name"), rs.getString("email"));
+                return new ConcreteUser(rs.getInt("id"), rs.getString("name"), rs.getString("email"));
             } else {
                 return new Member(rs.getInt("id"), rs.getString("name"), rs.getString("email"));
             }
@@ -52,6 +58,18 @@ public class UserDAO {
             }
         }
         return users;
+    }
+
+    public static User getUserByNamePassword(String username, String password) throws SQLException {
+        String query = "SELECT * FROM users WHERE name = ? AND password = ?";
+        PreparedStatement stmt = connection.prepareStatement(query);
+        stmt.setString(1, username);
+        stmt.setString(2, password);
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+                return new ConcreteUser(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("password"), rs.getString("role"));
+        }
+        return null;
     }
 }
 

@@ -4,25 +4,43 @@ import library.model.*;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+// import javafx.scene.control.TextField; // Removed duplicate import
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 
+import org.apache.tomcat.util.buf.UEncoder;
+
+import javafx.scene.control.Label;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.Parent;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import library.model.ConcreteBook;
+import library.util.DBConnection;
    
 public class AdminController {
+
+        private User user;
+
+        public void setUser(User user) {
+            this.user = user;
+           }
+
+        public AdminController(User user) {
+            this.user = user;
+        }
 
            // Các trường nhập liệu cho quản lý sách
            @FXML
@@ -46,6 +64,10 @@ public class AdminController {
        
            @FXML
            private TableColumn<Book, String> isbnColumn;
+
+           @FXML
+           private TableColumn<?, ?> availableColumn;
+           
        
            // Các trường nhập liệu cho quản lý người dùng
            @FXML
@@ -55,12 +77,18 @@ public class AdminController {
            private TextField emailField;
        
            // Bảng hiển thị danh sách người dùng
+        
+            @FXML
+            private Button searchButton; // Add a button for search
+           @FXML
+           private TableColumn<?, ?> idColumn;
+
            @FXML
            private TableView<User> userTable;
-       
+
            @FXML
            private TableColumn<User, String> usernameColumn;
-       
+
            @FXML
            private TableColumn<User, String> emailColumn;
            
@@ -72,25 +100,98 @@ public class AdminController {
 
             @FXML
             private ListView<Book> searchResult;
-       
+
+
+    @FXML
+    private Label greetingLabel;
+        
+    @FXML
+    private Label dateTimeLabel;
+        
+    @FXML
+    private VBox searchBookPane;
+
+    @FXML
+    private VBox manageBooksPane;
+
+    @FXML
+    private VBox manageUsersPane;
+
+    @FXML
+    private VBox home;
+
+    @FXML
+    private StackPane contentArea;
+
+    // Method to show the Search Book pane
+    @FXML
+    public void showSearchBookPane() {
+        hideAllPanes();  // Hide all panes
+        searchBookPane.setVisible(true);  // Show Search Book Pane
+    }
+
+    @FXML
+    public void Home() {
+        hideAllPanes();  // Hide all panes
+        home.setVisible(true);  // Show Manage Books Pane
+    }
+
+    // Method to show the Manage Books pane
+    @FXML
+    public void showManageBooksPane() {
+        hideAllPanes();  // Hide all panes
+        manageBooksPane.setVisible(true);  // Show Manage Books Pane
+    }
+
+    // Method to show the Manage Users pane
+    @FXML
+    public void showManageUsersPane() {
+        hideAllPanes();  // Hide all panes
+        manageUsersPane.setVisible(true);  // Show Manage Users Pane
+    }
+
+    // Hide all panes
+    private void hideAllPanes() {
+        home.setVisible(false);
+        searchBookPane.setVisible(false);
+        manageBooksPane.setVisible(false);
+        manageUsersPane.setVisible(false);
+        
+    }
+            private BookController bookController = new BookController();
            // Danh sách Observable để lưu trữ sách và người dùng
-           private ObservableList<Book> bookList = FXCollections.observableArrayList();
+           private final ObservableList<Book> bookList = FXCollections.observableArrayList();
+
            private ObservableList<User> userList = FXCollections.observableArrayList();
        
            // Phương thức khởi tạo, thiết lập các cột cho bảng sách và người dùng
+           
            @FXML
            public void initialize() {
+            greetingLabel.setText("Hello, admin " + user.getName() + "!");
 
-    
+            // Thiết lập ngày và giờ hiện tại
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy | EEEE, hh:mm a");
+            String formattedDateTime = LocalDateTime.now().format(formatter);
+            dateTimeLabel.setText(formattedDateTime);
+
+            try {
+                bookList.setAll(bookController.getAllBooks());
+            } catch (SQLException e) {
+                showAlert("Database Error", "Could not load books from the database.");
+            }
+
                // Thiết lập cột cho bảng sách
                titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
                authorColumn.setCellValueFactory(new PropertyValueFactory<>("author"));
                isbnColumn.setCellValueFactory(new PropertyValueFactory<>("isbn"));
+               availableColumn.setCellValueFactory(new PropertyValueFactory<>("available")); 
                bookTable.setItems(bookList);
        
                // Thiết lập cột cho bảng người dùng
                usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
                emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+               idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
                userTable.setItems(userList);
            }
        
@@ -107,15 +208,15 @@ public class AdminController {
                    showAlert("Error", "Could not load login interface.");
                }
            }
-           
             // Xử lý sự kiện tìm kiếm sách
+            @SuppressWarnings("unchecked")
             @FXML
-        private void handleSearchBook() throws IOException {
+        private void handleSearchBook() throws IOException, SQLException {
                 // Thực hiện tìm kiếm sách (ví dụ sử dụng Google Books API)
                 // Sau khi tìm kiếm xong, hiển thị kết quả lên bảng sách
             String title = searchBook.getText();
             String author = searchAuthor.getText();
-            BookController bookController = new BookController();
+            // ((TableView<Book>) bookList).getItems().clear();
             searchResult.getItems().clear();
             if (title != null) {
                 searchResult.getItems().addAll(bookController.searchBook(title));
@@ -124,6 +225,7 @@ public class AdminController {
             if (author != null) {
                 searchResult.getItems().addAll(bookController.searchBook(author));
             }
+            
             
             searchResult.setOnMouseClicked(event -> {
                 Book selectedBook = searchResult.getSelectionModel().getSelectedItem();
@@ -182,5 +284,6 @@ public class AdminController {
                alert.setContentText(message);
                alert.showAndWait();
            }
+
        
 }

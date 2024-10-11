@@ -8,6 +8,10 @@ public class ConcreteUser extends User {
     public ConcreteUser(String name, String email, String password, String role) {
         super(name, email, password, role);
     }
+
+    public ConcreteUser(int id, String name, String email, String password, String role) {
+        super(id, name, email, password, role);
+    }
     
     @Override
     public String getRole() {
