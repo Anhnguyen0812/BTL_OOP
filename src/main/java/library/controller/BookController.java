@@ -85,33 +85,6 @@ public class BookController {
     }
 
     public ObservableList<Book> searchBook(String query) throws IOException, SQLException {
-        // Task<ObservableList<Book>> task = new Task<ObservableList<Book>>() {
-        //     @Override
-        //     protected ObservableList<Book> call() throws Exception {
-        //         // Gọi hàm lấy dữ liệu từ Google Books API
-        //         String response = googleBooksAPI.searchBook(query);
-        //         // Phân tích JSON trong luồng riêng
-        //         return parseBooks(response);
-        //     }
-
-        //     @Override
-        //     protected void succeeded() {
-        //         super.succeeded();
-        //         // Cập nhật ListView với danh sách sách tìm được
-        //         searchResult.setItems(getValue());
-        //     }
-
-        //     @Override
-        //     protected void failed() {
-        //         super.failed();
-        //         // Xử lý ngoại lệ nếu có
-        //         searchResult.setItems(FXCollections.observableArrayList()); // Hoặc cập nhật một thông báo lỗi
-        //     }
-        // };
-
-        // new Thread(task).start(); 
-        
-        // return null;
         String response = googleBooksAPI.searchBook(query);
         return parseBooks(response);
     }

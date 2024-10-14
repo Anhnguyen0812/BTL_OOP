@@ -88,6 +88,7 @@
             <Font size="13.0" />
          </font>
       </Button>
+     <Button fx:id="LoginButton" layoutX="355.0" layoutY="266.0" mnemonicParsing="false" onAction="#MoveToLogin" prefHeight="38.0" prefWidth="82.0" styleClass="LoginButton" text="Login" /> 
       <Button fx:id="SigninButton" layoutX="215.0" layoutY="266.0" mnemonicParsing="false" onAction="#MoveToLogin" prefHeight="38.0" prefWidth="82.0" styleClass="LoginButton" text="Signin" />
       <Text layoutX="193.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sign in" wrappingWidth="126.06024169921875">
          <font>

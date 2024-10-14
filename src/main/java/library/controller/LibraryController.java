@@ -13,6 +13,7 @@ import library.service.*;
 import library.util.DBConnection;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 public class LibraryController {
@@ -48,7 +49,7 @@ public class LibraryController {
     }
 
     @FXML
-    public void addUser() {
+    public void addUser() throws NoSuchAlgorithmException {
         String name = userNameField.getText();
         String email = userEmailField.getText();
         userService.addUser(name, email);

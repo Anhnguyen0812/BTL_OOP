@@ -6,6 +6,7 @@ import library.util.DBConnection;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -47,7 +48,7 @@ public class UserService{
             // Nếu không có bản ghi nào, thông tin đăng nhập không hợp lệ
     }
 
-    public void addUser(String name, String email) {
+    public void addUser(String name, String email) throws NoSuchAlgorithmException {
         try {
             User user = new ConcreteUser(0, name, email); // ID tự động tăng
             userDAO.addUser(user);

@@ -18,8 +18,10 @@ import java.time.LocalDateTime;
 import org.apache.tomcat.util.buf.UEncoder;
 
 import javafx.scene.control.Label;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
@@ -36,6 +38,7 @@ public class AdminController {
 
         public void setUser(User user) {
             this.user = user;
+               logoutButton.setOnAction(event -> handleLogout());
            }
 
         public AdminController(User user) {
@@ -79,7 +82,7 @@ public class AdminController {
            // Bảng hiển thị danh sách người dùng
         
             @FXML
-            private Button searchButton; // Add a button for search
+            private Button searchBookButton; // Add a button for search
            @FXML
            private TableColumn<?, ?> idColumn;
 
@@ -168,6 +171,13 @@ public class AdminController {
            
            @FXML
            public void initialize() {
+               searchBookButton.setOnAction(event -> {
+                   try {
+                       handleSearchBook();
+                   } catch (Exception e) {
+                       showAlert("Error", "An error occurred while searching for books.");
+                   }
+               });
             greetingLabel.setText("Hello, admin " + user.getName() + "!");
 
             // Thiết lập ngày và giờ hiện tại
@@ -187,6 +197,18 @@ public class AdminController {
                isbnColumn.setCellValueFactory(new PropertyValueFactory<>("isbn"));
                availableColumn.setCellValueFactory(new PropertyValueFactory<>("available")); 
                bookTable.setItems(bookList);
+
+
+               bookTable.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2) { // Kiểm tra nhấp đúp
+                    Book selectedBook = bookTable.getSelectionModel().getSelectedItem();
+                    if (selectedBook != null) {
+                        BookDetailController detailController = new BookDetailController();
+                        detailController.showBookDetails(selectedBook);
+                    }
+                }
+            });
+            
        
                // Thiết lập cột cho bảng người dùng
                usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
@@ -196,42 +218,91 @@ public class AdminController {
            }
        
            // Xử lý sự kiện đăng xuất
-           @FXML
-           private void handleLogout() {
+        @FXML
+        private Button logoutButton; // Add a button for logout
+    
+        @FXML
+        private void handleLogout() {
                // Thực hiện logic đăng xuất (ví dụ quay lại giao diện đăng nhập)
                try {
                    Parent root = FXMLLoader.load(getClass().getResource("/library/login.fxml"));
                    Stage stage = (Stage) bookTable.getScene().getWindow();
                    stage.setScene(new Scene(root, 500, 400));
                    stage.show();
-               } catch (Exception e) {
+               } catch (IOException | RuntimeException e) {
                    showAlert("Error", "Could not load login interface.");
                }
            }
             // Xử lý sự kiện tìm kiếm sách
-            @SuppressWarnings("unchecked")
+            /**
+             * @throws IOException
+             * @throws SQLException
+             * @throws InterruptedException
+             */
             @FXML
-        private void handleSearchBook() throws IOException, SQLException {
-                // Thực hiện tìm kiếm sách (ví dụ sử dụng Google Books API)
-                // Sau khi tìm kiếm xong, hiển thị kết quả lên bảng sách
-            String title = searchBook.getText();
-            String author = searchAuthor.getText();
-            // ((TableView<Book>) bookList).getItems().clear();
-            searchResult.getItems().clear();
-            if (title != null) {
-                searchResult.getItems().addAll(bookController.searchBook(title));
-            }
+            private void handleSearchBook() {
+                String title = searchBook.getText();
+                String author = searchAuthor.getText();
+            
+                // Xóa các mục cũ trong ListView
+                searchResult.getItems().clear();
 
-            if (author != null) {
-                searchResult.getItems().addAll(bookController.searchBook(author));
-            }
+                Label loadingLabel = new Label("Loading...");
+                loadingLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #007bff;"); // Tùy chỉnh kiểu dáng nếu cần
+                searchResult.getItems().add(new ConcreteBook(0, "Loading...", "", "", "", "", 0, "", false)); // Thêm thông báo loading vào danh sách
+
             
+                // Tạo một task để tìm kiếm sách
+                Task<ObservableList<Book>> task = new Task<ObservableList<Book>>() {
+                    @Override
+                    protected ObservableList<Book> call() throws Exception {
+                        ObservableList<Book> foundBooks = FXCollections.observableArrayList();
+                        // Tìm kiếm theo tiêu đề
+                        if (!title.isEmpty()) {
+                            foundBooks.addAll(bookController.searchBook(title));
+                        }
             
-            searchResult.setOnMouseClicked(event -> {
-                Book selectedBook = searchResult.getSelectionModel().getSelectedItem();
-                BookDetailController detailController = new BookDetailController();
-                detailController.showBookDetails(selectedBook);
-            });
+                        // Tìm kiếm theo tác giả
+                        if (!author.isEmpty()) {
+                            foundBooks.addAll(bookController.searchBook(author));
+                        }
+
+                        Thread.sleep(500); // Giả lập việc tìm kiếm mất thời gianThrea
+            
+                        return foundBooks;
+                    }
+
+                    @Override
+                    protected void succeeded() {
+                        super.succeeded();
+                        Platform.runLater(() -> {
+                            searchResult.getItems().clear(); // Xóa kết quả cũ
+                            searchResult.getItems().addAll(getValue()); // Thêm kết quả mới
+                        });
+                    }
+            
+                    @Override
+                    protected void failed() {
+                        super.failed();
+                        // Xử lý ngoại lệ nếu có
+                        searchResult.setItems(FXCollections.observableArrayList()); // Hoặc cập nhật một thông báo lỗi
+                    }
+                };
+            
+                // Chạy task trong một luồng riêng
+                new Thread(task).start();
+            
+                // Xử lý sự kiện khi người dùng nhấp chuột vào kết quả tìm kiếm
+                searchResult.setOnMouseClicked(event -> {
+                    if (event.getClickCount() == 2) { // Kiểm tra nhấp đúp
+                        Book selectedBook = searchResult.getSelectionModel().getSelectedItem();
+                        if (selectedBook != null) {
+                            BookDetailController detailController = new BookDetailController();
+                            detailController.showBookDetails(selectedBook);
+                        }
+                    }
+                });
+            
         }
            // Xử lý thêm sách
            @FXML

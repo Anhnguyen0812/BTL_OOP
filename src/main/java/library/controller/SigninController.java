@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
     import javafx.scene.control.TextField;
 
     import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
 import javafx.scene.Parent;
@@ -37,6 +38,9 @@ public class SigninController {
         @FXML
         private Button hideButton1;
 
+        @FXML
+        private Button LoginButton;
+
         DBConnection connection =  DBConnection.getInstance();
     
         public void initialize() {
@@ -47,19 +51,27 @@ public class SigninController {
     
         }
     
-        public void MoveToLogin() {
+        public void MoveToLogin() throws SQLException, NoSuchAlgorithmException {
             System.out.println("Username: " + Username.getText() + " Email: " + Email.getText() + " Password: "
                     + Passhide.getText() + " Confirm Password: " + CPasshide.getText());
             UserDAO userDAO = new UserDAO(connection.getConnection());
-            User user = new ConcreteUser(Username.getText(), Email.getText(), Passhide.getText(), "user");
-            try {
-                userDAO.addUser(user);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                // Handle the exception appropriately
-            }
+            LoginButton.setDefaultButton(true);
             if (Passhide.getText().equals(CPasshide.getText()) && !Username.getText().isEmpty()
                     && !Email.getText().isEmpty()) {
+                try {
+                    User user = new ConcreteUser(Username.getText(), Email.getText(), Passhide.getText(), "User");
+                    userDAO.addUser(user);
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Login.fxml"));
+                    Parent root = loader.load();
+                    Stage stage = (Stage) SigninButton.getScene().getWindow();
+                    stage.setScene(new Scene(root));
+                    stage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            else if (LoginButton.isDefaultButton()) {
                 try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Login.fxml"));
                     Parent root = loader.load();

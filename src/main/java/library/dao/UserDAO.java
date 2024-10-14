@@ -5,26 +5,54 @@ import library.model.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Base64;
 
 import library.util.DBConnection;
 
 public class UserDAO {
     private static Connection connection;
+    private static final String tail = "bao";
 
     public UserDAO() {
-        this.connection = DBConnection.getInstance().getConnection();
+        UserDAO.connection = DBConnection.getInstance().getConnection();
     }
 
     public UserDAO(Connection connection) {
-        this.connection = connection;
+        UserDAO.connection = connection;
     }
 
-    public void addUser(User user) throws SQLException {
-        String query = "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)";
+    public static String getSalt() throws NoSuchAlgorithmException {
+        // Tạo ra salt ngẫu nhiên với SecureRandom
+        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+        byte[] salt = new byte[16];
+        sr.nextBytes(salt);
+        // Mã hóa salt thành chuỗi base64 để dễ lưu trữ
+        return Base64.getEncoder().encodeToString(salt);
+    }
+
+    // Hàm hash mật khẩu với salt
+    public static String hashPassword(String password, String salt) throws NoSuchAlgorithmException {
+        // Kết hợp mật khẩu với salt
+        String saltedPassword = password + salt;
+        
+        // Sử dụng thuật toán SHA-256 để băm
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        byte[] hashedBytes = md.digest(saltedPassword.getBytes());
+        
+        // Mã hóa thành chuỗi base64 để dễ lưu trữ
+        return Base64.getEncoder().encodeToString(hashedBytes);
+    }
+
+    public void addUser(User user) throws SQLException, NoSuchAlgorithmException {
+        String salt = getSalt();
+        String query = "INSERT INTO users (name, email, password, salt, role) VALUES (?, ?, ?, ?, ?)";
         PreparedStatement stmt = connection.prepareStatement(query);
         stmt.setString(1, user.getName());
         stmt.setString(2, user.getEmail());
-        stmt.setString(3, user.getPassword());
+        stmt.setString(3, hashPassword(user.getPassword(), salt));
         stmt.setString(4, user.getRole());
         stmt.executeUpdate();
     }
