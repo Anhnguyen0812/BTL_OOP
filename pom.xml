@@ -35,6 +35,13 @@
       <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+        <groupId>com.jfoenix</groupId>
+        <artifactId>jfoenix</artifactId>
+        <version>9.0.10</version> <!-- Thay đổi phiên bản nếu cần -->
+    </dependency>
+
     <dependency>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-controls</artifactId>
@@ -132,7 +139,7 @@
     <dependency>
         <groupId>org.xerial</groupId>
         <artifactId>sqlite-jdbc</artifactId>
-        <version>3.41.2.1</version>
+        <version>3.42.0.0</version>
     </dependency>
 
         <dependency>

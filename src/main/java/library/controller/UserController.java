@@ -18,6 +18,7 @@ import java.util.List;
 
 import library.dao.BorrowRecordDAO;
 import library.model.BorrowRecord;
+import library.model.User;
 import library.util.DBConnection;
 
 import java.time.LocalDate;
@@ -128,4 +129,5 @@ public class UserController extends LoginController{
             showAlert("Error", "Could not load login interface.");
         }
     }
+    
 }

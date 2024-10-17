@@ -1,21 +1,23 @@
 package library.controller;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+    import java.security.SecureRandom;
+    import java.sql.SQLException;
+    import java.util.Base64;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-    import javafx.scene.control.Button;
-    import javafx.scene.control.TextField;
-
-    import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
-
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
+import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import library.dao.UserDAO;
+import library.model.ConcreteUser;
+import library.model.User;
 import library.util.DBConnection;
-import library.model.*;
 
 public class SigninController {
 
@@ -42,6 +44,15 @@ public class SigninController {
         private Button LoginButton;
 
         DBConnection connection =  DBConnection.getInstance();
+
+         public static String getSalt() throws NoSuchAlgorithmException {
+        // Tạo ra salt ngẫu nhiên với SecureRandom
+        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+        byte[] salt = new byte[16];
+        sr.nextBytes(salt);
+        // Mã hóa salt thành chuỗi base64 để dễ lưu trữ
+        return Base64.getEncoder().encodeToString(salt);
+    }
     
         public void initialize() {
             Passhide.textProperty().bindBidirectional(Pass.textProperty());
@@ -59,7 +70,7 @@ public class SigninController {
             if (Passhide.getText().equals(CPasshide.getText()) && !Username.getText().isEmpty()
                     && !Email.getText().isEmpty()) {
                 try {
-                    User user = new ConcreteUser(Username.getText(), Email.getText(), Passhide.getText(), "User");
+                    User user = new ConcreteUser(Username.getText(), Email.getText(), Passhide.getText(), "User", getSalt());
                     userDAO.addUser(user);
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Login.fxml"));
                     Parent root = loader.load();

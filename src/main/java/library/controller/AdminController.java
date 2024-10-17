@@ -1,3 +1,4 @@
+
 package library.controller;
 
 import library.model.*;
@@ -7,6 +8,7 @@ import javafx.scene.control.TableView;
 // import javafx.scene.control.TextField; // Removed duplicate import
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
@@ -17,7 +19,10 @@ import java.time.LocalDateTime;
 
 import org.apache.tomcat.util.buf.UEncoder;
 
+import javafx.util.Duration;
 import javafx.scene.control.Label;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -112,16 +117,16 @@ public class AdminController {
     private Label dateTimeLabel;
         
     @FXML
-    private VBox searchBookPane;
+    private Pane searchBookPane;
 
     @FXML
-    private VBox manageBooksPane;
+    private Pane manageBooksPane;
 
     @FXML
-    private VBox manageUsersPane;
+    private Pane manageUsersPane;
 
     @FXML
-    private VBox home;
+    private Pane home;
 
     @FXML
     private StackPane contentArea;
@@ -161,14 +166,13 @@ public class AdminController {
         manageUsersPane.setVisible(false);
         
     }
-            private BookController bookController = new BookController();
-           // Danh sách Observable để lưu trữ sách và người dùng
-           private final ObservableList<Book> bookList = FXCollections.observableArrayList();
-
-           private ObservableList<User> userList = FXCollections.observableArrayList();
+    private final BookController bookController = new BookController();
+       // Danh sách Observable để lưu trữ sách và người dùng
+    private final ObservableList<Book> bookList = FXCollections.observableArrayList();
+    
+    private ObservableList<User> userList = FXCollections.observableArrayList();
        
-           // Phương thức khởi tạo, thiết lập các cột cho bảng sách và người dùng
-           
+    // Phương thức khởi tạo, thiết lập các cột cho bảng sách và người dùng     
            @FXML
            public void initialize() {
                searchBookButton.setOnAction(event -> {
@@ -181,9 +185,18 @@ public class AdminController {
             greetingLabel.setText("Hello, admin " + user.getName() + "!");
 
             // Thiết lập ngày và giờ hiện tại
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy | EEEE, hh:mm a");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy | EEEE, hh:mm a");
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+                    // Lấy thời gian hiện tại và định dạng
             String formattedDateTime = LocalDateTime.now().format(formatter);
-            dateTimeLabel.setText(formattedDateTime);
+                    // Cập nhật vào label
+                dateTimeLabel.setText(formattedDateTime);
+            }));
+
+            // Thiết lập lặp vô hạn
+            timeline.setCycleCount(Timeline.INDEFINITE);
+            // Bắt đầu timeline
+            timeline.play();
 
             try {
                 bookList.setAll(bookController.getAllBooks());
@@ -211,7 +224,7 @@ public class AdminController {
             
        
                // Thiết lập cột cho bảng người dùng
-               usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
+               usernameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
                emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
                idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
                userTable.setItems(userList);
@@ -355,6 +368,10 @@ public class AdminController {
                alert.setContentText(message);
                alert.showAndWait();
            }
+
+    public ObservableList<User> getUserList() {
+        return userList;
+    }
 
        
 }

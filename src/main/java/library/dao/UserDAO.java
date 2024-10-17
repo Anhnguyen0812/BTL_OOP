@@ -1,15 +1,20 @@
 package library.dao;
 
-import library.model.*;
-
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
+import library.model.ConcreteUser;
+import library.model.Librarian;
+import library.model.Member;
+import library.model.User;
 import library.util.DBConnection;
 
 public class UserDAO {
@@ -24,14 +29,6 @@ public class UserDAO {
         UserDAO.connection = connection;
     }
 
-    public static String getSalt() throws NoSuchAlgorithmException {
-        // Tạo ra salt ngẫu nhiên với SecureRandom
-        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
-        byte[] salt = new byte[16];
-        sr.nextBytes(salt);
-        // Mã hóa salt thành chuỗi base64 để dễ lưu trữ
-        return Base64.getEncoder().encodeToString(salt);
-    }
 
     // Hàm hash mật khẩu với salt
     public static String hashPassword(String password, String salt) throws NoSuchAlgorithmException {
@@ -47,13 +44,13 @@ public class UserDAO {
     }
 
     public void addUser(User user) throws SQLException, NoSuchAlgorithmException {
-        String salt = getSalt();
-        String query = "INSERT INTO users (name, email, password, salt, role) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO users (name, email, password, role, salt) VALUES (?, ?, ?, ?, ?)";
         PreparedStatement stmt = connection.prepareStatement(query);
         stmt.setString(1, user.getName());
         stmt.setString(2, user.getEmail());
-        stmt.setString(3, hashPassword(user.getPassword(), salt));
+        stmt.setString(3, hashPassword(user.getPassword(), user.getSalt()));
         stmt.setString(4, user.getRole());
+        stmt.setString(5, user.getSalt());
         stmt.executeUpdate();
     }
     
@@ -88,14 +85,13 @@ public class UserDAO {
         return users;
     }
 
-    public static User getUserByNamePassword(String username, String password) throws SQLException {
-        String query = "SELECT * FROM users WHERE name = ? AND password = ?";
+    public static User getUserByNamePassword(String username) throws SQLException {
+        String query = "SELECT * FROM users WHERE name = ?";
         PreparedStatement stmt = connection.prepareStatement(query);
         stmt.setString(1, username);
-        stmt.setString(2, password);
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
-                return new ConcreteUser(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("password"), rs.getString("role"));
+                return new ConcreteUser(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("password"), rs.getString("role"), rs.getString("salt"));
         }
         return null;
     }

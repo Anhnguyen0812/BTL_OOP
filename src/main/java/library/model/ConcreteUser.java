@@ -5,12 +5,12 @@ public class ConcreteUser extends User {
         super(id, name, email);
     }
 
-    public ConcreteUser(String name, String email, String password, String role) {
-        super(name, email, password, role);
+    public ConcreteUser(String name, String email, String password, String role , String salt) {
+        super(name, email, password, role, salt);
     }
 
-    public ConcreteUser(int id, String name, String email, String password, String role) {
-        super(id, name, email, password, role);
+    public ConcreteUser(int id, String name, String email, String password, String role, String salt) {
+        super(id, name, email, password, role, salt);
     }
     
     @Override
