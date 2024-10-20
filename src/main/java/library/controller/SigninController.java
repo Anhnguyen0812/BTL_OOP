@@ -1,14 +1,20 @@
 package library.controller;
 
- import javafx.fxml.FXML;
-    import javafx.fxml.FXMLLoader;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
     import javafx.scene.control.Button;
     import javafx.scene.control.TextField;
+
     import java.io.IOException;
-    import javafx.scene.Parent;
-    import javafx.scene.Scene;
-    import javafx.stage.Stage;
-    import javafx.scene.control.PasswordField;
+import java.sql.SQLException;
+
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.scene.control.PasswordField;
+import library.dao.UserDAO;
+import library.util.DBConnection;
+import library.model.*;
 
 public class SigninController {
 
@@ -30,6 +36,8 @@ public class SigninController {
         private Button hideButton;
         @FXML
         private Button hideButton1;
+
+        DBConnection connection =  DBConnection.getInstance();
     
         public void initialize() {
             Passhide.textProperty().bindBidirectional(Pass.textProperty());
@@ -42,6 +50,14 @@ public class SigninController {
         public void MoveToLogin() {
             System.out.println("Username: " + Username.getText() + " Email: " + Email.getText() + " Password: "
                     + Passhide.getText() + " Confirm Password: " + CPasshide.getText());
+            UserDAO userDAO = new UserDAO(connection.getConnection());
+            User user = new ConcreteUser(Username.getText(), Email.getText(), Passhide.getText(), "user");
+            try {
+                userDAO.addUser(user);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the exception appropriately
+            }
             if (Passhide.getText().equals(CPasshide.getText()) && !Username.getText().isEmpty()
                     && !Email.getText().isEmpty()) {
                 try {

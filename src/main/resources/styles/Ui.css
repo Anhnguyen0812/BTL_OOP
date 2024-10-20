@@ -3,23 +3,25 @@
     -fx-faint-focus-color: transparent;
 
 }
-.LoginButton{
+
+.LoginButton {
     -fx-background-color: #2de2d0;
     -fx-text-fill: #000000;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-background-radius: 10;
-    
+
 }
 
-.LoginButton:hover{
+.LoginButton:hover {
     -fx-background-color: #04a091;
     -fx-text-fill: #ffffffc8;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-background-radius: 10;
 }
-.LoginButton:pressed{
+
+.LoginButton:pressed {
     -fx-background-color: #2de2d0;
     -fx-text-fill: #000000c8;
     -fx-font-size: 14px;
@@ -27,28 +29,31 @@
     -fx-background-radius: 10;
 }
 
-.hide{
+.hide {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-background-radius: 10;
     -fx-border-radius: 10;
     -fx-text-fill: #08a279;
 }
-.SearchButton{
+
+.SearchButton {
     -fx-background-color: #1aecd7;
     -fx-text-fill: #000000;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-background-radius: 10;
 }
-.SearchButton:hover{
+
+.SearchButton:hover {
     -fx-background-color: #049284;
     -fx-text-fill: #ffffffc8;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-background-radius: 10;
 }
-.SearchButton:pressed{
+
+.SearchButton:pressed {
     -fx-background-color: #1aecd7;
     -fx-text-fill: #000000c8;
     -fx-font-size: 14px;
@@ -57,7 +62,7 @@
     -fx-border-radius: 10;
 }
 
-.Pane{
+.Pane {
     -fx-background-color: #ffffff;
     -fx-background-radius: 10;
     -fx-border-radius: 10;
@@ -65,7 +70,8 @@
     -fx-border-width: 5;
 
 }
-.Search{
+
+.Search {
     -fx-background-color: transparent;
     -fx-text-fill: #030202;
     -fx-font-size: 16px;
@@ -75,7 +81,8 @@
     -fx-border-color: #016e63;
     -fx-border-width: 2;
 }
-.ScrollPanelist{
+
+.ScrollPanelist {
     -fx-background-color: #ffffff;
     -fx-background-radius: 10;
     -fx-border-radius: 10;
@@ -83,18 +90,25 @@
     -fx-border-width: 5;
 
 }
-.hyperlink{
+
+.hyperlink {
     -fx-text-fill: #ff0000;
     -fx-font-size: 12;
     -fx-border-color: transparent;
     -fx-background-color: transparent;
 }
 
+.text-field {
+    -fx-font-size: 14px;
+    -fx-padding: 5px;
+    -fx-border-color: #cccccc;
+}
 
 .label {
     -fx-font-size: 16px;
     -fx-font-weight: bold;
 }
+
 .logout-button {
     -fx-background-color: #e74c3c;
     -fx-text-fill: white;
@@ -104,6 +118,7 @@
     -fx-background-radius: 5px;
     -fx-alignment: center-right;
 }
+
 .title-label {
     -fx-text-fill: #2c3e50;
     -fx-font-size: 28px;
@@ -117,8 +132,8 @@
 .action-button {
     -fx-background-color: #3498db;
     -fx-text-fill: white;
-    -fx-font-size: 12px;
-    -fx-padding: 8px;
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
     -fx-border-radius: 5px;
     -fx-background-radius: 5px;
 }

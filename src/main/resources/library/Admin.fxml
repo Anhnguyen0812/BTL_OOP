@@ -8,127 +8,102 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="960.0" stylesheets="@../styles/Ui.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="library.controller.AdminController">
+<StackPane xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+    <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" stylesheets="@../styles/Admin.css">
 
-    <!-- Header -->
-    <top>
-        <HBox alignment="CENTER" spacing="20.0" style="-fx-padding: 10px;">
-            <Label styleClass="title-label" text="Library Management System">
-                <font>
-                    <Font name="Arial Bold" size="28.0" />
-                </font>
-            </Label>
-        </HBox>
-    </top>
-
-    <!-- Main Content -->
-        <!--SearchBook-->
-    <right>
-        <VBox alignment="CENTER" prefHeight="478.0" prefWidth="456.0" spacing="20.0" style="-fx-padding: 20px;">
-            <Label styleClass="section-title" text="Admin Panel">
-                <font>
-                    <Font size="18.0" />
-                </font>
-            </Label>
-            <HBox spacing="10.0">
-                <TextField fx:id="searchBook" promptText="Tìm kiếm sách">
-               <font>
-                  <Font size="13.0" />
-               </font></TextField>
-                <TextField fx:id="searchAuthor" promptText="Tìm kiếm tác giả">
-               <font>
-                  <Font size="13.0" />
-               </font></TextField>
-                <Button fx:id="searchBookButton" layoutX="345.0" layoutY="240.0" mnemonicParsing="false" onAction="#handleSearchBook" prefHeight="26.0" prefWidth="114.0" styleClass="SearchButton" text="SearchBook" />
+        <!-- Header -->
+        <top>
+            <HBox alignment="CENTER" spacing="20.0" style="-fx-padding: 10px;">
+                <Label styleClass="title-label" text="Library Management System">
+                    <font>
+                        <Font name="Arial Bold" size="28.0" />
+                    </font>
+                </Label>
             </HBox>
-            <!-- Add ListView here -->
-            <ListView fx:id="listView" prefHeight="200.0" prefWidth="300.0" />
-            <ListView fx:id="searchResult" prefHeight="200.0" prefWidth="300.0" />
+        </top>
 
-        </VBox>
-    </right>
-
-
-    <center>
-        <VBox alignment="CENTER" prefHeight="651.0" prefWidth="504.0" spacing="20.0" style="-fx-padding: 20px;">
-            <!-- Book Management -->
-            <VBox prefHeight="225.0" prefWidth="267.0" spacing="10.0" styleClass="section">
-                <Label styleClass="section-title" text="Manage Books">
-                    <font>
-                        <Font size="18.0" />
-                    </font>
-                </Label>
-
-                <!-- Book Input Fields -->
-                <HBox spacing="10.0">
-                    <TextField fx:id="bookTitleField" prefHeight="37.0" prefWidth="126.0" promptText="Enter book title">
-                  <font>
-                     <Font size="13.0" />
-                  </font></TextField>
-                    <TextField fx:id="bookAuthorField" prefHeight="34.0" prefWidth="131.0" promptText="Enter author name">
-                  <font>
-                     <Font size="13.0" />
-                  </font></TextField>
-                    <TextField fx:id="bookISBNField" prefHeight="42.0" prefWidth="115.0" promptText="Enter ISBN">
-                  <font>
-                     <Font size="13.0" />
-                  </font></TextField>
-                    <Button fx:id="addBookButton" onAction="#handleAddBook" prefHeight="34.0" prefWidth="104.0" styleClass="SearchButton" text="Add Book">
-                  <font>
-                     <Font size="10.0" />
-                  </font></Button>
-                </HBox>
-
-                <!-- Book Table -->
-                <TableView fx:id="bookTable" prefHeight="200.0">
-                    <columns>
-                        <TableColumn fx:id="titleColumn" prefWidth="150.0" text="Title" />
-                        <TableColumn fx:id="authorColumn" prefWidth="150.0" text="Author" />
-                        <TableColumn fx:id="isbnColumn" prefWidth="150.0" text="ISBN" />
-                    </columns>
-                </TableView>
+        <!-- Left Navigation -->
+        <left>
+            <VBox spacing="15.0" style="-fx-padding: 20px;"> 
+                <Label fx:id="Home" onMouseClicked="#Home" styleClass="nav-label" text="Home" />
+                <Label fx:id="navSearchBook" onMouseClicked="#showSearchBookPane" styleClass="nav-label" text="Search Book" />
+                <Label fx:id="navManageBooks" onMouseClicked="#showManageBooksPane" styleClass="nav-label" text="Manage Books" />
+                <Label fx:id="navManageUsers" onMouseClicked="#showManageUsersPane" styleClass="nav-label" text="Manage Users" />
+               
             </VBox>
+        </left>
 
-            <!-- User Management -->
-            <VBox prefHeight="218.0" prefWidth="304.0" spacing="10.0" styleClass="section">
-                <Label styleClass="section-title" text="Manage Users">
-                    <font>
-                        <Font size="18.0" />
-                    </font>
-                </Label>
+        <!-- Main Content -->
+        <center>
+            <StackPane fx:id="contentArea">
 
-                <!-- User Input Fields -->
-                <HBox spacing="10.0">
-                    <TextField fx:id="usernameField" promptText="Enter username">
-                  <font>
-                     <Font size="13.0" />
-                  </font></TextField>
-                    <TextField fx:id="emailField" prefHeight="23.0" prefWidth="172.0" promptText="Enter email">
-                  <font>
-                     <Font size="13.0" />
-                  </font></TextField>
-                    <Button fx:id="addUserButton" onAction="#handleAddUser" prefHeight="33.0" prefWidth="106.0" styleClass="SearchButton" text="Add User" />
-                </HBox>
+                <!-- Dashboard -->
+                <VBox fx:id="home" spacing="10.0" style="-fx-padding: 20px;" visible="false">
+                    <Label fx:id="dashboardLabel" style="-fx-font-size: 50px; -fx-font-weight: bold;" text="Dashboard" />
+                    <Label fx:id="greetingLabel" style="-fx-font-size: 40px; -fx-text-fill: red;" text="Hello, User!" />
+                    <Label fx:id="dateTimeLabel" text="Date &amp; Time" />
+                </VBox>
 
-                <!-- User Table -->
-                <TableView fx:id="userTable" prefHeight="197.0" prefWidth="464.0">
-                    <columns>
-                        <TableColumn fx:id="usernameColumn" prefWidth="200.0" text="Username" />
-                        <TableColumn fx:id="emailColumn" prefWidth="200.0" text="Email" />
-                    </columns>
-                </TableView>
-            </VBox>
-        </VBox>
-    </center>
+                <!-- Search Book Pane -->
+                <VBox fx:id="searchBookPane" spacing="10.0" style="-fx-padding: 20px;" visible="false">
+                    <Label styleClass="section-title" text="Search Books" />
+                    <HBox spacing="10.0">
+                        <TextField fx:id="searchBook" promptText="Enter book title" />
+                        <TextField fx:id="searchAuthor" promptText="Enter author name" />
+                       <Button fx:id="searchBookButton" layoutX="345.0" layoutY="240.0" mnemonicParsing="false" onAction="#handleSearchBook" styleClass="SearchButton" text="SearchBook" />
+                    </HBox>
+                    <ListView fx:id="searchResult" prefHeight="200.0" />
+                </VBox>
 
-    <!-- Logout Button at the bottom right -->
-    <bottom>
-        <HBox alignment="BOTTOM_RIGHT" prefHeight="50.0" style="-fx-padding: 10px;">
-            <Button fx:id="logoutButton" onAction="#handleLogout" styleClass="logout-button" text="Logout" />
-        </HBox>
-    </bottom>
+                <!-- Manage Books Pane -->
+                <VBox fx:id="manageBooksPane" spacing="10.0" style="-fx-padding: 20px;">
+                    <Label styleClass="section-title" text="Manage Books" />
+                    <HBox spacing="10.0">
+                        <TextField fx:id="bookTitleField" promptText="Enter book title" />
+                        <TextField fx:id="bookAuthorField" promptText="Enter author name" />
+                        <TextField fx:id="bookISBNField" promptText="Enter ISBN" />
+                        <Button fx:id="addBookButton" onAction="#handleAddBook" text="Add Book" />
+                    </HBox>
+                    <TableView fx:id="bookTable">
+                        <columns>
+                            <TableColumn fx:id="titleColumn" text="Title" />
+                            <TableColumn fx:id="authorColumn" text="Author" />
+                            <TableColumn fx:id="isbnColumn" text="ISBN" />
+                            <TableColumn fx:id="availableColumn" text="Available" />
+                        </columns>
+                    </TableView>
+                </VBox>
 
-</BorderPane>
+                <!-- Manage Users Pane -->
+                <VBox fx:id="manageUsersPane" spacing="10.0" style="-fx-padding: 20px;" visible="false">
+                    <Label styleClass="section-title" text="Manage Users" />
+                    <HBox spacing="10.0">
+                        <TextField fx:id="usernameField" promptText="Enter username" />
+                        <TextField fx:id="emailField" promptText="Enter email" />
+                        <TextField fx:id="password" promptText="password" />
+                        <Button fx:id="addUserButton" onAction="#handleAddUser" text="Add User" />
+                    </HBox>
+                    <TableView fx:id="userTable">
+                        <columns>
+                            <TableColumn fx:id="idColumn" text="Id" />
+                            <TableColumn fx:id="usernameColumn" text="Username" />
+                            <TableColumn fx:id="emailColumn" text="Email" />                         
+                        </columns>
+                    </TableView>
+                </VBox>
+            </StackPane>
+        </center>
+
+        <!-- Logout Button -->
+        <bottom>
+            <HBox alignment="BOTTOM_RIGHT" prefHeight="50.0" style="-fx-padding: 10px;">
+                <Button fx:id="logoutButton" onAction="#handleLogout" styleClass="logout-button" text="Logout" />
+            </HBox>
+        </bottom>
+
+    </BorderPane>
+</StackPane>
