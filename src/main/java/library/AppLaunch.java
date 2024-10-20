@@ -14,7 +14,7 @@ public class AppLaunch extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        scene = new Scene(loadFXML("Login"), 500, 350);
+        scene = new Scene(loadFXML("Login"));
         stage.setScene(scene);
         stage.setTitle("Library Management System");
         stage.show();

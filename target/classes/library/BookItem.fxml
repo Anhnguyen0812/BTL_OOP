@@ -11,7 +11,7 @@
 <?import javafx.scene.text.TextFlow?>
 
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="147.0" prefWidth="800.0" style="-fx-background-radius: 15;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="java.com.resources.library.DashController">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="147.0" prefWidth="800.0" style="-fx-background-radius: 15;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="library.controller.BookItemController">
    <children>
       <VBox prefHeight="200.0" prefWidth="119.0" style="-fx-background-color: #e2e3e4; -fx-background-radius: 0px 10px 10px 0px;">
          <children>
