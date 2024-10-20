@@ -1,20 +1,24 @@
 package library.controller;
 
-import library.api.GoogleBooksAPI; // Adjust the package path as necessary
-import library.model.Book;
-import library.model.User;
-
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
-import library.dao.*;
-import library.model.*;
-import library.service.*;
-import library.util.DBConnection;
-
-import java.io.IOException;
+import java.io.IOException; // Adjust the package path as necessary
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import library.api.GoogleBooksAPI;
+import library.dao.BookDAO;
+import library.dao.BorrowRecordDAO;
+import library.dao.UserDAO;
+import library.model.Book;
+import library.model.User;
+import library.service.BookService;
+import library.service.BorrowService;
+import library.service.UserService;
+import library.util.DBConnection;
 
 public class LibraryController {
     @FXML
@@ -52,7 +56,8 @@ public class LibraryController {
     public void addUser() throws NoSuchAlgorithmException {
         String name = userNameField.getText();
         String email = userEmailField.getText();
-        userService.addUser(name, email);
+        User user = new User(0, name, email);
+        userService.addUser(user);
         updateUserList();
     }
 

@@ -1,10 +1,8 @@
 package library.controller;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.ByteArrayOutputStream;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
+import java.io.IOException;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
@@ -21,7 +19,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import library.model.*;
+import library.model.Book;
 
 public class BookDetailController {
 
@@ -59,7 +57,7 @@ public class BookDetailController {
     public void setBookDetails(Book book) {
         titleLabel.setText(book.getTitle());
         authorLabel.setText(book.getAuthor());
-        isbnLabel.setText(book.getIsbn());
+        // isbnLabel.setText(book.getIsbn());
 
         // Hiển thị mô tả nếu có
         if (book.getDescription() != null) {
@@ -112,4 +110,16 @@ public class BookDetailController {
             }
         }
     }
+    
+    public Parent asParent(Book book) throws IOException {
+        if (book == null) {
+            return null;
+        }
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/BookDetail.fxml"));
+        Parent bookDetail = loader.load();
+        BookDetailController controller = loader.getController();
+        controller.setBookDetails(book);
+        return bookDetail;
+    }
+    
 }

@@ -4,7 +4,8 @@ import java.io.IOException;
     import java.security.NoSuchAlgorithmException;
     import java.sql.SQLException;
 
-    import javafx.fxml.FXML;
+import javafx.application.HostServices;
+import javafx.fxml.FXML;
     import javafx.fxml.FXMLLoader;
     import javafx.scene.Parent;
     import javafx.scene.Scene;
@@ -20,9 +21,9 @@ import library.service.UserService;
 public class LoginController {
 
     // Method to get user by username and password
-    private User getUserbynamepassword(String username) throws SQLException {
+    private User getUserbyname(String username) throws SQLException {
         UserDAO userdao = new UserDAO();
-        return userdao.getUserByNamePassword(username);
+        return userdao.getUserByName(username);
     }
  
         @FXML
@@ -39,6 +40,8 @@ public class LoginController {
         private Button hide;
 
         private User user;
+
+        private HostServices hostServices;
     
         @FXML
         public void initialize() {
@@ -83,8 +86,8 @@ public class LoginController {
             int check = UserService.checkLogin(Username.getText(), Pass.getText(), "admin");
             if (check == 1){
                 try {
-                    user = getUserbynamepassword(Username.getText());
-                    AdminController adminController = new AdminController(user);
+                    user = getUserbyname(Username.getText());
+                    AdminController adminController = new AdminController(user, hostServices);
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Admin.fxml"));
                     loader.setController(adminController);
                     Parent root = loader.load();
@@ -99,7 +102,7 @@ public class LoginController {
             } 
             else if (check == 2) {
                     try {
-                        user = getUserbynamepassword(Username.getText());
+                        user = getUserbyname(Username.getText());
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/User.fxml"));
                         Parent root = loader.load();
                         Stage stage = (Stage) LoginButton.getScene().getWindow();
@@ -127,6 +130,10 @@ public class LoginController {
                 // }
                 
             }
+        }
+
+        public void setHostServices(HostServices hostServices) {
+            this.hostServices = hostServices;
         }
 
         public User getUser() {

@@ -1,33 +1,26 @@
 package library.controller;
 
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import library.dao.BookDAO;
+import library.dao.BorrowRecordDAO;
 import library.model.Book;
 import library.service.BookService;
-
-import java.util.List;
-
-import library.dao.BorrowRecordDAO;
-import library.model.BorrowRecord;
-import library.model.User;
 import library.util.DBConnection;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.io.IOException;
-
-import javafx.stage.Stage;
-
-public class UserController extends LoginController{
+public class UserController{
     private Stage stage;
     
     @FXML

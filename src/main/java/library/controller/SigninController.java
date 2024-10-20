@@ -15,7 +15,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import library.dao.UserDAO;
-import library.model.ConcreteUser;
 import library.model.User;
 import library.util.DBConnection;
 
@@ -45,7 +44,7 @@ public class SigninController {
 
         DBConnection connection =  DBConnection.getInstance();
 
-         public static String getSalt() throws NoSuchAlgorithmException {
+    public static String getSalt() throws NoSuchAlgorithmException {
         // Tạo ra salt ngẫu nhiên với SecureRandom
         SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
         byte[] salt = new byte[16];
@@ -68,9 +67,9 @@ public class SigninController {
             UserDAO userDAO = new UserDAO(connection.getConnection());
             LoginButton.setDefaultButton(true);
             if (Passhide.getText().equals(CPasshide.getText()) && !Username.getText().isEmpty()
-                    && !Email.getText().isEmpty()) {
+                    && !Email.getText().isEmpty() && UserDAO.getUserByName(Username.getText()) == null) {
                 try {
-                    User user = new ConcreteUser(Username.getText(), Email.getText(), Passhide.getText(), "User", getSalt());
+                    User user = new User(Username.getText(), Email.getText(), Passhide.getText(), "User", getSalt());
                     userDAO.addUser(user);
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Login.fxml"));
                     Parent root = loader.load();

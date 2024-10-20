@@ -10,7 +10,6 @@ import java.util.Base64;
 import java.util.List;
 
 import library.dao.UserDAO;
-import library.model.ConcreteUser;
 import library.model.User;
 import library.util.DBConnection;
 
@@ -48,7 +47,7 @@ public class UserService{
         ResultSet rs = pstmt.executeQuery();
 
             // Kiểm tra xem có bản ghi nào được trả về hay không
-        if (rs.getString("password").equals(hashPassword(password, rs.getString("salt")))) {
+        if (rs.getString("password") != null && rs.getString("password").equals(hashPassword(password, rs.getString("salt")))) {
             if (rs.getString("role").equals(role)) return 1;
             else return 2;
         }
@@ -56,9 +55,8 @@ public class UserService{
             // Nếu không có bản ghi nào, thông tin đăng nhập không hợp lệ
     }
 
-    public void addUser(String name, String email) throws NoSuchAlgorithmException {
+    public void addUser(User user) throws NoSuchAlgorithmException {
         try {
-            User user = new ConcreteUser(0, name, email); // ID tự động tăng
             userDAO.addUser(user);
         } catch (SQLException e) {
         }

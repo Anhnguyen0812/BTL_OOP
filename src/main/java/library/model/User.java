@@ -1,6 +1,6 @@
 package library.model;
 
-public abstract class User {
+public class User {
     protected int id = 0;
     protected String name;
     protected String email;
@@ -20,6 +20,13 @@ public abstract class User {
         this.password = password;
         this.role = role;
         this.salt = salt;
+    }
+
+    public User(int id, String name, String email, String role) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.role = role;
     }
 
     public User(int id, String name, String email, String password, String role, String salt) {

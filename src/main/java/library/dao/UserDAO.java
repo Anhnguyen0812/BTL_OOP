@@ -7,19 +7,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
 
-import library.model.ConcreteUser;
-import library.model.Librarian;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import library.model.Member;
 import library.model.User;
 import library.util.DBConnection;
 
 public class UserDAO {
     private static Connection connection;
-    private static final String tail = "bao";
 
     public UserDAO() {
         UserDAO.connection = DBConnection.getInstance().getConnection();
@@ -62,7 +59,7 @@ public class UserDAO {
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
             if (rs.getString("role").equals("Librarian")) {
-                return new ConcreteUser(rs.getInt("id"), rs.getString("name"), rs.getString("email"));
+                return new User(rs.getInt("id"), rs.getString("name"), rs.getString("email"));
             } else {
                 return new Member(rs.getInt("id"), rs.getString("name"), rs.getString("email"));
             }
@@ -70,28 +67,24 @@ public class UserDAO {
         return null;
     }
 
-    public List<User> getAllUsers() throws SQLException {
-        List<User> users = new ArrayList<>();
+    public static ObservableList<User> getAllUsers() throws SQLException {
+        ObservableList<User> users = FXCollections.observableArrayList();
         String query = "SELECT * FROM users";
         Statement stmt = connection.createStatement();
         ResultSet rs = stmt.executeQuery(query);
         while (rs.next()) {
-            if (rs.getString("role").equals("Librarian")) {
-                users.add(new Librarian(rs.getInt("id"), rs.getString("name"), rs.getString("email")));
-            } else {
-                users.add(new Member(rs.getInt("id"), rs.getString("name"), rs.getString("email")));
-            }
+            users.add(new User(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("role")));
         }
         return users;
     }
 
-    public static User getUserByNamePassword(String username) throws SQLException {
+    public static User getUserByName(String username) throws SQLException {
         String query = "SELECT * FROM users WHERE name = ?";
         PreparedStatement stmt = connection.prepareStatement(query);
         stmt.setString(1, username);
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
-                return new ConcreteUser(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("password"), rs.getString("role"), rs.getString("salt"));
+                return new User(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("password"), rs.getString("role"), rs.getString("salt"));
         }
         return null;
     }

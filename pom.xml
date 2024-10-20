@@ -25,6 +25,12 @@
       <id>central</id>
       <url>https://repo.maven.apache.org/maven2</url>
     </repository>
+
+    <repository>
+      <id>gluon-releases</id>
+      <url>https://nexus.gluonhq.com/nexus/content/repositories/releases/</url>
+    </repository>
+    
   </repositories>
 
   <dependencies>
@@ -147,11 +153,19 @@
         <artifactId>core</artifactId>
         <version>3.4.1</version>
     </dependency>
+
     <dependency>
         <groupId>com.google.zxing</groupId>
         <artifactId>javase</artifactId>
         <version>3.4.1</version>
     </dependency>
+
+    <dependency>
+        <groupId>com.gluonhq</groupId>
+        <artifactId>charm-glisten</artifactId>
+        <version>5.0.0</version> <!-- Đảm bảo phiên bản này là mới nhất -->
+    </dependency>
+
 
 <!-- Add your existing dependencies here -->
 

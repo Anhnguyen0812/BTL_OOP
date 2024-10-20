@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.gluonhq.charm.glisten.control.Avatar?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -29,14 +30,14 @@
                 <Label fx:id="navSearchBook" onMouseClicked="#showSearchBookPane" styleClass="nav-label" text="Search Book" />
                 <Label fx:id="navManageBooks" onMouseClicked="#showManageBooksPane" styleClass="nav-label" text="Manage Books" />
                 <Label fx:id="navManageUsers" onMouseClicked="#showManageUsersPane" prefWidth="121.0" styleClass="nav-label" text="Manage Users" />
-            <ImageView fitHeight="60.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true" />
-            <ImageView fitHeight="60.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true" />
+                <ImageView fx:id="logoytb" fitHeight="60.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true"/>
+                <ImageView fitHeight="60.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true" />
             </VBox>
         </Pane>
 
         <!-- Main Content -->
-        <Pane layoutX="150" layoutY="50">
-            <StackPane fx:id="contentArea">
+        <Pane layoutX="150" layoutY="50" prefHeight="564.0" prefWidth="713.0">
+            <StackPane fx:id="contentArea" prefHeight="564.0" prefWidth="713.0">
 
                 <!-- Search Book Pane -->
                 <Pane fx:id="searchBookPane" prefHeight="526.0" prefWidth="656.0" style="-fx-padding: 20px;" visible="false">
@@ -48,12 +49,13 @@
                             <Button fx:id="searchBookButton" mnemonicParsing="false" onAction="#handleSearchBook" styleClass="SearchButton" text="SearchBook" />
                         </HBox>
                         <ListView fx:id="searchResult" prefHeight="200.0" />
-                  <VBox prefHeight="237.0" prefWidth="1301.0" />
+                  <VBox fx:id="detailBook" prefHeight="237.0" prefWidth="1301.0" />
+
                     </VBox>
                 </Pane>
 
                 <!-- Manage Books Pane -->
-                <Pane fx:id="manageBooksPane" style="-fx-padding: 20px;" visible="false">
+                <Pane fx:id="manageBooksPane" prefHeight="543.0" prefWidth="738.0" style="-fx-padding: 20px;" visible="false">
                     <VBox spacing="10.0">
                         <Label styleClass="section-title" text="Manage Books" />
                         <HBox spacing="10.0">
@@ -80,7 +82,8 @@
                         <HBox spacing="10.0">
                             <TextField fx:id="usernameField" promptText="Enter username" />
                             <TextField fx:id="emailField" promptText="Enter email" />
-                            <TextField fx:id="password" promptText="password" />
+                            <TextField fx:id="passwordField" promptText="password" />
+                            <TextField fx:id="roleField" promptText="role" />
                             <Button fx:id="addUserButton" onAction="#handleAddUser" text="Add User" />
                         </HBox>
                         <TableView fx:id="userTable">
@@ -88,6 +91,7 @@
                                 <TableColumn fx:id="idColumn" text="Id" />
                                 <TableColumn fx:id="usernameColumn" text="Username" />
                                 <TableColumn fx:id="emailColumn" text="Email" />
+                                <TableColumn fx:id="roleColumn" text="Role" />
                             </columns>
                         </TableView>
                     </VBox>
@@ -98,7 +102,7 @@
                     <VBox prefHeight="218.0" prefWidth="452.0" spacing="10.0">
                         <Label fx:id="dashboardLabel" prefHeight="73.0" prefWidth="306.0" style="-fx-font-size: 50px; -fx-font-weight: bold;" text="Dashboard" />
                         <Label fx:id="greetingLabel" style="-fx-font-size: 40px; -fx-text-fill: red;" text="Hello, User!" />
-                        <Label fx:id="dateTimeLabel" prefHeight="46.0" prefWidth="203.0" text="Date &amp; Time" />
+                        <Label fx:id="dateTimeLabel" prefHeight="56.0" prefWidth="462.0" text="Date &amp; Time" />
                     </VBox>
                <VBox layoutX="7.0" layoutY="270.0" prefHeight="264.0" prefWidth="703.0" />
                 </Pane>
@@ -107,7 +111,7 @@
 
         <!-- Logout Button -->
         <Pane layoutX="650" layoutY="550" />
-         <HBox alignment="BOTTOM_RIGHT" layoutX="25.0" layoutY="536.0" prefHeight="61.0" prefWidth="110.0" style="-fx-padding: 10px;">
+         <HBox alignment="BOTTOM_RIGHT" layoutX="7.0" layoutY="541.0" prefHeight="61.0" prefWidth="110.0" style="-fx-padding: 10px;">
              <Button fx:id="logoutButton" onAction="#handleLogout" styleClass="logout-button" text="Logout" />
          </HBox>
       <ImageView fitHeight="103.0" fitWidth="110.0" layoutX="15.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true" />
@@ -116,6 +120,7 @@
                   <Font name="Arial Bold" size="28.0" />
               </font>
           </Label>
+      <Avatar layoutX="44.0" layoutY="54.0" />
 
     </AnchorPane>
 </StackPane>

@@ -1,11 +1,14 @@
 package library;
 
 import java.io.IOException;
+
 import javafx.application.Application;
+import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import library.controller.LoginController;
 
 public class AppLaunch extends Application {
 
@@ -14,22 +17,25 @@ public class AppLaunch extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        scene = new Scene(loadFXML("Login"), 500, 350);
+        HostServices hostServices = getHostServices();
+        scene = new Scene(loadFXML("Login", hostServices), 500, 350);
         stage.setScene(scene);
         stage.setTitle("Library Management System");
         stage.show();
 
     }
-
-    static void setRoot(String fxml) throws IOException {
-        scene.setRoot(loadFXML(fxml));
+    static void setRoot(String fxml, HostServices hostServices) throws IOException {
+        scene.setRoot(loadFXML(fxml, hostServices));
     }
 
-    private static Parent loadFXML(String fxml) {
+    private static Parent loadFXML(String fxml, HostServices hostServices) {
         try {
             System.out.println("Loading FXML from: " + "/library/" + fxml + ".fxml");
             FXMLLoader fxmlLoader = new FXMLLoader(AppLaunch.class.getResource("/library/" + fxml + ".fxml"));
-            return fxmlLoader.load();
+            Parent root = fxmlLoader.load();
+            LoginController controller = fxmlLoader.getController();
+            controller.setHostServices(hostServices);
+            return root;
         } catch (IOException e) {
             e.printStackTrace(); // In ra thông báo lỗi chi tiết
             return null; // Trả về null nếu có lỗi
