@@ -25,21 +25,6 @@
       <id>central</id>
       <url>https://repo.maven.apache.org/maven2</url>
     </repository>
-    <repository>
-      <id>jcenter</id>
-      <url>https://jcenter.bintray.com/</url>
-    </repository>
-    <repository>
-      <id>spring-releases</id>
-      <url>https://repo.spring.io/release</url>
-    </repository>
-    <repository>
-      <id>spring-snapshots</id>
-      <url>https://repo.spring.io/snapshot</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
   </repositories>
 
   <dependencies>
@@ -116,15 +101,7 @@
         <version>2.10.5</version>
     </dependency>
 
-    <!-- MySQL Connector để kết nối cơ sở dữ liệu -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.33</version> <!-- Specify the version -->
-            <scope>runtime</scope>
-        </dependency>
-
-
+    
     <!-- Add your existing dependencies here -->
     <dependency>
         <groupId>org.json</groupId>
@@ -150,6 +127,16 @@
         <version>3.46.1.3</version>
     </dependency>
 
+        <dependency>
+        <groupId>com.google.zxing</groupId>
+        <artifactId>core</artifactId>
+        <version>3.4.1</version>
+    </dependency>
+    <dependency>
+        <groupId>com.google.zxing</groupId>
+        <artifactId>javase</artifactId>
+        <version>3.4.1</version>
+    </dependency>
 
 <!-- Add your existing dependencies here -->
 
