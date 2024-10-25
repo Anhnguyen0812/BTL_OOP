@@ -1,15 +1,28 @@
 package library.dao;
 
-import library.model.*;
-
-import java.sql.*;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import library.model.Book;
+import library.model.ConcreteBook;
+import library.util.DBConnection;
 
 
 public class BookDAO {
     
     private Connection connection;
+
+    public BookDAO() {
+        this.connection = DBConnection.getInstance().getConnection();
+    }
 
     public BookDAO(Connection connection) {
         this.connection = connection;
@@ -18,6 +31,7 @@ public class BookDAO {
     public void updateBook(Book book) {
         // Implementation for updating the book in the database
         // This is a placeholder implementation
+
         System.out.println("Updating book: " + book.getTitle());
     }
 
@@ -40,7 +54,7 @@ public class BookDAO {
         if (isbnExists(book.getIsbn())) {
             return;
         }
-
+        
         String query = "INSERT INTO books (title, author, isbn, available, description, imageUrl, QRcode) VALUES ( ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement stmt = connection.prepareStatement(query);
         stmt.setString(1, book.getTitle());
@@ -59,20 +73,50 @@ public class BookDAO {
         stmt.setInt(1, id);
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
-            return new ReferenceBook(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getString("isbn"), rs.getBoolean("available"));
+            return new ConcreteBook(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getString("isbn"), rs.getBoolean("available"), 
+            rs.getString("description"), rs.getString("imageUrl"), rs.getString("QRcode"));
         }
         return null;
     }
 
-    public Book getBookByISBN(String isbn) throws SQLException {
+    public Book getBookByISBN(String isbn) throws SQLException, InterruptedException {
         String query = "SELECT * FROM books WHERE isbn = ?";
         PreparedStatement stmt = connection.prepareStatement(query);
         stmt.setString(1, isbn);
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
-            return new ReferenceBook(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getString("isbn"), rs.getBoolean("available"));
+            return new ConcreteBook(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getString("isbn"), rs.getBoolean("available"), 
+            rs.getString("description"), rs.getString("imageUrl"), rs.getString("QRcode"));
         }
         return null;
+    }
+
+    public ObservableList<Book> getBookByTitle(String title) throws IOException, SQLException {
+        ObservableList<Book> books = FXCollections.observableArrayList();
+        String query = "SELECT * FROM books WHERE title LIKE ?";
+        PreparedStatement stmt = connection.prepareStatement(query);
+        stmt.setString(1, "%" + title + "%");
+        
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            books.add(new ConcreteBook(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getString("isbn"), rs.getBoolean("available"), 
+            rs.getString("description"), rs.getString("imageUrl"), rs.getString("QRcode")));
+        }
+        return books;
+    }
+
+    public ObservableList<Book> getBookByAuthor(String author) throws IOException, SQLException {
+        ObservableList<Book> books = FXCollections.observableArrayList();
+        String query = "SELECT * FROM books WHERE author = ?";
+        PreparedStatement stmt = connection.prepareStatement(query);
+        stmt.setString(1, author);
+        
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            books.add(new ConcreteBook(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getString("isbn"), rs.getBoolean("available"), 
+            rs.getString("description"), rs.getString("imageUrl"), rs.getString("QRcode")));
+        }
+        return books;
     }
 
     public List<Book> getAllBooks() throws SQLException {
@@ -81,15 +125,10 @@ public class BookDAO {
         Statement stmt = connection.createStatement();
         ResultSet rs = stmt.executeQuery(query);
         while (rs.next()) {
-            books.add(new ReferenceBook(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getString("isbn"), rs.getBoolean("available")));
+            books.add(new ConcreteBook(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getString("isbn"), rs.getBoolean("available"), 
+            rs.getString("description"), rs.getString("imageUrl"), rs.getString("QRcode")));
         }
         return books;
-    }
-
-    public List<Book> searchBooks(String query) {
-
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'searchBooks'");
     }
 
     public boolean borrowBook(Book book) throws SQLException {

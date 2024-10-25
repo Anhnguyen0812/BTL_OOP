@@ -3,6 +3,9 @@ package library.controller;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
@@ -15,11 +18,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import library.dao.BorrowRecordDAO;
 import library.model.Book;
+import library.model.BorrowRecord;
+import library.model.User;
+// import library.controller.BorrowRecordController; // Removed redundant import
 
 public class BookDetailController {
 
@@ -41,6 +49,15 @@ public class BookDetailController {
     @FXML
     private ImageView qrCodeImageView;  // ImageView để hiển thị mã QR
 
+    @FXML
+    private Button returnbook, addbook;
+
+    private static User user;
+    private static Book bookk;
+    private BorrowRecord record;
+    private BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO();
+    private LocalDate today = LocalDate.now();
+    private DashController dashController = new DashController();
 
     public Image generateQRCode(String text, int width, int height) throws WriterException, IOException {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
@@ -86,10 +103,6 @@ public class BookDetailController {
         }
     }
 
-    // public void setQRCodeImage(Image qrCodeImage) {
-    //     qrCodeImageView.setImage(qrCodeImage);  // Hiển thị mã QR trong ImageView
-    // }
-
     public void showBookDetails(Book book) {
         if (book != null) {
             try {
@@ -116,6 +129,54 @@ public class BookDetailController {
             return null;
         }
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/BookDetail.fxml"));
+        Parent bookDetail = loader.load();
+        BookDetailController controller = loader.getController();
+        controller.setBookDetails(book);
+        return bookDetail;
+    }
+
+    public Parent addBookDetail(Book book, User user) throws IOException {
+        BookDetailController.user = user;
+        BookDetailController.bookk = book;
+        if (book == null) {
+            return null;
+        }
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Addbookdetail.fxml"));
+        Parent bookDetail = loader.load();
+        BookDetailController controller = loader.getController();
+        controller.setBookDetails(book);
+        return bookDetail;
+    }
+    
+    @FXML
+    public void initialize() {
+        if (addbook != null) {
+            addbook.setOnAction(e -> {
+                try {
+                    record = new BorrowRecord(0, user, bookk, today, today.plusMonths(2));
+                    borrowRecordDAO.addBorrowRecord(record);
+                } catch (Exception ex) {
+                    Logger.getLogger(BookDetailController.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+                }
+            });
+        }
+        if (returnbook != null) {
+            returnbook.setOnAction(e -> {
+                try {
+                    borrowRecordDAO.deleteBorrowRecord(bookk);
+                } catch (Exception ex) {
+                    Logger.getLogger(BookDetailController.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+                }
+            });
+        }
+    }
+
+    public Parent returnBookDetail(Book book) throws IOException {
+        BookDetailController.bookk = book;
+        if (book == null) {
+            return null;
+        }
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Returnbookdetail.fxml"));
         Parent bookDetail = loader.load();
         BookDetailController controller = loader.getController();
         controller.setBookDetails(book);

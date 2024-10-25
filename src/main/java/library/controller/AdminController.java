@@ -2,7 +2,6 @@
 package library.controller;
 
 import java.io.IOException;
-import java.net.URI;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.sql.SQLException;
@@ -124,16 +123,21 @@ public class AdminController extends UserController {
     private ObservableList<User> userList = FXCollections.observableArrayList();
 
     public AdminController() {
+        super(null, null); // Call the UserController constructor with default values
     }
     
     public void setUser(User user) {
         this.user = user;
     }
+    
     public AdminController(User user, HostServices hostServices) {
+        super(user, hostServices); // Call the UserController constructor with user and hostServices
         this.user = user;
         this.hostServices = hostServices;
     }
+    
     public AdminController(User user) {
+        super(user, null); // Call the UserController constructor with user and default hostServices
         this.user = user;
     }
 
@@ -177,7 +181,7 @@ public class AdminController extends UserController {
     @FXML
     @Override
     public void initialize() {
-        Image ytb = new Image("/image/logoytb.png");
+        Image ytb = new Image("/imgs/logoytb.png");
         logoytb.setImage(ytb);
         logoytb.setOnMouseClicked(this::handleYouTubeClick);
 
@@ -372,6 +376,8 @@ public class AdminController extends UserController {
         // Xóa các trường nhập liệu sau khi thêm người dùng
         usernameField.clear();
         emailField.clear();
+        passwordField.clear();
+        roleField.clear();
         }
        
     // Hiển thị thông báo lỗi hoặc thành công

@@ -1,12 +1,13 @@
 package library.service;
 
-import library.dao.*;
-import library.model.*;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+
+import library.dao.BookDAO;
+import library.model.Book;
+import library.model.ConcreteBook;
 
 public class BookService {
     private BookDAO bookDAO;
@@ -33,7 +34,7 @@ public class BookService {
         }
     }
 
-    public Book getBookByISBN(String isbn) {
+    public Book getBookByISBN(String isbn) throws InterruptedException {
         try {
             return bookDAO.getBookByISBN(isbn);
         } catch (SQLException e) {
@@ -51,56 +52,25 @@ public class BookService {
         }
     }
     
-        public void updateBook(int id, String title, String author, String isbn) {
-            try {
-                Book book = bookDAO.getBookById(id);
-                if (book != null) {
-                    Book updatedBook = new ConcreteBook(id, title, author, isbn, 1, "defaultCategory", true);
-                    bookDAO.updateBook(book);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-
-        public void deleteBook(int id, Connection connection) throws SQLException {
-
-            String sql = "DELETE FROM books WHERE id = ?";
-
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-
-                statement.setInt(1, id);
-
-                statement.executeUpdate();
-
-            }
-
-        }
-
-    public List<Book> searchBooks(String query) {
-        return bookDAO.searchBooks(query);
-    }
-
-    public boolean borrowBook(Book book) {
+    public void updateBook(int id, String title, String author, String isbn) {
         try {
-            // Implement the logic to borrow a book
-            return bookDAO.borrowBook(book);
+            Book book = bookDAO.getBookById(id);
+            if (book != null) {
+                Book updatedBook = new ConcreteBook(id, title, author, isbn, 1, "defaultCategory", true);
+                bookDAO.updateBook(book);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
     }
 
-    public boolean returnBook(Book book) {
-        // Implement the logic to return a book
-        try {
-            return bookDAO.returnBook(book);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+
+    public void deleteBook(int id, Connection connection) throws SQLException {
+        String sql = "DELETE FROM books WHERE id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, id);
+            statement.executeUpdate();
         }
     }
-
 }
 

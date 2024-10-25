@@ -1,9 +1,12 @@
 package library.controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
+import javafx.application.HostServices;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,12 +20,18 @@ import javafx.stage.Stage;
 import library.dao.BookDAO;
 import library.dao.BorrowRecordDAO;
 import library.model.Book;
+import library.model.BorrowRecord;
+import library.model.User;
 import library.service.BookService;
 import library.util.DBConnection;
 
 public class UserController{
+
+    protected User user;
+
+    protected HostServices hostServices;
+
     private Stage stage;
-    
     @FXML
     private TableView<Book> booksTable;
 
@@ -32,10 +41,14 @@ public class UserController{
     private final DBConnection connection = DBConnection.getInstance();
 
     private final BookService bookService = new BookService(new BookDAO(connection.getConnection())); // Giả định đã có service xử lý logic mượn sách
+    private BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO(connection.getConnection());
+    private BookDAO bookDAO = new BookDAO(connection.getConnection());
+    private BookController bookController = new BookController();
+    private LocalDate today = LocalDate.now();
 
-    LocalDate today = LocalDate.now();
-
-    public UserController() {
+    public UserController(User user, HostServices hostServices) {
+        this.user = user;
+        this.hostServices = hostServices;
     }
 
     @FXML
@@ -55,53 +68,44 @@ public class UserController{
     }
 
     private void loadBooks() {
+        booksTable.getItems().clear(); // Xóa danh sách sách cũ
         List<Book> books = bookService.getAllBooks();
         booksTable.getItems().setAll(books); // Hiển thị sách lên TableView
     }
 
     @FXML
-    private void handleSearchBook() {
+    private void handleSearchBook() throws IOException, SQLException {
         String query = searchField.getText();
-        List<Book> filteredBooks = bookService.searchBooks(query);
+        ObservableList<Book> filteredBooks = bookController.searchBook(query);
         booksTable.getItems().setAll(filteredBooks); // Cập nhật kết quả tìm kiếm
     }
 
-    @FXML
-    private void handleBorrowBook() {
-        Book selectedBook = booksTable.getSelectionModel().getSelectedItem();
-        if (selectedBook != null) {
-            boolean success = bookService.borrowBook(selectedBook);
-            if (success) {
-                BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO(connection.getConnection());
-                // borrowRecordDAO.addBorrowRecord(new BorrowRecord(0, user, selectedBook, today,today.plusMonths(2) ));
-                showAlert("Success", "Book borrowed successfully!");
-                loadBooks(); // Cập nhật danh sách sách sau khi mượn
-            } else {
-                showAlert("Error", "This book is already borrowed.");
-            }
-        } else {
-            showAlert("Error", "Please select a book to borrow.");
-        }
+    private void loadBorrowedBooks() {
+        // TODO
     }
 
     @FXML
-    private void handleReturnBook() {
+    private void handleBorrowBook() throws SQLException {
         Book selectedBook = booksTable.getSelectionModel().getSelectedItem();
         if (selectedBook != null) {
-            boolean success = bookService.returnBook(selectedBook);
-            if (success) {
-                showAlert("Success", "Book returned successfully!");
-                loadBooks(); // Cập nhật danh sách sách sau khi trả
-            } else {
-                showAlert("Error", "This book is not borrowed.");
-            }
+            BorrowRecord borrowRecord = new BorrowRecord(0, user, selectedBook, today, today.plusMonths(2));
+            borrowRecordDAO.addBorrowRecord(borrowRecord);
+            bookDAO.borrowBook(selectedBook);
+        } else {
+            showAlert("Error", "Please select a book to borrow.");
+        } 
+        loadBorrowedBooks(); 
+    }
+
+    @FXML
+    private void handleReturnBook() throws SQLException {
+        Book selectedBook = booksTable.getSelectionModel().getSelectedItem();
+        if (selectedBook != null) {
+            borrowRecordDAO.deleteBorrowRecord(selectedBook);
+            bookDAO.returnBook(selectedBook);
         } else {
             showAlert("Error", "Please select a book to return.");
         }
-    }
-
-    private void returnBook(Book selectedBook) {
-        // TODO
     }
 
     private void showAlert(String title, String message) {

@@ -58,6 +58,6 @@ public class ConcreteBook extends Book {
     
     @Override
     public String toString() {
-        return title + " by " + author + " ISBN :" + isbn;
+        return title;
     }
 }
