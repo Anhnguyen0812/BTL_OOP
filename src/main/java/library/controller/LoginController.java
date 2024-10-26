@@ -119,7 +119,7 @@ public class LoginController {
                         loader.setController(dashController);
                         Parent root = loader.load();
                         Stage stage = (Stage) LoginButton.getScene().getWindow();
-                        stage.setScene(new Scene(root, 960, 720));
+                        stage.setScene(new Scene(root));
                         stage.setTitle("Library Management System");
                         stage.centerOnScreen();
                         stage.show();

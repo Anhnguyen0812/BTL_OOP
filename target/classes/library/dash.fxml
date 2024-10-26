@@ -154,7 +154,7 @@
             </VBox>
             <Pane fx:id="Dashboard" layoutX="160.0" prefHeight="720.0" prefWidth="1120.0" style="-fx-background-color: #fff;">
                <children>
-                  <Pane layoutX="712.0" layoutY="26.0" prefHeight="200.0" prefWidth="391.0" style="-fx-background-color: #364FCD; -fx-background-radius: 10;">
+                  <Pane layoutX="707.0" layoutY="22.0" prefHeight="200.0" prefWidth="391.0" style="-fx-background-color: #364FCD; -fx-background-radius: 10;">
                      <children>
                         <Label layoutX="177.0" layoutY="20.0" text="Vulnerable Certicificates" textFill="WHITE">
                            <font>
@@ -324,19 +324,19 @@
                         </Button>
                      </children>
                   </HBox>
-                  <ScrollPane layoutX="21.0" layoutY="127.0" prefHeight="589.0" prefWidth="1097.0">
+                  <ScrollPane layoutX="5.0" layoutY="126.0" prefHeight="594.0" prefWidth="1120.0">
                      <content>
-                        <TableView fx:id="ListBooks" prefHeight="345.0" prefWidth="1085.0">
+                        <TableView fx:id="ListBooks" prefHeight="348.0" prefWidth="1118.0">
                           <columns>
-                              <TableColumn fx:id="Id" prefWidth="43.0" text="Id" />
-                              <TableColumn fx:id="Title" prefWidth="446.0" text="Title" />
-                              <TableColumn fx:id="Author" prefWidth="264.0" text="Author" />
-                              <TableColumn fx:id="ISBN" prefWidth="239.0" text="ISBN" />
-                              <TableColumn fx:id="Available" minWidth="0.0" prefWidth="101.0" text="Availble" />
+                              <TableColumn fx:id="Id" prefWidth="50.0" text="Id" />
+                              <TableColumn fx:id="Title" prefWidth="449.0" text="Title" />
+                              <TableColumn fx:id="Author" prefWidth="265.0" text="Author" />
+                              <TableColumn fx:id="ISBN" prefWidth="242.0" text="ISBN" />
+                              <TableColumn fx:id="Available" minWidth="0.0" prefWidth="109.0" text="Availble" />
                           </columns>
                         </TableView>
                      </content></ScrollPane>
-                  <Pane fx:id="add_Book" layoutX="8.0" layoutY="472.0" prefHeight="240.0" prefWidth="1112.0" />
+                  <Pane fx:id="add_Book" layoutX="8.0" layoutY="472.0" prefHeight="239.0" prefWidth="1120.0" />
                </children>
             </Pane>
             <Pane fx:id="BorrowBooks" layoutX="160.0" prefHeight="720.0" prefWidth="1120.0" visible="false">
@@ -369,7 +369,7 @@
                             <TableColumn fx:id="ngaytra" minWidth="0.0" prefWidth="234.0" text="ngay tra" />
                           </columns>
                         </TableView>
-                        <Pane fx:id="return_Book" prefHeight="282.0" prefWidth="1117.0" />
+                        <Pane fx:id="return_Book" prefHeight="263.0" prefWidth="1114.0" />
                      </children>
                   </VBox>
                </children>
