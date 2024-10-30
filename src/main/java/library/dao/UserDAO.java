@@ -17,15 +17,18 @@ import library.util.DBConnection;
 
 public class UserDAO {
     private static Connection connection;
+    private static UserDAO instance;
 
-    public UserDAO() {
+    private UserDAO() {
         UserDAO.connection = DBConnection.getInstance().getConnection();
     }
 
-    public UserDAO(Connection connection) {
-        UserDAO.connection = connection;
+    public static UserDAO getUserDAO() {
+        if (instance == null) {
+            instance = new UserDAO();
+        }
+        return instance;
     }
-
 
     // Hàm hash mật khẩu với salt
     public static String hashPassword(String password, String salt) throws NoSuchAlgorithmException {

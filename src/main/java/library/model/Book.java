@@ -6,6 +6,7 @@ public abstract class Book {
     protected String author;
     protected String isbn;
     protected boolean available;
+    protected String categories;
     protected String description; // Thêm thuộc tính mô tả
     protected String imageUrl; // Thêm thuộc tính URL hình ảnh
     protected String QRcode; // Thêm thuộc tính QRcode
@@ -19,10 +20,11 @@ public abstract class Book {
         this.isbn = isbn;
         this.available = available;
     }
-    public Book(String title, String author, String isbn, String description, String imageUrl, String QRcode) {
+    public Book(String title, String author, String isbn, String categories, String description, String imageUrl, String QRcode) {
         this.title = title;
         this.author = author;
         this.isbn = isbn;
+        this.categories = categories;
         this.description = description;
         this.imageUrl = imageUrl;
         this.QRcode = QRcode;
@@ -34,6 +36,18 @@ public abstract class Book {
         this.author = author;
         this.isbn = isbn;
         this.available = available;
+        this.description = description;
+        this.imageUrl = imageUrl;
+        this.QRcode = QRcode; 
+    }
+
+    public Book(int id, String title, String author, String isbn, boolean available, String categories, String description, String imageUrl, String QRcode) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.isbn = isbn;
+        this.available = available;
+        this.categories = categories;
         this.description = description;
         this.imageUrl = imageUrl;
         this.QRcode = QRcode; 
@@ -72,6 +86,10 @@ public abstract class Book {
 
     public boolean isAvailable() {
         return available;
+    }
+
+    public String getCategories() {
+        return categories;
     }
 
     public void setAvailable(boolean available) {

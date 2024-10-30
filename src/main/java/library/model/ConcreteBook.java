@@ -18,12 +18,16 @@ public class ConcreteBook extends Book {
         this.year = year;
     }
 
-    public ConcreteBook(String title, String author, String isbn, String description, String imageUrl, String QRcode) {
-            super(title, author, isbn, description, imageUrl, QRcode);
+    public ConcreteBook(String title, String author, String isbn, String categories, String description, String imageUrl, String QRcode) {
+            super(title, author, isbn, categories, description, imageUrl, QRcode);
     }
 
     public ConcreteBook(int id, String title, String author, String isbn, boolean available, String description, String imageUrl, String QRcode) {
         super(id, title, author, isbn, available, description, imageUrl, QRcode);
+    }
+
+    public ConcreteBook(int id, String title, String author, String isbn, boolean available, String categories, String description, String imageUrl, String QRcode) {
+        super(id, title, author, isbn, available, categories, description, imageUrl, QRcode);
     }
 
     @Override
@@ -49,6 +53,10 @@ public class ConcreteBook extends Book {
 
     public int getYear() {
         return year;
+    }
+
+    public String getCategories() {
+        return categories;
     }
 
     @Override

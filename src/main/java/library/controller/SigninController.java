@@ -64,7 +64,7 @@ public class SigninController {
         public void MoveToLogin() throws SQLException, NoSuchAlgorithmException {
             System.out.println("Username: " + Username.getText() + " Email: " + Email.getText() + " Password: "
                     + Passhide.getText() + " Confirm Password: " + CPasshide.getText());
-            UserDAO userDAO = new UserDAO(connection.getConnection());
+            UserDAO userDAO = UserDAO.getUserDAO();
             LoginButton.setDefaultButton(true);
             if (Passhide.getText().equals(CPasshide.getText()) && !Username.getText().isEmpty()
                     && !Email.getText().isEmpty() && UserDAO.getUserByName(Username.getText()) == null) {

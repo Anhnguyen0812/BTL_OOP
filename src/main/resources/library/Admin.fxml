@@ -41,11 +41,17 @@
                         <HBox prefHeight="31.0" prefWidth="0.0" spacing="10.0">
                             <TextField fx:id="searchBook" promptText="Enter book title" />
                             <TextField fx:id="searchAuthor" promptText="Enter author name" />
-                            <Button fx:id="searchBookButton" mnemonicParsing="false" onAction="#handleSearchBook" styleClass="SearchButton" text="SearchBook" />
+                            <Button fx:id="searchBookButton" mnemonicParsing="false" styleClass="SearchButton" text="SearchBook" />
                         </HBox>
-                        <ListView fx:id="searchResult" prefHeight="200.0" />
+                        <TableView fx:id="searchResult" prefHeight="200.0" >
+                            <columns>
+                                <TableColumn fx:id="Title" prefWidth="449.0" text="Title" />
+                                <TableColumn fx:id="Author" prefWidth="265.0" text="Author" />
+                                <TableColumn fx:id="ISBN" prefWidth="242.0" text="ISBN" />
+                                <TableColumn fx:id="Categories" minWidth="0.0" prefWidth="109.0" text="Categories" />
+                            </columns>
+                        </TableView>
                   <VBox fx:id="detailBook" prefHeight="237.0" prefWidth="1301.0" />
-
                     </VBox>
                 </Pane>
 
@@ -104,7 +110,7 @@
             </StackPane>
         </Pane>
          <HBox alignment="BOTTOM_RIGHT" layoutX="7.0" layoutY="541.0" prefHeight="61.0" prefWidth="110.0" style="-fx-padding: 10px;">
-             <Button fx:id="logoutButton" onAction="#handleLogout" styleClass="logout-button" text="Logout" />
+             <Button fx:id="logoutButton" styleClass="logout-button" text="Logout" />
          </HBox>
       <ImageView fitHeight="103.0" fitWidth="110.0" layoutX="15.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true" />
           <Label layoutX="342.0" layoutY="10.0" styleClass="title-label" text="Library Management System">

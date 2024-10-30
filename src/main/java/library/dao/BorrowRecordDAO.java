@@ -22,7 +22,7 @@ import library.util.DBConnection;
 public class BorrowRecordDAO {
 
         private Connection connection;
-        private BookDAO bookDAO = new BookDAO();
+        private BookDAO bookDAO = BookDAO.getBookDAO();
 
         public BorrowRecordDAO() {
             this.connection = DBConnection.getInstance().getConnection();
@@ -61,8 +61,8 @@ public class BorrowRecordDAO {
                     LocalDate returnDate = rs.getDate("return_date") != null ? rs.getDate("return_date").toLocalDate() : null;
     
                     // Giả sử bạn có lớp UserService và BookService để lấy thông tin người dùng và sách
-                    UserService userService = new UserService(new UserDAO(connection));
-                    BookService bookService = new BookService(new BookDAO(connection));
+                    UserService userService = new UserService(UserDAO.getUserDAO());
+                    BookService bookService = new BookService(bookDAO);
                     User user = userService.getUserById(userId); // Phương thức giả định
                     Book book = bookService.getBookById(bookId); // Phương thức giả định
                     
@@ -100,8 +100,8 @@ public class BorrowRecordDAO {
                     LocalDate borrowDate = rs.getDate("borrow_date").toLocalDate();
                     LocalDate returnDate = rs.getDate("return_date") != null ? rs.getDate("return_date").toLocalDate() : null;
     
-                    User user = new UserService(new UserDAO(connection)).getUserById(userId);
-                    Book book = new BookService(new BookDAO(connection)).getBookById(bookId);
+                    User user = new UserService(UserDAO.getUserDAO()).getUserById(userId);
+                    Book book = new BookService(bookDAO).getBookById(bookId);
                     
                     return new BorrowRecord(recordId, user, book, borrowDate, returnDate);
                 }

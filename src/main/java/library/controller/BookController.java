@@ -10,30 +10,13 @@ import org.json.JSONObject;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import library.api.GoogleBooksAPI;
 import library.dao.BookDAO;
 import library.model.Book;
 import library.model.ConcreteBook;
-import library.service.BookService;
 import library.util.DBConnection;
 
 public class BookController {
-    @FXML
-    private TextField bookTitleField;
-    @FXML
-    private TextField bookAuthorField;
-    @FXML
-    private TextField bookISBNField;
-    @FXML
-    private ListView<String> bookListView;
-    @FXML
-    private TextArea searchResultsArea;
-
-    private final BookService bookService;
     private final GoogleBooksAPI googleBooksAPI;
 
     // private ObservableList<Book> books = FXCollections.observableArrayList();
@@ -41,8 +24,6 @@ public class BookController {
     private final DBConnection connection = DBConnection.getInstance();
 
     public BookController() {
-        
-        this.bookService = new BookService(new BookDAO(connection.getConnection()));
         this.googleBooksAPI = new GoogleBooksAPI();
     }
 
@@ -64,14 +45,15 @@ public class BookController {
                 String title = volumeInfo.getString("title");
                 String isbn = volumeInfo.has("industryIdentifiers") ? volumeInfo.getJSONArray("industryIdentifiers").getJSONObject(0).getString("identifier") : "N/A";
                 String authorName = volumeInfo.has("authors") ? volumeInfo.getJSONArray("authors").getString(0) : "N/A";
+                String categories = volumeInfo.has("categories") ? volumeInfo.getJSONArray("categories").getString(0) : "N/A";
                 String description = volumeInfo.has("description") ? volumeInfo.getString("description") : null;
                 String imageUrl = volumeInfo.has("imageLinks") ? volumeInfo.getJSONObject("imageLinks").getString("thumbnail") : null;
                 String bookUrl = volumeInfo.has("infoLink") ? (String) volumeInfo.get("infoLink") : null;
-                Book temp = new ConcreteBook(title, authorName, isbn, description, imageUrl, bookUrl);
-                // books.add(temp.getTitle() + " by " + temp.getAuthor() + " ISBN: " + temp.getIsbn());
+                Book temp = new ConcreteBook(title, authorName, isbn, categories, description, imageUrl, bookUrl);
+
                 books.add(temp);
                 Book temp2 = new ConcreteBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-                BookDAO bookDAO = new BookDAO(connection.getConnection());
+                BookDAO bookDAO = BookDAO.getBookDAO();
                 bookDAO.addBook(temp2);
                 
             }

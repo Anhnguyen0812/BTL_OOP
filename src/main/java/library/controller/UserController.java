@@ -40,9 +40,9 @@ public class UserController{
 
     private final DBConnection connection = DBConnection.getInstance();
 
-    private final BookService bookService = new BookService(new BookDAO(connection.getConnection())); // Giả định đã có service xử lý logic mượn sách
+    private final BookService bookService = new BookService(BookDAO.getBookDAO()); // Giả định đã có service xử lý logic mượn sách
     private BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO(connection.getConnection());
-    private BookDAO bookDAO = new BookDAO(connection.getConnection());
+    private BookDAO bookDAO = BookDAO.getBookDAO();
     private BookController bookController = new BookController();
     private LocalDate today = LocalDate.now();
 

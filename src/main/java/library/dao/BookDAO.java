@@ -20,12 +20,17 @@ public class BookDAO {
     
     private Connection connection;
 
-    public BookDAO() {
+    private static BookDAO instance; 
+
+    private BookDAO() {
         this.connection = DBConnection.getInstance().getConnection();
     }
 
-    public BookDAO(Connection connection) {
-        this.connection = connection;
+    public static BookDAO getBookDAO() {
+        if (instance == null) {
+            instance = new BookDAO();
+        }
+        return instance;
     }
 
     public void updateBook(Book book) {

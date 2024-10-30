@@ -78,7 +78,7 @@ public class LoginController {
         }
         
     private User getUserbyname(String username) throws SQLException {
-        UserDAO userdao = new UserDAO();
+        UserDAO userdao = UserDAO.getUserDAO();
         return userdao.getUserByName(username);
     }
         @FXML

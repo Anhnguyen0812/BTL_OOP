@@ -70,12 +70,12 @@ public class DashController {
     private Pane return_Book, add_Book;
 
     private BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO();
-    private User user;
-    private HostServices hostServices;
+    protected User user;
+    protected HostServices hostServices;
 
     @FXML
     private Button Books, logOut;
-    private BookDAO bookDAO = new BookDAO();
+    private BookDAO bookDAO = BookDAO.getBookDAO();
     private final BookController bookController = new BookController();
 
     public DashController() {
@@ -86,7 +86,7 @@ public class DashController {
         this.hostServices = hostServices;
     }
 
-    private void showAlert(String title, String message) {
+    protected void showAlert(String title, String message) {
         // Implementation for showing an alert
         // For example, using JavaFX Alert:
         javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
@@ -226,14 +226,14 @@ public class DashController {
         Issue.setVisible(true);
     }
 
-    private void handleSearchBook() {
-            String bookTitle = title.getText();
-            String bookAuthor = author.getText();            
+    protected void handleSearchBook(String bookTitle, String bookAuthor, TableView<Book> ListBook) {
+        // String bookTitle = title.getText();
+        // String bookAuthor = author.getText();            
         // Xóa các mục cũ trong ListView
-        ListBooks.getItems().clear();
+        ListBook.getItems().clear();
         // Label loadingLabel = new Label("Loading...");
         // loadingLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #007bff;"); // Tùy chỉnh kiểu dáng nếu cần
-        ListBooks.getItems().add(new ConcreteBook(0, "Loading...", "", "", "", "", 0, "", false)); // Thêm thông báo loading vào danh sách
+        ListBook.getItems().add(new ConcreteBook(0, "Loading...", "", "", "", "", 0, "", false)); // Thêm thông báo loading vào danh sách
         // Tạo một task để tìm kiếm sách
         Task<ObservableList<Book>> task = new Task<ObservableList<Book>>() {
             @Override
@@ -255,8 +255,8 @@ public class DashController {
             protected void succeeded() {
                 super.succeeded();
                 Platform.runLater(() -> {
-                    ListBooks.getItems().clear(); // Xóa kết quả cũ
-                    ListBooks.getItems().addAll(getValue()); // Thêm kết quả mới
+                    ListBook.getItems().clear(); // Xóa kết quả cũ
+                    ListBook.getItems().addAll(getValue()); // Thêm kết quả mới
                 });
             }
             
@@ -269,7 +269,6 @@ public class DashController {
             };
         // Chạy task trong một luồng riêng
             new Thread(task).start();
-            // Xử lý sự kiện khi người dùng nhấp chuột vào kết quả tìm kiếm
         }
 
     public void logOut() {

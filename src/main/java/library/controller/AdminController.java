@@ -1,4 +1,3 @@
-
 package library.controller;
 
 import java.io.IOException;
@@ -8,21 +7,15 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
-import javafx.application.HostServices;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
+import javafx.application.HostServices;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -33,14 +26,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 import library.dao.UserDAO;
 import library.model.Book;
 import library.model.ConcreteBook;
 import library.model.User;
    
-public class AdminController extends UserController {
+public class AdminController extends DashController {
 
     // Các trường nhập liệu cho quản lý sách
     @FXML
@@ -59,7 +51,7 @@ public class AdminController extends UserController {
     @FXML
     private TableColumn<Book, String> isbnColumn;
     @FXML
-    private TableColumn<?, ?> availableColumn;
+    private TableColumn<Book, String> availableColumn;
     // Các trường nhập liệu cho quản lý người dùng
     @FXML
     private TextField usernameField;
@@ -89,7 +81,15 @@ public class AdminController extends UserController {
     @FXML
     private TextField searchAuthor;
     @FXML
-    private ListView<Book> searchResult;
+    private TableView<Book> searchResult;
+    @FXML
+    private TableColumn<Book, String> Title;
+    @FXML
+    private TableColumn<Book, String> Author;
+    @FXML
+    private TableColumn<Book, String> ISBN;
+    @FXML
+    private TableColumn<?, ?> Categories;
     @FXML
     private Label greetingLabel;
     @FXML
@@ -106,30 +106,14 @@ public class AdminController extends UserController {
     private StackPane contentArea;
     @FXML
     private ImageView logoytb, logofb;
-    private User user; 
+    // private User user; 
+    // private HostServices hostServices;
     private final BookController bookController = new BookController();
-    private HostServices hostServices;
- 
     private final ObservableList<Book> bookList = FXCollections.observableArrayList();
     private ObservableList<User> userList = FXCollections.observableArrayList();
-
-    public AdminController() {
-        super(null, null); // Call the UserController constructor with default values
-    }
-    
-    public void setUser(User user) {
-        this.user = user;
-    }
     
     public AdminController(User user, HostServices hostServices) {
         super(user, hostServices); // Call the UserController constructor with user and hostServices
-        this.user = user;
-        this.hostServices = hostServices;
-    }
-    
-    public AdminController(User user) {
-        super(user, null); // Call the UserController constructor with user and default hostServices
-        this.user = user;
     }
 
     // Method to show the Search Book pane
@@ -180,10 +164,10 @@ public class AdminController extends UserController {
         logofb.setImage(fb);
         logofb.setOnMouseClicked(this::handleFaceBookClick);
 
-        logoutButton.setOnAction(event -> handleLogout());
+        logoutButton.setOnAction(event -> logOut());
         searchBookButton.setOnAction(event -> {
             try {
-                handleSearchBook();
+                handleSearchBook(searchBook.getText(),searchAuthor.getText(), searchResult);
             } catch (Exception e) {
                 showAlert("Error", "An error occurred while searching for books.");
             }
@@ -208,6 +192,22 @@ public class AdminController extends UserController {
         } catch (SQLException e) {
             showAlert("Database Error", "Could not load books from the database.");
         }
+        
+        searchResult.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) { // Kiểm tra nhấp đúp
+                Book selectedBook = searchResult.getSelectionModel().getSelectedItem();
+                if (selectedBook != null) {
+                    BookDetailController detailController = new BookDetailController();
+                    // detailController.showBookDetails(selectedBook); 
+                    detailBook.getChildren().clear();
+                    try {
+                        detailBook.getChildren().add(detailController.asParent(selectedBook));
+                    } catch (IOException e) {
+                        showAlert("Error", "Could not load book details.");
+                    }
+                }
+            }
+        });      
 
         // Thiết lập cột cho bảng sách
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -231,94 +231,16 @@ public class AdminController extends UserController {
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         roleColumn.setCellValueFactory(new PropertyValueFactory<>("role"));
         userTable.setItems(userList);
+
+        Title.setCellValueFactory(new PropertyValueFactory<>("title"));
+        Author.setCellValueFactory(new PropertyValueFactory<>("author"));
+        ISBN.setCellValueFactory(new PropertyValueFactory<>("isbn"));
+        Categories.setCellValueFactory(new PropertyValueFactory<>("categories")); 
     }
     // Xử lý sự kiện đăng xuất
     @FXML
     private Button logoutButton; // Add a button for logout
-    
-    @FXML
-    private void handleLogout() {
-        // Thực hiện logic đăng xuất (ví dụ quay lại giao diện đăng nhập)
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/library/login.fxml"));
-            Stage stage = (Stage) bookTable.getScene().getWindow();
-            stage.setScene(new Scene(root, 500, 400));
-            stage.show();
-        } catch (IOException | RuntimeException e) {
-        showAlert("Error", "Could not load login interface.");
-        }
-    }
-    // Xử lý sự kiện tìm kiếm sách
-    /**
-     * @throws IOException
-     * @throws SQLException
-     * @throws InterruptedException
-     */
-    @FXML
-    private void handleSearchBook() {
-        String title = searchBook.getText();
-        String author = searchAuthor.getText();            
-        // Xóa các mục cũ trong ListView
-        searchResult.getItems().clear();
-        Label loadingLabel = new Label("Loading...");
-        loadingLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #007bff;"); // Tùy chỉnh kiểu dáng nếu cần
-        searchResult.getItems().add(new ConcreteBook(0, "Loading...", "", "", "", "", 0, "", false)); // Thêm thông báo loading vào danh sách
-        // Tạo một task để tìm kiếm sách
-        Task<ObservableList<Book>> task = new Task<ObservableList<Book>>() {
-            @Override
-            protected ObservableList<Book> call() throws Exception {
-                ObservableList<Book> foundBooks = FXCollections.observableArrayList();
-                    // Tìm kiếm theo tiêu đề
-                    if (!title.isEmpty()) {
-                        foundBooks.addAll(bookController.searchBook(title));
-                    }           
-                    // Tìm kiếm theo tác giả
-                    if (!author.isEmpty()) {
-                        foundBooks.addAll(bookController.searchBook(author));
-                    }
-                    Thread.sleep(500); // Giả lập việc tìm kiếm mất thời gianThrea
-                return foundBooks;
-            }
 
-            @Override
-            protected void succeeded() {
-                super.succeeded();
-                Platform.runLater(() -> {
-                    searchResult.getItems().clear(); // Xóa kết quả cũ
-                    searchResult.getItems().addAll(getValue()); // Thêm kết quả mới
-                });
-            }
-            
-            @Override
-            protected void failed() {
-                super.failed();
-                // Xử lý ngoại lệ nếu có
-                searchResult.setItems(FXCollections.observableArrayList()); // Hoặc cập nhật một thông báo lỗi
-                }
-            };
-            
-        // Chạy task trong một luồng riêng
-            new Thread(task).start();
-            
-            // Xử lý sự kiện khi người dùng nhấp chuột vào kết quả tìm kiếm
-            searchResult.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 2) { // Kiểm tra nhấp đúp
-                    Book selectedBook = searchResult.getSelectionModel().getSelectedItem();
-                    if (selectedBook != null) {
-                        BookDetailController detailController = new BookDetailController();
-                        // detailController.showBookDetails(selectedBook);
-                        
-                        detailBook.getChildren().clear();
-                        try {
-                            detailBook.getChildren().add(detailController.asParent(selectedBook));
-                        } catch (IOException e) {
-                            showAlert("Error", "Could not load book details.");
-                        }
-                    }
-                }
-            });      
-        }
-    // Xử lý thêm sách
     @FXML
     private void handleAddBook() {
         String title = bookTitleField.getText();
@@ -364,7 +286,7 @@ public class AdminController extends UserController {
         
         // Thêm người dùng vào danh sách
         User newUser = new User(0, username, email, password, role, getSalt());
-        UserDAO userDAO = new UserDAO();
+        UserDAO userDAO = UserDAO.getUserDAO();
         userDAO.addUser(newUser);
 
         userList.add(newUser);
@@ -376,12 +298,6 @@ public class AdminController extends UserController {
         }
        
     // Hiển thị thông báo lỗi hoặc thành công
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 
     public ObservableList<User> getUserList() throws SQLException {
         return UserDAO.getAllUsers();
