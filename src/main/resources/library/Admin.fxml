@@ -26,7 +26,7 @@
                 <Label fx:id="navManageBooks" onMouseClicked="#showManageBooksPane" styleClass="nav-label" text="Manage Books" />
                 <Label fx:id="navManageUsers" onMouseClicked="#showManageUsersPane" prefWidth="121.0" styleClass="nav-label" text="Manage Users" />
                 <ImageView fx:id="logoytb" fitHeight="60.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true" />
-                <ImageView fitHeight="60.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true" />
+                <ImageView fx:id="logofb" fitHeight="60.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true" />
             </VBox>
         </Pane>
 

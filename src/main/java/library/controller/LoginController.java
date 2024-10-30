@@ -1,19 +1,19 @@
 package library.controller;
 
 import java.io.IOException;
-    import java.security.NoSuchAlgorithmException;
-    import java.sql.SQLException;
+import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 
 import javafx.application.HostServices;
 import javafx.fxml.FXML;
-    import javafx.fxml.FXMLLoader;
-    import javafx.scene.Parent;
-    import javafx.scene.Scene;
-    import javafx.scene.control.Button;
-    import javafx.scene.control.PasswordField;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-    import library.AppLaunch;
+import library.AppLaunch;
 import library.dao.UserDAO;
 import library.model.User;
 import library.service.UserService;
@@ -21,10 +21,7 @@ import library.service.UserService;
 public class LoginController {
 
     // Method to get user by username and password
-    private User getUserbyname(String username) throws SQLException {
-        UserDAO userdao = new UserDAO();
-        return userdao.getUserByName(username);
-    }
+    
  
         @FXML
         private Button LoginButton;
@@ -79,7 +76,11 @@ public class LoginController {
                 hide.setText("-");
             }
         }
-    
+        
+    private User getUserbyname(String username) throws SQLException {
+        UserDAO userdao = new UserDAO();
+        return userdao.getUserByName(username);
+    }
         @FXML
         public void MoveToAccount() throws SQLException, NoSuchAlgorithmException {
             System.out.println("Username: " + Username.getText() + ", Password: " + Pass.getText());
@@ -128,20 +129,6 @@ public class LoginController {
                     }
             } else {
                 System.out.println("Login failed");
-                
-                    // Display error message for 5 seconds
-                // try {
-                //     FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Admin.fxml"));
-                //     Parent root = loader.load();
-                //     Stage stage = (Stage) LoginButton.getScene().getWindow();
-                //     stage.setScene(new Scene(root, 960, 720));
-                //     stage.setTitle("Library Management System");
-                //     stage.centerOnScreen();
-                //     stage.show();
-                // } catch (IOException e) {
-                //     e.printStackTrace();        
-                // }
-                
             }
         }
 

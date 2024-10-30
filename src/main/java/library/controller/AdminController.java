@@ -105,20 +105,11 @@ public class AdminController extends UserController {
     @FXML
     private StackPane contentArea;
     @FXML
-    private ImageView logoytb;
+    private ImageView logoytb, logofb;
     private User user; 
     private final BookController bookController = new BookController();
     private HostServices hostServices;
-        // @Override
-        // public void showDocument(String url) {
-        //     try {
-        //         URI uri = new URI(url);
-        //         java.awt.Desktop.getDesktop().browse(uri);
-        //     } catch (Exception e) {
-        //         e.printStackTrace();
-        //     }
-        // }
-       // Danh sách Observable để lưu trữ sách và người dùng
+ 
     private final ObservableList<Book> bookList = FXCollections.observableArrayList();
     private ObservableList<User> userList = FXCollections.observableArrayList();
 
@@ -182,8 +173,12 @@ public class AdminController extends UserController {
     @Override
     public void initialize() {
         Image ytb = new Image("/imgs/logoytb.png");
+        Image fb = new Image("/imgs/logofb.png");
         logoytb.setImage(ytb);
         logoytb.setOnMouseClicked(this::handleYouTubeClick);
+
+        logofb.setImage(fb);
+        logofb.setOnMouseClicked(this::handleFaceBookClick);
 
         logoutButton.setOnAction(event -> handleLogout());
         searchBookButton.setOnAction(event -> {
@@ -395,6 +390,16 @@ public class AdminController extends UserController {
     private void handleYouTubeClick(MouseEvent event) {
         try {
             String url = "https://www.youtube.com/@cristiano";     
+            // Mở link bằng trình duyệt mặc định
+            hostServices.showDocument(url);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleFaceBookClick(MouseEvent event) {
+        try {
+            String url = "https://www.instagram.com/cristiano/";     
             // Mở link bằng trình duyệt mặc định
             hostServices.showDocument(url);
         } catch (Exception e) {

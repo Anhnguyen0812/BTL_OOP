@@ -6,7 +6,6 @@ import java.sql.SQLException;
 
 import javafx.application.HostServices;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;

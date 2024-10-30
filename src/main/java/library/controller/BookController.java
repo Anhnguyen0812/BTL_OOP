@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -12,7 +11,6 @@ import org.json.JSONObject;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -20,7 +18,6 @@ import library.api.GoogleBooksAPI;
 import library.dao.BookDAO;
 import library.model.Book;
 import library.model.ConcreteBook;
-import library.model.ReferenceBook;
 import library.service.BookService;
 import library.util.DBConnection;
 
@@ -36,53 +33,17 @@ public class BookController {
     @FXML
     private TextArea searchResultsArea;
 
-    private BookService bookService;
-    private GoogleBooksAPI googleBooksAPI;
+    private final BookService bookService;
+    private final GoogleBooksAPI googleBooksAPI;
 
     // private ObservableList<Book> books = FXCollections.observableArrayList();
 
-    private DBConnection connection = DBConnection.getInstance();
+    private final DBConnection connection = DBConnection.getInstance();
 
     public BookController() {
         
         this.bookService = new BookService(new BookDAO(connection.getConnection()));
         this.googleBooksAPI = new GoogleBooksAPI();
-    }
-
-    @FXML
-    public void addBook() {
-        String title = bookTitleField.getText();
-        String author = bookAuthorField.getText();
-        String isbn = bookISBNField.getText();
-        bookService.addBook(title, author, isbn);
-        updateBookList();
-    }
-
-    @FXML
-    public void updateBook() {
-        String selectedBook = bookListView.getSelectionModel().getSelectedItem();
-        if (selectedBook != null) {
-            int bookId = Integer.parseInt(selectedBook.split(" ")[0]); // Giả sử ID là số đầu tiên trong chuỗi
-            String title = bookTitleField.getText();
-            String author = bookAuthorField.getText();
-            String isbn = bookISBNField.getText();
-            bookService.updateBook(bookId, title, author, isbn);
-            updateBookList();
-        } else {
-            showAlert("Please select a book to update.");
-        }
-    }
-
-    @FXML
-    public void deleteBook() throws SQLException {
-        String selectedBook = bookListView.getSelectionModel().getSelectedItem();
-        if (selectedBook != null) {
-            int bookId = Integer.parseInt(selectedBook.split(" ")[0]); // Giả sử ID là số đầu tiên trong chuỗi
-            bookService.deleteBook(bookId, connection.getConnection());
-            updateBookList();
-        } else {
-            showAlert("Please select a book to delete.");
-        }
     }
 
     public ObservableList<Book> searchBook(String query) throws IOException, SQLException {
@@ -127,24 +88,9 @@ public class BookController {
         Statement stmt = connection.getConnection().createStatement();
         ResultSet rs = stmt.executeQuery(query);
         while (rs.next()) {
-            books.add(new ReferenceBook(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getString("isbn"), rs.getBoolean("available")));
+            books.add(new ConcreteBook(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getString("isbn"), rs.getBoolean("available"), 
+            rs.getString("description"), rs.getString("imageUrl"), rs.getString("QRcode")));
         }
         return books;
-    }
-
-    private void updateBookList() {
-        List<Book> books = bookService.getAllBooks();
-        bookListView.getItems().clear();
-        for (Book book : books) {
-            bookListView.getItems().add(book.getId() + " " + book.getTitle());
-        }
-    }
-
-    private void showAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }

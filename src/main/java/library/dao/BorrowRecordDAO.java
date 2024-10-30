@@ -41,6 +41,7 @@ public class BorrowRecordDAO {
                 stmt.setDate(3, java.sql.Date.valueOf(record.getBorrowDate()));
                 stmt.setDate(4, record.getReturnDate() != null ? java.sql.Date.valueOf(record.getReturnDate()) : null);
                 stmt.executeUpdate();
+                bookDAO.borrowBook(record.getBook());
             } catch (SQLException e) {
                 Logger.getLogger(BorrowRecordDAO.class.getName()).log(Level.SEVERE, null, e);
                 e.printStackTrace();
@@ -81,6 +82,7 @@ public class BorrowRecordDAO {
             try (PreparedStatement stmt = connection.prepareStatement(query)) {
                 stmt.setInt(1, book.getId());
                 stmt.executeUpdate();
+                bookDAO.returnBook(book);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
