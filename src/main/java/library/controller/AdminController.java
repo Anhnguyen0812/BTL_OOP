@@ -7,13 +7,17 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
+import java.util.concurrent.CompletableFuture;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.HostServices;
+import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -25,10 +29,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import library.dao.UserDAO;
 import library.model.Book;
+import library.model.BorrowRecord;
 import library.model.ConcreteBook;
 import library.model.User;
    
@@ -64,6 +68,7 @@ public class AdminController extends DashController {
     // Bảng hiển thị danh sách người dùng       
     @FXML
     private Button searchBookButton; // Add a button for search
+
     @FXML
     private TableColumn<?, ?> idColumn;
     @FXML
@@ -76,8 +81,9 @@ public class AdminController extends DashController {
     private TableColumn<User, String> roleColumn;       
     @FXML
     private TextField searchBook;  
+    
     @FXML
-    private VBox detailBook;       
+    private Pane detailBook;       
     @FXML
     private TextField searchAuthor;
     @FXML
@@ -90,6 +96,14 @@ public class AdminController extends DashController {
     private TableColumn<Book, String> ISBN;
     @FXML
     private TableColumn<?, ?> Categories;
+
+    @FXML
+    private TableView<BorrowRecord> borrowRecord;
+    @FXML
+    protected TableColumn<BorrowRecord, Integer> Id_User;
+    @FXML
+    protected TableColumn<BorrowRecord, String> Username;
+
     @FXML
     private Label greetingLabel;
     @FXML
@@ -99,7 +113,7 @@ public class AdminController extends DashController {
     @FXML
     private Pane manageBooksPane;
     @FXML
-    private Pane manageUsersPane;
+    private Pane manageUsersPane, ManagerBorrowBook, infoBook, infoBorrow;
     @FXML
     private Pane home;
     @FXML
@@ -131,16 +145,25 @@ public class AdminController extends DashController {
 
     // Method to show the Manage Books pane
     @FXML
-    public void showManageBooksPane() {
+    public void showManageBooksPane() throws SQLException {
         hideAllPanes();  // Hide all panes
+        bookTable.setItems(bookController.getAllBooks());
         manageBooksPane.setVisible(true);  // Show Manage Books Pane
     }
 
     // Method to show the Manage Users pane
     @FXML
-    public void showManageUsersPane() {
+    public void showManageUsersPane() throws SQLException {
         hideAllPanes();  // Hide all panes
+        userTable.setItems(getUserList());
         manageUsersPane.setVisible(true);  // Show Manage Users Pane
+    }
+
+    @FXML
+    public void showManagerBorrowBook() {
+        hideAllPanes();  // Hide all panes
+        borrowRecord.setItems(borrowRecordDAO.getAllBorrowRecords());
+        ManagerBorrowBook.setVisible(true);  // Show Manage Users Pane
     }
 
     // Hide all panes
@@ -150,6 +173,8 @@ public class AdminController extends DashController {
         manageBooksPane.setVisible(false);
         manageUsersPane.setVisible(false);
         logoytb.setVisible(true);
+        logofb.setVisible(true);
+        ManagerBorrowBook.setVisible(false);
     }
 
     // Phương thức khởi tạo, thiết lập các cột cho bảng sách và người dùng     
@@ -197,17 +222,73 @@ public class AdminController extends DashController {
             if (event.getClickCount() == 2) { // Kiểm tra nhấp đúp
                 Book selectedBook = searchResult.getSelectionModel().getSelectedItem();
                 if (selectedBook != null) {
-                    BookDetailController detailController = new BookDetailController();
-                    // detailController.showBookDetails(selectedBook); 
                     detailBook.getChildren().clear();
-                    try {
-                        detailBook.getChildren().add(detailController.asParent(selectedBook));
-                    } catch (IOException e) {
-                        showAlert("Error", "Could not load book details.");
-                    }
+                    
+                    // Sử dụng CompletableFuture để tải dữ liệu trong một luồng nền
+                    CompletableFuture.runAsync(() -> {
+                        BookDetailController detailController = new BookDetailController();
+                        try {
+                            Parent bookDetailParent = detailController.asParent(selectedBook);
+
+                            // Cập nhật giao diện trong luồng JavaFX
+                            Platform.runLater(() -> {
+                                detailBook.getChildren().add(bookDetailParent);
+                            });
+                        } catch (IOException e) {
+                            Platform.runLater(() -> showAlert("Error", "Could not load book details."));
+                        }
+                    });
                 }
             }
-        });      
+        });
+
+        borrowRecord.setOnMouseClicked(event -> {
+            // if (event.getClickCount() == 2) { // Kiểm tra nhấp đúp
+            //     BorrowRecord selectedBook = borrowRecord.getSelectionModel().getSelectedItem();
+            //     if (selectedBook != null) {
+            //         infoBook.getChildren().clear();
+                    
+            //         // Sử dụng CompletableFuture để tải dữ liệu trong một luồng nền
+            //         CompletableFuture.runAsync(() -> {
+            //             BookDetailController detailController = new BookDetailController();
+            //             try {
+            //                 // Parent bookDetailParent = detailController.asParent(selectedBook);
+
+            //                 // Cập nhật giao diện trong luồng JavaFX
+            //                 Platform.runLater(() -> {
+            //                     // infoBook.getChildren().add(bookDetailParent);
+            //                 });
+            //             } catch (IOException e) {
+            //                 Platform.runLater(() -> showAlert("Error", "Could not load book details."));
+            //             }
+            //         });
+            //     }
+            // }
+        });
+
+        bookTable.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) { // Kiểm tra nhấp đúp
+                Book selectedBook = bookTable.getSelectionModel().getSelectedItem();
+                if (selectedBook != null) {
+                    infoBook.getChildren().clear();
+                    
+                    // Sử dụng CompletableFuture để tải dữ liệu trong một luồng nền
+                    CompletableFuture.runAsync(() -> {
+                        BookDetailController detailController = new BookDetailController();
+                        try {
+                            Parent bookDetailParent = detailController.infoBook(selectedBook, user);
+
+                            // Cập nhật giao diện trong luồng JavaFX
+                            Platform.runLater(() -> {
+                                infoBook.getChildren().add(bookDetailParent);
+                            });
+                        } catch (IOException e) {
+                            Platform.runLater(() -> showAlert("Error", "Could not load book details."));
+                        }
+                    });
+                }
+            }
+        });
 
         // Thiết lập cột cho bảng sách
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -216,15 +297,15 @@ public class AdminController extends DashController {
         availableColumn.setCellValueFactory(new PropertyValueFactory<>("available")); 
         bookTable.setItems(bookList);
 
-        bookTable.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) { // Kiểm tra nhấp đúp
-                Book selectedBook = bookTable.getSelectionModel().getSelectedItem();
-                if (selectedBook != null) {
-                    BookDetailController detailController = new BookDetailController();
-                    detailController.showBookDetails(selectedBook);
-                }
-            }
-        });
+        // bookTable.setOnMouseClicked(event -> {
+        //     if (event.getClickCount() == 2) { // Kiểm tra nhấp đúp
+        //         Book selectedBook = bookTable.getSelectionModel().getSelectedItem();
+        //         if (selectedBook != null) {
+        //             BookDetailController detailController = new BookDetailController();
+        //             detailController.showBookDetails(selectedBook);
+        //         }
+        //     }
+        // });
         // Thiết lập cột cho bảng người dùng
         usernameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
@@ -235,7 +316,16 @@ public class AdminController extends DashController {
         Title.setCellValueFactory(new PropertyValueFactory<>("title"));
         Author.setCellValueFactory(new PropertyValueFactory<>("author"));
         ISBN.setCellValueFactory(new PropertyValueFactory<>("isbn"));
-        Categories.setCellValueFactory(new PropertyValueFactory<>("categories")); 
+        Categories.setCellValueFactory(new PropertyValueFactory<>("categories"));
+
+        // Bang thong tin sach muon
+        Id_Book.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getBook().getId()));
+        Title_Book.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getBook().getTitle())));
+        Id_User.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getUser().getId()));
+        Username.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getUser().getName())));
+        ngaymuon.setCellValueFactory(new PropertyValueFactory<>("borrowDate"));
+        ngaytra.setCellValueFactory(new PropertyValueFactory<>("returnDate"));
+        borrowRecord.setItems(borrowRecordDAO.getAllBorrowRecords());
     }
     // Xử lý sự kiện đăng xuất
     @FXML

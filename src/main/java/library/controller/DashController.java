@@ -52,13 +52,13 @@ public class DashController {
     private TableColumn<?, ?> Available;
 
    @FXML
-    private TableColumn<BorrowRecord, Integer> Id_Book;
+    protected TableColumn<BorrowRecord, Integer> Id_Book;
     @FXML
-    private TableColumn<BorrowRecord, String> Title_Book;
+    protected TableColumn<BorrowRecord, String> Title_Book;
     @FXML
-    private TableColumn<BorrowRecord, Date> ngaymuon;
+    protected TableColumn<BorrowRecord, Date> ngaymuon;
     @FXML
-    private TableColumn<BorrowRecord, Date> ngaytra;
+    protected TableColumn<BorrowRecord, Date> ngaytra;
 
     @FXML
     private Button searchLib, searchGG;
@@ -69,14 +69,14 @@ public class DashController {
     @FXML
     private Pane return_Book, add_Book;
 
-    private BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO();
+    protected BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO();
     protected User user;
     protected HostServices hostServices;
 
     @FXML
     private Button Books, logOut;
     private BookDAO bookDAO = BookDAO.getBookDAO();
-    private final BookController bookController = new BookController();
+    protected final BookController bookController = new BookController();
 
     public DashController() {
     }
@@ -187,7 +187,7 @@ public class DashController {
                 BookDetailController detailController = new BookDetailController();
                 return_Book.getChildren().clear();
                 try {
-                    return_Book.getChildren().add(detailController.returnBookDetail(selectedBook.getBook()));
+                    return_Book.getChildren().add(detailController.returnBookDetail(selectedBook.getBook(), user));
                 } catch (IOException e) {
                     showAlert("Error", "Could not load book details.");
                 }

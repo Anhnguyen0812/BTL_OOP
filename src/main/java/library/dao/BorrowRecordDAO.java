@@ -5,8 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate; // Add this import
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,8 +47,8 @@ public class BorrowRecordDAO {
         }
     
         // Lấy danh sách bản ghi mượn sách
-        public List<BorrowRecord> getAllBorrowRecords() {
-            List<BorrowRecord> records = new ArrayList<>();
+        public ObservableList<BorrowRecord> getAllBorrowRecords() {
+            ObservableList<BorrowRecord> records = FXCollections.observableArrayList();
             String query = "SELECT * FROM borrow_records";
             try (PreparedStatement stmt = connection.prepareStatement(query);
                  ResultSet rs = stmt.executeQuery()) {
@@ -99,10 +97,8 @@ public class BorrowRecordDAO {
                     int bookId = rs.getInt("book_id");
                     LocalDate borrowDate = rs.getDate("borrow_date").toLocalDate();
                     LocalDate returnDate = rs.getDate("return_date") != null ? rs.getDate("return_date").toLocalDate() : null;
-    
                     User user = new UserService(UserDAO.getUserDAO()).getUserById(userId);
                     Book book = new BookService(bookDAO).getBookById(bookId);
-                    
                     return new BorrowRecord(recordId, user, book, borrowDate, returnDate);
                 }
             } catch (SQLException e) {
