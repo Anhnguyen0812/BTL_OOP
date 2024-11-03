@@ -2,7 +2,6 @@
 /Users/hoangyen/Desktop/librarymanager/src/main/java/library/service/BookService.java
 /Users/hoangyen/Desktop/librarymanager/src/main/java/library/model/Member.java
 /Users/hoangyen/Desktop/librarymanager/src/main/java/library/controller/UserController.java
-/Users/hoangyen/Desktop/librarymanager/src/main/java/booksTable/addAll.java
 /Users/hoangyen/Desktop/librarymanager/src/main/java/library/controller/AdminController.java
 /Users/hoangyen/Desktop/librarymanager/src/main/java/library/model/BorrowRecord.java
 /Users/hoangyen/Desktop/librarymanager/src/main/java/library/model/EBook.java
@@ -13,10 +12,10 @@
 /Users/hoangyen/Desktop/librarymanager/src/main/java/library/api/GoogleBooksAPI.java
 /Users/hoangyen/Desktop/librarymanager/src/main/java/library/dao/BorrowRecordDAO.java
 /Users/hoangyen/Desktop/librarymanager/src/main/java/library/controller/BookDetailController.java
+/Users/hoangyen/Desktop/librarymanager/src/main/java/library/controller/DashController.java
 /Users/hoangyen/Desktop/librarymanager/src/main/java/library/model/User.java
 /Users/hoangyen/Desktop/librarymanager/src/main/java/library/controller/LibraryController.java
 /Users/hoangyen/Desktop/librarymanager/src/main/java/library/controller/BookController.java
-/Users/hoangyen/Desktop/librarymanager/src/main/java/library/model/ConcreteUser.java
 /Users/hoangyen/Desktop/librarymanager/src/main/java/library/service/BorrowService.java
 /Users/hoangyen/Desktop/librarymanager/src/main/java/library/dao/UserDAO.java
 /Users/hoangyen/Desktop/librarymanager/src/main/java/library/model/ReferenceBook.java

@@ -72,6 +72,7 @@
                         </HBox>
                         <TableView fx:id="bookTable">
                             <columns>
+                                <TableColumn fx:id="idC" text="Id" />
                                 <TableColumn fx:id="titleColumn" text="Title" />
                                 <TableColumn fx:id="authorColumn" text="Author" />
                                 <TableColumn fx:id="isbnColumn" text="ISBN" />
