@@ -10,12 +10,13 @@
    <children>
       <Pane prefHeight="243.0" prefWidth="1109.0">
          <children>
-            <ImageView fx:id="bookImageView" fitHeight="225.0" fitWidth="176.0" layoutX="8.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true" />
-            <Label fx:id="titleLabel" layoutX="202.0" layoutY="14.0" prefHeight="42.0" prefWidth="887.0" text="Label" />
+            <ImageView fx:id="bookImageView" fitHeight="191.0" fitWidth="174.0" layoutX="8.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true" />
+            <Label fx:id="titleLabel" layoutX="202.0" layoutY="14.0" prefHeight="42.0" prefWidth="664.0" text="Label" />
             <Label fx:id="authorLabel" layoutX="202.0" layoutY="56.0" prefHeight="36.0" prefWidth="472.0" text="Label" />
-            <Label fx:id="descriptionLabel" layoutX="202.0" layoutY="95.0" prefHeight="42.0" prefWidth="887.0" text="Label" wrapText="true" />
-            <ImageView fx:id="qrCodeImageView" fitHeight="92.0" fitWidth="118.0" layoutX="202.0" layoutY="142.0" pickOnBounds="true" preserveRatio="true" />
+            <Label fx:id="descriptionLabel" layoutX="202.0" layoutY="95.0" prefHeight="76.0" prefWidth="887.0" text="Label" wrapText="true" />
+            <ImageView fx:id="qrCodeImageView" fitHeight="90.0" fitWidth="101.0" layoutX="945.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
             <Button fx:id="addbook" layoutX="934.0" layoutY="188.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="129.0" text="muon sach" />
+            <Label fx:id="category" layoutX="12.0" layoutY="202.0" prefHeight="36.0" prefWidth="156.0" text="Label" />
          </children>
       </Pane>
    </children>

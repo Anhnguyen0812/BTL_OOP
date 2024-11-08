@@ -10,12 +10,13 @@
    <children>
       <Pane layoutY="-3.0" prefHeight="281.0" prefWidth="721.0">
          <children>
-            <ImageView fx:id="bookImageView" fitHeight="221.0" fitWidth="172.0" layoutX="14.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true" />
-            <Label fx:id="titleLabel" layoutX="200.0" layoutY="14.0" prefHeight="32.0" prefWidth="385.0" text="Label" />
+            <ImageView fx:id="bookImageView" fitHeight="213.0" fitWidth="168.0" layoutX="14.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true" />
+            <Label fx:id="titleLabel" layoutX="200.0" layoutY="14.0" prefHeight="32.0" prefWidth="356.0" text="Label" />
             <Label fx:id="authorLabel" layoutX="200.0" layoutY="51.0" prefHeight="32.0" prefWidth="407.0" text="Label" />
-            <Label fx:id="descriptionLabel" layoutX="202.0" layoutY="86.0" prefHeight="72.0" prefWidth="419.0" text="Label" wrapText="true" />
-            <ImageView fx:id="qrCodeImageView" fitHeight="72.0" fitWidth="77.0" layoutX="223.0" layoutY="180.0" pickOnBounds="true" preserveRatio="true" />
-            <Button fx:id="delete" layoutX="540.0" layoutY="216.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="121.0" text="Delete" />
+            <Label fx:id="descriptionLabel" layoutX="202.0" layoutY="86.0" prefHeight="86.0" prefWidth="514.0" text="Label" wrapText="true" />
+            <ImageView fx:id="qrCodeImageView" fitHeight="72.0" fitWidth="77.0" layoutX="601.0" layoutY="23.0" pickOnBounds="true" preserveRatio="true" />
+            <Button fx:id="delete" layoutX="540.0" layoutY="232.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="121.0" text="Delete" />
+            <Label fx:id="category" layoutX="21.0" layoutY="231.0" prefHeight="32.0" prefWidth="147.0" text="Categories" />
          </children>
       </Pane>
    </children>

@@ -1,9 +1,9 @@
 package library.model;
 
-public class TechnologyBook extends Book {
-    private final String technologyCategories = "Technology";
+public class HistoryBook extends Book{
+    private final String historyCategory = "History";
 
-    public TechnologyBook(
+    public HistoryBook(
         int id,
         String title,
         String author,
@@ -13,8 +13,8 @@ public class TechnologyBook extends Book {
         boolean availability) {
         super(id, title, author, isbn, availability, description, imageUrl);
     }
-
-    public TechnologyBook(
+    
+    public HistoryBook(
         int id,
         String title,
         String author,
@@ -22,8 +22,8 @@ public class TechnologyBook extends Book {
         boolean available) {
         super(id, title, author, isbn, available);
     }
-
-    public TechnologyBook(
+    
+    public HistoryBook(
         String title,
         String author,
         String isbn,
@@ -33,8 +33,8 @@ public class TechnologyBook extends Book {
         String QRcode) {
         super(title, author, isbn, categories, description, imageUrl, QRcode);
     }
-
-    public TechnologyBook(
+    
+    public HistoryBook(
         int id,
         String title,
         String author,
@@ -45,8 +45,8 @@ public class TechnologyBook extends Book {
         String QRcode) {
         super(id, title, author, isbn, available, description, imageUrl, QRcode);
     }
-
-    public TechnologyBook(
+    
+    public HistoryBook(
         int id,
         String title,
         String author,
@@ -61,6 +61,6 @@ public class TechnologyBook extends Book {
 
     @Override
     public String getCategories() {
-        return technologyCategories;
+        return historyCategory;
     }
 }

@@ -14,6 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -52,6 +53,8 @@ public class DashController {
   @FXML private TableView<BorrowRecord> List_Borrow;
   @FXML private Pane return_Book, add_Book;
 
+  @FXML protected ProgressIndicator loading;
+
   protected BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO();
   protected User user;
   protected HostServices hostServices;
@@ -85,62 +88,26 @@ public class DashController {
     BorrowBooks.setVisible(false);
     Issue.setVisible(false);
 
-    // searchGG.setOnAction(e -> {
-    //     handleSearchBook();
-    // });
-
     Id.setCellValueFactory(new PropertyValueFactory<>("id"));
     Title.setCellValueFactory(new PropertyValueFactory<>("title"));
     Author.setCellValueFactory(new PropertyValueFactory<>("author"));
     ISBN.setCellValueFactory(new PropertyValueFactory<>("isbn"));
     Available.setCellValueFactory(new PropertyValueFactory<>("available"));
 
+    searchGG.setOnAction(
+        e -> {
+          String bookTitle = title.getText();
+          String bookAuthor = author.getText();
+          loading.setVisible(true);
+          handleSearchBookGG(bookTitle, bookAuthor, ListBooks);
+        });
+
     searchLib.setOnAction(
         e -> {
           String bookTitle = title.getText();
-          // String bookAuthor = author.getText();
-          int bookId = isbn.getText().isEmpty() ? 0 : Integer.parseInt(isbn.getText());
-
-          // Xóa các mục cũ trong ListView
-          ListBooks.getItems().clear();
-          Task<ObservableList<Book>> task =
-              new Task<ObservableList<Book>>() {
-                @Override
-                protected ObservableList<Book> call() throws Exception {
-                  ObservableList<Book> foundBooks = FXCollections.observableArrayList();
-                  // Tìm kiếm theo tiêu đề
-                  if (!bookTitle.isEmpty()) {
-                    foundBooks.addAll(bookDAO.getBookByTitle(bookTitle));
-                  }
-                  // Tìm kiếm theo tác giả
-                  if (bookId > 0) {
-                    foundBooks.addAll(bookDAO.getBookById(bookId));
-                  }
-                  Thread.sleep(500); // Giả lập việc tìm kiếm mất thời gianThrea
-                  return foundBooks;
-                }
-
-                @Override
-                protected void succeeded() {
-                  super.succeeded();
-                  Platform.runLater(
-                      () -> {
-                        ListBooks.getItems().clear(); // Xóa kết quả cũ
-                        ListBooks.getItems().addAll(getValue()); // Thêm kết quả mới
-                      });
-                }
-
-                @Override
-                protected void failed() {
-                  super.failed();
-                  // Xử lý ngoại lệ nếu có
-                  ListBooks.setItems(
-                      FXCollections.observableArrayList()); // Hoặc cập nhật một thông báo lỗi
-                }
-              };
-
-          // Chạy task trong một luồng riêng
-          new Thread(task).start();
+          String bookAuthor = author.getText();
+          loading.setVisible(true);
+          handleSearchBookLib(bookTitle, bookAuthor, ListBooks);
         });
     // <TableColumn fx:id="Id" prefWidth="84.0" text="STT" />
     // Id.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -221,15 +188,51 @@ public class DashController {
     Issue.setVisible(true);
   }
 
-  protected void handleSearchBook(String bookTitle, String bookAuthor, TableView<Book> ListBook) {
-    // String bookTitle = title.getText();
-    // String bookAuthor = author.getText();
-    // Xóa các mục cũ trong ListView
+  protected void handleSearchBookLib(String bookTitle, String bookAuthor, TableView<Book> ListBook) {
     ListBook.getItems().clear();
-    // Label loadingLabel = new Label("Loading...");
-    // loadingLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #007bff;"); // Tùy chỉnh kiểu dáng
-    // nếu cần
-    // Tạo một task để tìm kiếm sách
+    Task<ObservableList<Book>> task =
+        new Task<ObservableList<Book>>() {
+          @Override
+          protected ObservableList<Book> call() throws Exception {
+            ObservableList<Book> foundBooks = FXCollections.observableArrayList();
+            // Tìm kiếm theo tiêu đề
+            if (!bookTitle.isEmpty()) {
+              foundBooks.addAll(bookDAO.getBookByTitle(bookTitle));
+            }
+            // Tìm kiếm theo tác giả
+            if (!bookAuthor.isEmpty()) {
+              foundBooks.addAll(bookDAO.getBookByAuthor(bookAuthor));
+            }
+            Thread.sleep(500); // Giả lập việc tìm kiếm mất thời gianThrea
+            return foundBooks;
+          }
+
+          @Override
+          protected void succeeded() {
+            loading.setVisible(false);
+            super.succeeded();
+            Platform.runLater(
+                () -> {
+                  ListBook.getItems().clear(); // Xóa kết quả cũ
+                  ListBook.getItems().addAll(getValue()); // Thêm kết quả mới
+                });
+          }
+
+          @Override
+          protected void failed() {
+            loading.setVisible(false);
+            super.failed();
+            // Xử lý ngoại lệ nếu có
+            ListBooks.setItems(
+                FXCollections.observableArrayList()); // Hoặc cập nhật một thông báo lỗi
+          }
+        };
+    // Chạy task trong một luồng riêng
+    new Thread(task).start();
+  }
+
+  protected void handleSearchBookGG(String bookTitle, String bookAuthor, TableView<Book> ListBook) {
+    ListBook.getItems().clear();
     Task<ObservableList<Book>> task =
         new Task<ObservableList<Book>>() {
           @Override
@@ -249,6 +252,7 @@ public class DashController {
 
           @Override
           protected void succeeded() {
+            loading.setVisible(false);
             super.succeeded();
             Platform.runLater(
                 () -> {
@@ -259,6 +263,7 @@ public class DashController {
 
           @Override
           protected void failed() {
+            loading.setVisible(false);
             super.failed();
             // Xử lý ngoại lệ nếu có
             ListBooks.setItems(

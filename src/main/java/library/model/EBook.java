@@ -2,6 +2,7 @@ package library.model;
 
 public class EBook extends Book {
   private String downloadLink;
+  private final String ebookCategories = "E-Book";
 
   public EBook(
       int id, String title, String author, String isbn, boolean available, String downloadLink) {
@@ -11,7 +12,8 @@ public class EBook extends Book {
 
   @Override
   public String getCategories() {
-    return "E-Book";
+    return ebookCategories;
+  
   }
 
   public String getDownloadLink() {

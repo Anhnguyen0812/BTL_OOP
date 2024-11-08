@@ -5,15 +5,16 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
-<AnchorPane prefHeight="165.0" prefWidth="0.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="library.controller.BookDetailController">
+<AnchorPane prefHeight="304.0" prefWidth="754.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="library.controller.BookDetailController">
    <children>
-      <Pane layoutX="-22.0" layoutY="-3.0" prefHeight="224.0" prefWidth="509.0">
+      <Pane layoutY="-3.0" prefHeight="304.0" prefWidth="754.0">
          <children>
-            <ImageView fx:id="bookImageView" fitHeight="221.0" fitWidth="172.0" layoutX="25.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true" />
-            <Label fx:id="titleLabel" layoutX="202.0" layoutY="14.0" prefHeight="30.0" prefWidth="53.0" text="Label" />
-            <Label fx:id="authorLabel" layoutX="202.0" layoutY="56.0" text="Label" />
-            <Label fx:id="descriptionLabel" wrapText="true" layoutX="202.0" layoutY="95.0" text="Label" />
-            <ImageView fx:id="qrCodeImageView" fitHeight="92.0" fitWidth="118.0" layoutX="391.0" layoutY="131.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="bookImageView" fitHeight="234.0" fitWidth="174.0" layoutX="5.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
+            <Label fx:id="titleLabel" layoutX="190.0" layoutY="14.0" prefHeight="30.0" prefWidth="250.0" text="Label" />
+            <Label fx:id="authorLabel" layoutX="190.0" layoutY="44.0" prefHeight="30.0" prefWidth="250.0" text="Label" />
+            <Label fx:id="descriptionLabel" layoutX="190.0" layoutY="82.0" prefHeight="66.0" prefWidth="437.0" text="Label" wrapText="true" />
+            <ImageView fx:id="qrCodeImageView" fitHeight="77.0" fitWidth="87.0" layoutX="600.0" layoutY="196.0" pickOnBounds="true" preserveRatio="true" />
+            <Label fx:id="category" layoutX="16.0" layoutY="245.0" prefHeight="38.0" prefWidth="184.0" text="Label" />
          </children>
       </Pane>
    </children>

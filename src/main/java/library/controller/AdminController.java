@@ -42,6 +42,7 @@ public class AdminController extends DashController {
   @FXML private TextField bookTitleField;
   @FXML private TextField bookAuthorField;
   @FXML private TextField bookISBNField;
+  @FXML private TextField bookCategoryField;
   // Bảng hiển thị danh sách sách
   @FXML private TableView<Book> bookTable;
   @FXML private TableColumn<Book, Integer> idC;
@@ -75,6 +76,8 @@ public class AdminController extends DashController {
   @FXML private TableView<BorrowRecord> borrowRecord;
   @FXML protected TableColumn<BorrowRecord, Integer> Id_User;
   @FXML protected TableColumn<BorrowRecord, String> Username;
+
+  @FXML private Label totalBook, totalUser, totalBorrow;
 
   @FXML private Label greetingLabel;
   @FXML private Label dateTimeLabel;
@@ -111,7 +114,10 @@ public class AdminController extends DashController {
   @FXML
   public void showManageBooksPane() throws SQLException {
     hideAllPanes(); // Hide all panes
-    bookTable.setItems(bookController.getAllBooks());
+    bookList.clear();
+    bookList.setAll(bookController.getAllBooks());
+    bookTable.setItems(bookList);
+    totalBook.setText(String.valueOf(bookList.size()));
     infoBook.getChildren().clear();
     manageBooksPane.setVisible(true); // Show Manage Books Pane
   }
@@ -120,13 +126,17 @@ public class AdminController extends DashController {
   @FXML
   public void showManageUsersPane() throws SQLException {
     hideAllPanes(); // Hide all panes
-    userTable.setItems(getUserList());
+    userList.clear();
+    userList.setAll(getUserList());
+    totalUser.setText(String.valueOf(userList.size()));
+    userTable.setItems(userList);
     manageUsersPane.setVisible(true); // Show Manage Users Pane
   }
 
   @FXML
   public void showManagerBorrowBook() {
     hideAllPanes(); // Hide all panes
+
     borrowRecord.setItems(borrowRecordDAO.getAllBorrowRecords());
     ManagerBorrowBook.setVisible(true); // Show Manage Users Pane
   }
@@ -155,14 +165,7 @@ public class AdminController extends DashController {
     logofb.setOnMouseClicked(this::handleFaceBookClick);
 
     logoutButton.setOnAction(event -> logOut());
-    searchBookButton.setOnAction(
-        event -> {
-          try {
-            handleSearchBook(searchBook.getText(), searchAuthor.getText(), searchResult);
-          } catch (Exception e) {
-            showAlert("Error", "An error occurred while searching for books.");
-          }
-        });
+    
     greetingLabel.setText("Hello, admin " + user.getName() + "!");
     // Thiết lập ngày và giờ hiện tại
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy | EEEE, hh:mm a");
@@ -187,6 +190,21 @@ public class AdminController extends DashController {
     } catch (SQLException e) {
       showAlert("Database Error", "Could not load books from the database.");
     }
+
+    totalBook.setText(String.valueOf(bookList.size()));
+    totalUser.setText(String.valueOf(userList.size()));
+    totalBorrow.setText(String.valueOf(borrowRecordDAO.getAllBorrowRecords().size()));
+
+    // Xử lý sự kiện tìm kiếm sách
+    searchBookButton.setOnAction(
+        event -> {
+          try {
+            loading.setVisible(true);
+            handleSearchBookGG(searchBook.getText(), searchAuthor.getText(), searchResult);
+          } catch (Exception e) {
+            showAlert("Error", "An error occurred while searching for books.");
+          }
+      });
 
     searchResult.setOnMouseClicked(
         event -> {

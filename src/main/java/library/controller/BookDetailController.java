@@ -39,7 +39,7 @@ public class BookDetailController {
 
   @FXML private Label isbnLabel;
 
-  @FXML private Label descriptionLabel;
+  @FXML private Label descriptionLabel, category;
 
   @FXML private ImageView bookImageView;
 
@@ -97,6 +97,8 @@ public class BookDetailController {
         // Handle the exception, e.g., show an error message to the user
       }
     }
+
+    category.setText(book.getCategories());
   }
 
   public void showBookDetails(Book book) {

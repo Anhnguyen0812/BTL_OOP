@@ -336,7 +336,11 @@
                           </columns>
                         </TableView>
                      </content></ScrollPane>
-                  <Pane fx:id="add_Book" layoutX="8.0" layoutY="472.0" prefHeight="239.0" prefWidth="1120.0" />
+                  <Pane fx:id="add_Book" layoutX="8.0" layoutY="472.0" prefHeight="239.0" prefWidth="1120.0" >
+                        <children>
+                            <ProgressIndicator fx:id="loading" layoutX="356.0" layoutY="104.0" prefHeight="40.0" prefWidth="40.0" progress="0.0" visible="false" />
+                        </children>
+                  <Pane/>
                </children>
             </Pane>
             <Pane fx:id="BorrowBooks" layoutX="160.0" prefHeight="720.0" prefWidth="1120.0" visible="false">

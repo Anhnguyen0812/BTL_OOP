@@ -59,6 +59,31 @@
     </dependency>
 
     <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-controls</artifactId>
+        <version>23</version>
+    </dependency>
+
+    <dependency>
+        <groupId>com.gluonhq</groupId>
+        <artifactId>charm-glisten</artifactId>
+        <version>6.0.0</version> <!-- Phiên bản Gluon tương thích -->
+    </dependency>
+
+    <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>3.11.2</version>
+        <scope>test</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-swing</artifactId>
+        <version>17.0.1</version>
+    </dependency>
+
+    <dependency>
         <groupId>com.jfoenix</groupId>
         <artifactId>jfoenix</artifactId>
         <version>9.0.10</version> <!-- Thay đổi phiên bản nếu cần -->
@@ -69,6 +94,7 @@
         <artifactId>javafx-controls</artifactId>
         <version>20.0.2</version>
     </dependency>
+
     <dependency>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-fxml</artifactId>
