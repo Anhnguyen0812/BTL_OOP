@@ -152,8 +152,13 @@ public class BookDetailController {
       addbook.setOnAction(
           e -> {
             try {
-              record = new BorrowRecord(0, user, bookk, today, today.plusMonths(2));
-              borrowRecordDAO.addBorrowRecord(record);
+              if (bookk.isAvailable()) {
+                record = new BorrowRecord(0, user, bookk, today, today.plusMonths(2));
+                borrowRecordDAO.addBorrowRecord(record);
+              }
+              else {
+                // TODO
+              }
             } catch (Exception ex) {
               Logger.getLogger(BookDetailController.class.getName())
                   .log(Level.SEVERE, ex.getMessage(), ex);

@@ -27,13 +27,12 @@ public class ComputerBook extends Book {
         String title,
         String author,
         String isbn,
-        String categories,
         String description,
         String imageUrl,
         String QRcode) {
-        super(title, author, isbn, categories, description, imageUrl, QRcode);
+        super(title, author, isbn, description, imageUrl, QRcode);
     }
-    
+      
     public ComputerBook(
         int id,
         String title,
@@ -46,18 +45,6 @@ public class ComputerBook extends Book {
         super(id, title, author, isbn, available, description, imageUrl, QRcode);
     }
     
-    public ComputerBook(
-        int id,
-        String title,
-        String author,
-        String isbn,
-        boolean available,
-        String categories,
-        String description,
-        String imageUrl,
-        String QRcode) {
-        super(id, title, author, isbn, available, categories, description, imageUrl, QRcode);
-    }
     @Override
     public String getCategories() {
         return computerCategories;

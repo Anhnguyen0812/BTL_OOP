@@ -30,10 +30,17 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
+import library.dao.BookDAO;
 import library.dao.UserDAO;
+import library.model.ArtBook;
 import library.model.Book;
 import library.model.BorrowRecord;
+import library.model.ComputerBook;
 import library.model.ConcreteBook;
+import library.model.HistoryBook;
+import library.model.ScienceBook;
+import library.model.TechnologyBook;
+import library.model.ThesisBook;
 import library.model.User;
 
 public class AdminController extends DashController {
@@ -325,25 +332,39 @@ public class AdminController extends DashController {
   @FXML private Button logoutButton; // Add a button for logout
 
   @FXML
-  private void handleAddBook() {
+  private void handleAddBook() throws SQLException {
     String title = bookTitleField.getText();
-    String author = bookAuthorField.getText();
+    String authorName = bookAuthorField.getText();
     String isbn = bookISBNField.getText();
+    String category = bookCategoryField.getText();
     String description = "";
     // Kiểm tra đầu vào
-    if (title.isEmpty() || author.isEmpty() || isbn.isEmpty()) {
+    if (title.isEmpty() || authorName.isEmpty()) {
       showAlert("Input Error", "All fields must be filled.");
       return;
     }
 
     // Thêm sách vào danh sách
-    Book newBook = new ConcreteBook(0, title, author, isbn, description, "", true);
-    bookList.add(newBook);
-
+    
+     Book temp2;
+        temp2 = switch (category) {
+          case "Art" -> new ArtBook(0, title, authorName, isbn, true, description, null, null);
+          case "TechnologyBook" -> new TechnologyBook(0, title, authorName, isbn, true, description, null, null);
+          case "Science" -> new ScienceBook(0, title, authorName, isbn, true, description, null, null);
+          case "Computer" -> new ComputerBook(0, title, authorName, isbn, true, description, null, null);
+          case "HistoryBook" -> new HistoryBook(0, title, authorName, isbn, true, description, null, null);
+          case "EBook" -> new ConcreteBook(0, title, authorName, isbn, true, description, null, null);
+          case "Thesis" -> new ThesisBook(0, title, authorName, isbn, true, description, null, null);
+          default -> new ConcreteBook(0, title, authorName, isbn, true, description, null, null);
+        };
+    bookList.add(temp2);
+    BookDAO bookDAO = BookDAO.getBookDAO();
+    bookDAO.addBook(temp2);
     // Xóa các trường nhập liệu sau khi thêm sách
     bookTitleField.clear();
     bookAuthorField.clear();
     bookISBNField.clear();
+    bookCategoryField.clear();
   }
 
   public static String getSalt() throws NoSuchAlgorithmException {

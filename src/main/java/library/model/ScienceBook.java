@@ -27,12 +27,13 @@ public class ScienceBook extends Book {
         String title,
         String author,
         String isbn,
-        String categories,
         String description,
         String imageUrl,
         String QRcode) {
-        super(title, author, isbn, categories, description, imageUrl, QRcode);
+        super(title, author, isbn, description, imageUrl, QRcode);
     }
+    
+    // Duplicate constructor removed
     
     public ScienceBook(
         int id,
@@ -44,19 +45,6 @@ public class ScienceBook extends Book {
         String imageUrl,
         String QRcode) {
         super(id, title, author, isbn, available, description, imageUrl, QRcode);
-    }
-    
-    public ScienceBook(
-        int id,
-        String title,
-        String author,
-        String isbn,
-        boolean available,
-        String categories,
-        String description,
-        String imageUrl,
-        String QRcode) {
-        super(id, title, author, isbn, available, categories, description, imageUrl, QRcode);
     }
 
     @Override
