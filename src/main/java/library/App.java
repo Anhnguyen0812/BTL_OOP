@@ -1,9 +1,12 @@
 package library;
 
+import java.io.IOException;
+
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 /**
@@ -12,15 +15,16 @@ import javafx.stage.Stage;
  */
 public class App extends Application {
 
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws IOException {
         // Thiết lập giao diện người dùng tại đây
         Button btn = new Button("Hello, Library Manager!");
         btn.setOnAction(e -> System.out.println("Button Clicked!"));
 
-        StackPane root = new StackPane();
-        root.getChildren().add(btn);
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/library/dash.fxml"));
 
-        Scene scene = new Scene(root, 300, 250);
+        Parent root = fxmlLoader.load();
+
+        Scene scene = new Scene(root, 1300, 600);
         primaryStage.setTitle("Library Manager");
         primaryStage.setScene(scene);
         primaryStage.show();

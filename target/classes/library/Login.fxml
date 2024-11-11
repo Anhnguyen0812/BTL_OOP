@@ -67,12 +67,12 @@
             <Font size="13.0" />
          </font>
       </Button>
-      <Button fx:id="LoginButton" layoutX="400.0" layoutY="282.0" mnemonicParsing="false" onAction="#MoveToAccount" prefHeight="30.0" prefWidth="65.0" styleClass="LoginButton" text="Login">
+      <Button fx:id="loginButton" layoutX="400.0" layoutY="282.0" mnemonicParsing="false" onAction="#MoveToAccount" prefHeight="30.0" prefWidth="65.0" styleClass="LoginButton" text="Login">
          <font>
             <Font name="Segoe UI Bold" size="14.0" />
          </font>
       </Button>
-      <Button fx:id="SigninButton" layoutX="307.0" layoutY="282.0" mnemonicParsing="false" onAction="#MoveToSignin" prefHeight="30.0" prefWidth="76.0" styleClass="LoginButton" text="Sign up">
+      <Button fx:id="signupButton" layoutX="307.0" layoutY="282.0" mnemonicParsing="false" onAction="#MoveToSignup" prefHeight="30.0" prefWidth="76.0" styleClass="LoginButton" text="Sign up">
          <font>
             <Font name="Segoe UI Bold" size="14.0" />
          </font>
