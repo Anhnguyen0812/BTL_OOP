@@ -6,9 +6,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class BookDAO {
-    
+
     private Connection connection;
 
     public BookDAO(Connection connection) {
@@ -34,7 +33,7 @@ public class BookDAO {
         }
         return false;
     }
-    
+
     public void addBook(Book book) throws SQLException {
 
         if (isbnExists(book.getIsbn())) {
@@ -59,7 +58,8 @@ public class BookDAO {
         stmt.setInt(1, id);
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
-            return new ReferenceBook(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getString("isbn"), rs.getBoolean("available"));
+            return new ReferenceBook(rs.getInt("id"), rs.getString("title"), rs.getString("author"),
+                    rs.getString("isbn"), rs.getBoolean("available"));
         }
         return null;
     }
@@ -70,7 +70,8 @@ public class BookDAO {
         stmt.setString(1, isbn);
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
-            return new ReferenceBook(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getString("isbn"), rs.getBoolean("available"));
+            return new ReferenceBook(rs.getInt("id"), rs.getString("title"), rs.getString("author"),
+                    rs.getString("isbn"), rs.getBoolean("available"));
         }
         return null;
     }
@@ -81,7 +82,8 @@ public class BookDAO {
         Statement stmt = connection.createStatement();
         ResultSet rs = stmt.executeQuery(query);
         while (rs.next()) {
-            books.add(new ReferenceBook(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getString("isbn"), rs.getBoolean("available")));
+            books.add(new ReferenceBook(rs.getInt("id"), rs.getString("title"), rs.getString("author"),
+                    rs.getString("isbn"), rs.getBoolean("available")));
         }
         return books;
     }
@@ -124,4 +126,3 @@ public class BookDAO {
         }
     }
 }
-

@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class AppLaunch extends Application {
@@ -17,6 +18,7 @@ public class AppLaunch extends Application {
         scene = new Scene(loadFXML("Login"));
         stage.setScene(scene);
         stage.setTitle("Library Management System");
+        stage.getIcons().add(new Image("/imgs/appIcon.png"));
         stage.show();
 
     }
