@@ -13,6 +13,8 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -20,32 +22,32 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import library.dao.BookDAO;
 import library.dao.BorrowRecordDAO;
 import library.model.Book;
 import library.model.BorrowRecord;
-import library.model.User; // Add this import statement
+import library.model.User;
 
 // import library.controller.BorrowRecordController; // Removed redundant import
 
 public class BookDetailController {
 
   @FXML private Label titleLabel;
-
   @FXML private Label authorLabel;
-
   @FXML private Label isbnLabel;
-
   @FXML private Label descriptionLabel, category;
-
   @FXML private ImageView bookImageView;
-
   @FXML private ImageView qrCodeImageView; // ImageView để hiển thị mã QR
-
-  @FXML private Button returnbook, addbook, delete;
+  @FXML private Button returnbook, addbook, delete, update;
+  @FXML private TextField updateTitle, updateAuthor, updateIsbn, updateDescription, updateImageUrl,updateQRcode, updateCategory;
+  @FXML private Label notBorrowBook;
+  @FXML private Pane updateBook;
 
   private static User user;
   private static Book bookk;
@@ -157,7 +159,15 @@ public class BookDetailController {
                 borrowRecordDAO.addBorrowRecord(record);
               }
               else {
-                // TODO
+                notBorrowBook.setVisible(true);
+                // Tạo Timeline để ẩn Label sau 5 giây
+                Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
+                    notBorrowBook.setVisible(false); // Ẩn Label sau 5 giây
+                }));
+
+                // Chạy Timeline
+                timeline.setCycleCount(1); // Chỉ chạy một lần
+                timeline.play();
               }
             } catch (Exception ex) {
               Logger.getLogger(BookDetailController.class.getName())
@@ -187,6 +197,48 @@ public class BookDetailController {
             }
           });
     }
+
+    // if (update != null) {
+    //   update.setOnAction(
+    //       e -> {
+    //         try {
+    //           int id = bookk.getId();
+    //           String title = updateTitle.getText() != null ? updateTitle.getText() : bookk.getTitle();
+    //           String author = updateAuthor.getText() != null ? updateAuthor.getText() : bookk.getAuthor();
+    //           String isbn = updateIsbn.getText() != null ? updateIsbn.getText() : bookk.getIsbn();
+    //           boolean available = bookk.isAvailable();
+    //           String description = updateDescription.getText() != null ? updateDescription.getText() : bookk.getDescription();
+    //           String imageUrl = updateImageUrl.getText() != null ? updateImageUrl.getText() : bookk.getImageUrl();
+    //           String qrCode = updateQRcode.getText() != null ? updateQRcode.getText() : bookk.getQRcode();
+    //           String updatedCategory = updateCategory.getText() != null ? updateCategory.getText() : bookk.getCategories();
+    //           Book temp2;
+    //             temp2 = switch (updatedCategory) {
+    //               case "Art" -> new ArtBook(id, title, author, isbn, available, description, imageUrl, qrCode);
+    //               case "TechnologyBook" -> new TechnologyBook(id, title, author, isbn, available, description, imageUrl, qrCode);
+    //               case "Science" -> new ScienceBook(id, title, author, isbn, available, description, imageUrl, qrCode);
+    //               case "Computer" -> new ComputerBook(id, title, author, isbn, available, description, imageUrl, qrCode);
+    //               case "HistoryBook" -> new HistoryBook(id, title, author, isbn, available, description, imageUrl, qrCode);
+    //               case "EBook" -> new ConcreteBook(id, title, author, isbn, available, description, imageUrl, qrCode);
+    //               case "Thesis" -> new ThesisBook(id, title, author, isbn, available, description, imageUrl, qrCode);
+    //               default -> new ConcreteBook(id, title, author, isbn, available, description, imageUrl, qrCode);
+    //             };
+    //           bookDAO.updateBook(temp2);
+    //         } catch (Exception ex) {
+    //           Logger.getLogger(BookDetailController.class.getName())
+    //               .log(Level.SEVERE, ex.getMessage(), ex);
+    //         }
+    //       });
+    if (update != null) {
+      update.setOnAction(
+          e -> {
+            try {
+              updateBook.setVisible(true);
+            } catch (Exception ex) {
+              Logger.getLogger(BookDetailController.class.getName())
+                  .log(Level.SEVERE, ex.getMessage(), ex);
+            }
+          });
+    }
   }
 
   public Parent returnBookDetail(Book book, User user) throws IOException {
@@ -202,13 +254,13 @@ public class BookDetailController {
     return bookDetail;
   }
 
-  public Parent infoBook(Book book, User user) throws IOException {
+  public Parent infoBook(Book book, User user, String link) throws IOException {
     BookDetailController.user = user;
     BookDetailController.bookk = book;
     if (book == null) {
       return null;
     }
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/infoBook.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Infobook.fxml"));
     Parent bookDetail = loader.load();
     BookDetailController controller = loader.getController();
     controller.setBookDetails(book);

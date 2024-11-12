@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.gluonhq.charm.glisten.control.Avatar?>
-<?import com.gluonhq.charm.glisten.control.ProgressIndicator?>
 <?import javafx.geometry.Point3D?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -15,10 +15,9 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.control.ProgressIndicator?>
 
 <StackPane prefHeight="616.0" prefWidth="919.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
-    <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="619.0" prefWidth="919.0" stylesheets="@../styles/Admin.css">
+    <AnchorPane fx:id="origin" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="619.0" prefWidth="919.0" stylesheets="@../styles/Admin.css">
 
         <!-- Left Navigation -->
         <Pane layoutX="15.0" layoutY="115.0" prefHeight="439.0" prefWidth="122.0" style="-fx-padding: 20px;">
@@ -64,16 +63,15 @@
 
                 <!-- Manage Books Pane -->
                 <Pane fx:id="manageBooksPane" prefHeight="543.0" prefWidth="738.0" style="-fx-padding: 20px;" visible="false">
-                    <VBox prefHeight="576.0" prefWidth="770.0" spacing="10.0">
                         <Label prefHeight="40.0" prefWidth="335.0" styleClass="section-title" text="Manage Books" />
-                        <HBox spacing="10.0">
+                        <HBox layoutX="-1.0" layoutY="41.0" prefHeight="49.0" prefWidth="780.0" spacing="10.0">
                             <TextField fx:id="bookTitleField" promptText="Book Title" />
                             <TextField fx:id="bookAuthorField" promptText="Author Name" />
                             <TextField fx:id="bookISBNField" promptText="ISBN" />
                             <TextField fx:id="bookCategotyField" promptText="Category" />
                             <Button fx:id="addBookButton" onAction="#handleAddBook" prefHeight="32.0" prefWidth="131.0" text="Add Book" />
                         </HBox>
-                        <TableView fx:id="bookTable" prefWidth="769.0">
+                        <TableView fx:id="bookTable" layoutX="-1.0" layoutY="90.0" prefHeight="267.0" prefWidth="770.0">
                             <columns>
                                 <TableColumn fx:id="idC" prefWidth="58.0" text="Id" />
                                 <TableColumn fx:id="titleColumn" prefWidth="352.0" text="Title" />
@@ -82,8 +80,11 @@
                                 <TableColumn fx:id="availableColumn" minWidth="0.0" prefWidth="83.0" text="Available" />
                             </columns>
                         </TableView>
-                  <Pane fx:id="infoBook" prefHeight="348.0" prefWidth="701.0" />
-                    </VBox>
+                        <Pane fx:id="infoBook" layoutY="360.0" prefHeight="216.0" prefWidth="770.0">
+                            <children>
+                                <Button fx:id="update" layoutX="477.0" layoutY="216.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="152.0" text="updateBook" />
+                            </children>
+                        </Pane>
                 </Pane>
 
                 <!-- Manage Users Pane -->
@@ -158,6 +159,26 @@
               </font>
           </Label>
       <Avatar layoutX="44.0" layoutY="54.0" />
+
+      <Pane fx:id="updateB" layoutX="219.0" layoutY="95.0" prefHeight="469.0" prefWidth="631.0" visible="false">
+                  <children>
+                     <TextField layoutX="170.0" layoutY="320.0" prefHeight="36.0" prefWidth="300.0" promptText="new Categpory" />
+                     <TextField layoutX="170.0" layoutY="270.0" prefHeight="36.0" prefWidth="300.0" promptText="new QRcode" />
+                     <Label layoutX="30.0" layoutY="20.0" prefHeight="36.0" prefWidth="110.0" text="Title :" />
+                     <Label layoutX="30.0" layoutY="70.0" prefHeight="36.0" prefWidth="109.0" text="Author :" />
+                     <Label layoutX="30.0" layoutY="120.0" prefHeight="36.0" prefWidth="110.0" text="Isbn :" />
+                     <TextField layoutX="170.0" layoutY="220.0" prefHeight="36.0" prefWidth="300.0" promptText="new ImageURL" />
+                     <Label layoutX="30.0" layoutY="170.0" prefHeight="36.0" prefWidth="110.0" text="Description :" />
+                     <Label layoutX="30.0" layoutY="220.0" prefHeight="36.0" prefWidth="110.0" text="ImageURL :" />
+                     <Label layoutX="30.0" layoutY="270.0" prefHeight="36.0" prefWidth="110.0" text="QRcode :" />
+                     <Label layoutX="30.0" layoutY="320.0" prefHeight="36.0" prefWidth="110.0" text="Category :" />
+                     <TextField layoutX="170.0" layoutY="170.0" prefHeight="36.0" prefWidth="300.0" promptText="new Description" />
+                     <TextField layoutX="170.0" layoutY="120.0" prefHeight="36.0" prefWidth="300.0" promptText="new Isbn" />
+                     <TextField layoutX="170.0" layoutY="70.0" prefHeight="36.0" prefWidth="300.0" promptText="new Author" />
+                     <TextField layoutX="170.0" layoutY="20.0" prefHeight="36.0" prefWidth="300.0" promptText="new Title" />
+                     <Button layoutX="487.0" layoutY="391.0" minWidth="40.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="115.0" text="Update" />
+                  </children>
+               </Pane>
 
     </AnchorPane>
 </StackPane>

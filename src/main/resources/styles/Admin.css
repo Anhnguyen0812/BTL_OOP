@@ -1,7 +1,37 @@
+/* Đặt nền và viền cho TableView */
 .table-view {
-    -fx-background-color: #ffffff;
-    -fx-border-color: #d1d1d1;
+    -fx-background-color: #f5f5f5;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
 }
+
+/* Thay đổi màu nền của hàng khi chọn */
+.table-row-cell:selected {
+    -fx-background-color: #4CAF50; /* Xanh lá nhạt */
+    -fx-text-fill: white;
+}
+
+/* Đặt màu nền xen kẽ giữa các hàng */
+.table-row-cell:odd {
+    -fx-background-color: #e6e6e6;
+}
+.table-row-cell:even {
+    -fx-background-color: #ffffff;
+}
+
+/* Thay đổi kiểu hiển thị văn bản trong các ô */
+.table-view .table-cell {
+    -fx-font-size: 14px;
+    -fx-padding: 5px;
+}
+
+/* Đặt viền giữa các hàng và các ô */
+.table-view .table-cell, .table-view .column-header {
+    -fx-border-color: #dddddd;
+    -fx-border-width: 0 0 1px 1px;
+}
+
 
 .detail-pane {
     -fx-background-color: #f5f5f5;
@@ -30,4 +60,19 @@
 .input-field, .search-field {
     -fx-background-color: #ffffff;
     -fx-border-color: #d1d1d1;
+}
+
+.pane-border {
+    -fx-border-color: black; /* Màu viền */
+    -fx-border-width: 2;     /* Độ dày của viền */
+    -fx-border-radius: 5;    /* Bo tròn góc của viền (tuỳ chọn) */
+}
+
+.pane-background {
+    -fx-background-color: #ADD8E6; /* Màu nền, ví dụ là màu xanh nhạt */
+}
+
+.pane-background-imagpng {
+    -fx-background-image: url("/imgs/background.png"); /* Đường dẫn tới hình ảnh */
+    -fx-background-size: cover; /* Tùy chọn này sẽ giúp hình ảnh phủ đầy Pane */
 }

@@ -12,14 +12,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import library.api.GoogleBooksAPI;
 import library.dao.BookDAO;
-import library.model.ArtBook;
 import library.model.Book;
 import library.model.ComputerBook;
 import library.model.ConcreteBook;
-import library.model.HistoryBook;
-import library.model.ScienceBook;
-import library.model.TechnologyBook;
-import library.model.ThesisBook;
 import library.util.DBConnection;
 
 public class BookController {
@@ -69,24 +64,27 @@ public class BookController {
                 ? volumeInfo.getJSONObject("imageLinks").getString("thumbnail")
                 : null;
         String bookUrl = volumeInfo.has("infoLink") ? (String) volumeInfo.get("infoLink") : null;
-        Book temp =
+        ConcreteBook temp =
             new ConcreteBook(title, authorName, isbn, description, imageUrl, bookUrl);
-
-        books.add(temp);
+        temp.setCategories(categories);
+        Book b = (Book) temp;
+        books.add(b);
         Book temp2;
-        temp2 = switch (categories) {
-          case "Art" -> new ArtBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-          case "TechnologyBook" -> new TechnologyBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-          case "Science" -> new ScienceBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-          case "Computer" -> new ComputerBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-          case "HistoryBook" -> new HistoryBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-          case "EBook" -> new ConcreteBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-          case "Thesis" -> new ThesisBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-          default -> new ConcreteBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-        };
-
+        // temp2 = switch (categories) {
+        //   case "Art" -> new ArtBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
+        //   case "TechnologyBook" -> new TechnologyBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
+        //   case "Science" -> new ScienceBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
+        //   case "Computer" -> new ComputerBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
+        //   case "HistoryBook" -> new HistoryBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
+        //   case "EBook" -> new ConcreteBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
+        //   case "Thesis" -> new ThesisBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
+        //   default -> new ConcreteBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
+        // };
+        if (categories.equalsIgnoreCase("computer") || categories.equalsIgnoreCase("computers")) {
+          temp2 = new ComputerBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
         BookDAO bookDAO = BookDAO.getBookDAO();
-        // bookDAO.addBook(temp2);
+        bookDAO.addBook(temp2);
+        }
       }
     } else {
       System.out.println("No books found in JSON data.");

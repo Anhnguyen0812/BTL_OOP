@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -24,11 +26,13 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 import library.dao.BookDAO;
 import library.dao.UserDAO;
@@ -71,7 +75,7 @@ public class AdminController extends DashController {
   @FXML private TableColumn<User, String> emailColumn;
   @FXML private TableColumn<User, String> roleColumn;
   @FXML private TextField searchBook;
-
+  @FXML private Button logoutButton;
   @FXML private Pane detailBook;
   @FXML private TextField searchAuthor;
   @FXML private TableView<Book> searchResult;
@@ -85,20 +89,24 @@ public class AdminController extends DashController {
   @FXML protected TableColumn<BorrowRecord, String> Username;
 
   @FXML private Label totalBook, totalUser, totalBorrow;
-
+  @FXML private TextField updateTitle, updateAuthor, updateIsbn, updateDescription, updateImageUrl,updateQRcode, updateCategory;
   @FXML private Label greetingLabel;
   @FXML private Label dateTimeLabel;
   @FXML private Pane searchBookPane;
   @FXML private Pane manageBooksPane;
-  @FXML private Pane manageUsersPane, ManagerBorrowBook, infoBook, infoBorrow;
+  @FXML private Pane manageUsersPane, ManagerBorrowBook, infoBorrow, updateB;
+  @FXML private Pane infoBook;
   @FXML private Pane home;
   @FXML private StackPane contentArea;
-  @FXML private ImageView logoytb, logofb;
-  // private User user;
-  // private HostServices hostServices;
+  @FXML private AnchorPane origin;
+  private static final Logger LOGGER = Logger.getLogger(AdminController.class.getName());
+  @FXML private ImageView logofb, logoytb;
+  @FXML private Button delete, updateBook, update;
   private final BookController bookController = new BookController();
   private final ObservableList<Book> bookList = FXCollections.observableArrayList();
   private ObservableList<User> userList = FXCollections.observableArrayList();
+  private GaussianBlur blur = new GaussianBlur();
+  private Book bookk;
 
   public AdminController(User user, HostServices hostServices) {
     super(user, hostServices); // Call the UserController constructor with user and hostServices
@@ -111,58 +119,13 @@ public class AdminController extends DashController {
     searchBookPane.setVisible(true); // Show Search Book Pane
   }
 
-  @FXML
-  public void Home() {
-    hideAllPanes(); // Hide all panes
-    home.setVisible(true); // Show Manage Books Pane
-  }
-
-  // Method to show the Manage Books pane
-  @FXML
-  public void showManageBooksPane() throws SQLException {
-    hideAllPanes(); // Hide all panes
-    bookList.clear();
-    bookList.setAll(bookController.getAllBooks());
-    bookTable.setItems(bookList);
-    totalBook.setText(String.valueOf(bookList.size()));
-    infoBook.getChildren().clear();
-    manageBooksPane.setVisible(true); // Show Manage Books Pane
-  }
-
-  // Method to show the Manage Users pane
-  @FXML
-  public void showManageUsersPane() throws SQLException {
-    hideAllPanes(); // Hide all panes
-    userList.clear();
-    userList.setAll(getUserList());
-    totalUser.setText(String.valueOf(userList.size()));
-    userTable.setItems(userList);
-    manageUsersPane.setVisible(true); // Show Manage Users Pane
-  }
-
-  @FXML
-  public void showManagerBorrowBook() {
-    hideAllPanes(); // Hide all panes
-
-    borrowRecord.setItems(borrowRecordDAO.getAllBorrowRecords());
-    ManagerBorrowBook.setVisible(true); // Show Manage Users Pane
-  }
-
-  // Hide all panes
-  private void hideAllPanes() {
-    home.setVisible(false);
-    searchBookPane.setVisible(false);
-    manageBooksPane.setVisible(false);
-    manageUsersPane.setVisible(false);
-    logoytb.setVisible(true);
-    logofb.setVisible(true);
-    ManagerBorrowBook.setVisible(false);
-  }
+ 
 
   // Phương thức khởi tạo, thiết lập các cột cho bảng sách và người dùng
   @FXML
   @Override
   public void initialize() {
+    // origin.getStyleClass().add("pane-background");
     Image ytb = new Image("/imgs/logoytb.png");
     Image fb = new Image("/imgs/logofb.png");
     logoytb.setImage(ytb);
@@ -265,12 +228,12 @@ public class AdminController extends DashController {
           //     }
           // }
         });
-
     bookTable.setOnMouseClicked(
         event -> {
           if (event.getClickCount() == 2) { // Kiểm tra nhấp đúp
             Book selectedBook = bookTable.getSelectionModel().getSelectedItem();
             if (selectedBook != null) {
+              bookk = selectedBook;
               infoBook.getChildren().clear();
 
               // Sử dụng CompletableFuture để tải dữ liệu trong một luồng nền
@@ -278,12 +241,12 @@ public class AdminController extends DashController {
                   () -> {
                     BookDetailController detailController = new BookDetailController();
                     try {
-                      Parent bookDetailParent = detailController.infoBook(selectedBook, user);
-
+                      Parent bookDetailParent = detailController.infoBook(selectedBook, user, "/library/infoBook.fxml");
                       // Cập nhật giao diện trong luồng JavaFX
                       Platform.runLater(
                           () -> {
                             infoBook.getChildren().add(bookDetailParent);
+                            infoBook.getChildren().add(update);
                           });
                     } catch (IOException e) {
                       Platform.runLater(() -> showAlert("Error", "Could not load book details."));
@@ -292,6 +255,50 @@ public class AdminController extends DashController {
             }
           }
         });
+
+        if (update != null) {
+          update.setOnAction(
+              e -> {
+                try {
+                 lammo();
+                } catch (Exception ex) {
+                 Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+              });
+        }
+
+        if (updateBook != null) {
+            updateBook.setOnAction(
+                e -> {
+                  try {
+                    int id = bookk.getId();
+                    String title = updateTitle.getText() != null ? updateTitle.getText() : bookk.getTitle();
+                    String author = updateAuthor.getText() != null ? updateAuthor.getText() : bookk.getAuthor();
+                    String isbn = updateIsbn.getText() != null ? updateIsbn.getText() : bookk.getIsbn();
+                    boolean available = bookk.isAvailable();
+                    String description = updateDescription.getText() != null ? updateDescription.getText() : bookk.getDescription();
+                    String imageUrl = updateImageUrl.getText() != null ? updateImageUrl.getText() : bookk.getImageUrl();
+                    String qrCode = updateQRcode.getText() != null ? updateQRcode.getText() : bookk.getQRcode();
+                    String updatedCategory = updateCategory.getText() != null ? updateCategory.getText() : bookk.getCategories();
+                    Book temp2;
+                      temp2 = switch (updatedCategory) {
+                        case "Art" -> new ArtBook(id, title, author, isbn, available, description, imageUrl, qrCode);
+                        case "TechnologyBook" -> new TechnologyBook(id, title, author, isbn, available, description, imageUrl, qrCode);
+                        case "Science" -> new ScienceBook(id, title, author, isbn, available, description, imageUrl, qrCode);
+                        case "Computer" -> new ComputerBook(id, title, author, isbn, available, description, imageUrl, qrCode);
+                        case "HistoryBook" -> new HistoryBook(id, title, author, isbn, available, description, imageUrl, qrCode);
+                        case "EBook" -> new ConcreteBook(id, title, author, isbn, available, description, imageUrl, qrCode);
+                        case "Thesis" -> new ThesisBook(id, title, author, isbn, available, description, imageUrl, qrCode);
+                        default -> new ConcreteBook(id, title, author, isbn, available, description, imageUrl, qrCode);
+                      };
+                    bookDAO.updateBook(temp2);
+                  } catch (Exception ex) {
+                    Logger.getLogger(BookDetailController.class.getName())
+                        .log(Level.SEVERE, ex.getMessage(), ex);
+                  }
+                });
+                xoalammo();
+              }
 
     // Thiết lập cột cho bảng sách
     idC.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -326,10 +333,60 @@ public class AdminController extends DashController {
     ngaymuon.setCellValueFactory(new PropertyValueFactory<>("borrowDate"));
     ngaytra.setCellValueFactory(new PropertyValueFactory<>("returnDate"));
     borrowRecord.setItems(borrowRecordDAO.getAllBorrowRecords());
+
+    
+  }
+ @FXML
+  public void Home() {
+    hideAllPanes(); // Hide all panes
+    home.setVisible(true); // Show Manage Books Pane
   }
 
+  // Method to show the Manage Books pane
+  @FXML
+  public void showManageBooksPane() throws SQLException {
+    hideAllPanes(); // Hide all panes
+    bookList.clear();
+    bookList.setAll(bookController.getAllBooks());
+    bookTable.setItems(bookList);
+    totalBook.setText(String.valueOf(bookList.size()));
+    infoBook.getChildren().clear();
+    xoalammo();
+    manageBooksPane.setVisible(true); // Show Manage Books Pane
+  }
+
+  // Method to show the Manage Users pane
+  @FXML
+  public void showManageUsersPane() throws SQLException {
+    hideAllPanes(); // Hide all panes
+    userList.clear();
+    userList.setAll(getUserList());
+    totalUser.setText(String.valueOf(userList.size()));
+    userTable.setItems(userList);
+    manageUsersPane.setVisible(true); // Show Manage Users Pane
+  }
+
+  @FXML
+  public void showManagerBorrowBook() {
+    hideAllPanes(); // Hide all panes
+
+    borrowRecord.setItems(borrowRecordDAO.getAllBorrowRecords());
+    ManagerBorrowBook.setVisible(true); // Show Manage Users Pane
+  }
+
+  // Hide all panes
+  private void hideAllPanes() {
+    home.setVisible(false);
+    searchBookPane.setVisible(false);
+    manageBooksPane.setVisible(false);
+    manageUsersPane.setVisible(false);
+    logoytb.setVisible(true);
+    logofb.setVisible(true);
+    ManagerBorrowBook.setVisible(false);
+    updateB.setVisible(false);
+  }
   // Xử lý sự kiện đăng xuất
-  @FXML private Button logoutButton; // Add a button for logout
+   // Add a button for logout
 
   @FXML
   private void handleAddBook() throws SQLException {
@@ -426,5 +483,18 @@ public class AdminController extends DashController {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  private void lammo() {
+    updateB.setStyle("-fx-background-color-:rgb(165, 190, 67);");
+    updateB.setVisible(true);
+    updateB.getStyleClass().add("pane-background");
+
+    // manageBooksPane.setStyle("-fx-background-color-: rgba(157, 146, 146, 0.5);");
+    manageBooksPane.setEffect(blur);
+  }
+  private void xoalammo() {
+    updateB.setVisible(false);
+    manageBooksPane.setEffect(null);
   }
 }

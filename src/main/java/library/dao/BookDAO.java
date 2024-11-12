@@ -38,8 +38,24 @@ public class BookDAO {
   public void updateBook(Book book) {
     // Implementation for updating the book in the database
     // This is a placeholder implementation
+    String sql = "UPDATE books SET title = ?, author = ?, isbn = ?, description = ?, imageUrl = ?, QRcode = ?, categories = ?" 
+      + ", available = ? WHERE id = ?";
 
-    System.out.println("Updating book: " + book.getTitle());
+    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+        pstmt.setString(1, book.getTitle());
+        pstmt.setString(2, book.getAuthor());
+        pstmt.setString(3, book.getIsbn());
+        pstmt.setString(4, book.getDescription());
+        pstmt.setString(5, book.getImageUrl());
+        pstmt.setString(6, book.getQRcode());
+        pstmt.setString(7, book.getCategories());
+        pstmt.setBoolean(8, book.isAvailable());
+        pstmt.setInt(9, book.getId());
+        int cnt = pstmt.executeUpdate();
+        System.out.println(cnt + " records affected");
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
   }
 
   public boolean isbnExists(String isbn) {

@@ -60,7 +60,7 @@ public class DashController {
   protected HostServices hostServices;
 
   @FXML private Button Books, logOut;
-  private BookDAO bookDAO = BookDAO.getBookDAO();
+  protected BookDAO bookDAO = BookDAO.getBookDAO();
   protected final BookController bookController = new BookController();
 
   public DashController() {}

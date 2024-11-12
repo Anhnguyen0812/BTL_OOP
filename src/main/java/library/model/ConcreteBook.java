@@ -1,7 +1,7 @@
 package library.model;
 
 public class ConcreteBook extends Book {
-  private final String concreteCategories = "Else";
+  private String concreteCategories = "Else";
 
   public ConcreteBook(
       int id,
@@ -48,6 +48,10 @@ public class ConcreteBook extends Book {
   @Override
   public String getCategories() {
     return concreteCategories;
+  }
+
+  public void setCategories(String categories) {
+    this.concreteCategories = categories;
   }
 
   @Override
