@@ -90,10 +90,7 @@
     -fx-border-color: #cccccc;
 }
 
-.label {
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-}
+
 
 .logout-button {
     -fx-background-color: #e74c3c;
@@ -142,6 +139,18 @@
     -fx-background-radius: 5px;
 }
 
-. .. {
+.itemAnchor {
+    -fx-background-color: #d5d5d5;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.itemAnchor:hover {
+    -fx-background-color: #b5b5b5;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.a {
     -fx-background-color: #a1afb8;
 }

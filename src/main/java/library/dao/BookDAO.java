@@ -58,9 +58,8 @@ public class BookDAO {
 
   public void addBook(Book book) throws SQLException {
 
-    String query =
-        "INSERT INTO books (title, author, isbn, available, description, imageUrl, QRcode, categories) VALUES ("
-            + " ?, ?, ?, ?, ?, ?, ?, ?)";
+    String query = "INSERT INTO books (title, author, isbn, available, description, imageUrl, QRcode, categories) VALUES ("
+        + " ?, ?, ?, ?, ?, ?, ?, ?)";
     PreparedStatement stmt = connection.prepareStatement(query);
     stmt.setString(1, book.getTitle());
     stmt.setString(2, book.getAuthor());
@@ -89,17 +88,18 @@ public class BookDAO {
       String QRcode = rs.getString("QRcode");
 
       Book temp2;
-        temp2 = switch (category) {
-          case "Art" -> new ArtBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "TechnologyBook" -> new TechnologyBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "Science" -> new ScienceBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "Computer" -> new ComputerBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "HistoryBook" -> new HistoryBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "EBook" -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "Thesis" -> new ThesisBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          default -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-        };
-        return temp2;
+      temp2 = switch (category) {
+        case "Art" -> new ArtBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "TechnologyBook" ->
+          new TechnologyBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Science" -> new ScienceBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Computer" -> new ComputerBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "HistoryBook" -> new HistoryBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "EBook" -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Thesis" -> new ThesisBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        default -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+      };
+      return temp2;
     }
     return null;
   }
@@ -120,19 +120,28 @@ public class BookDAO {
       String QRcode = rs.getString("QRcode");
 
       Book temp2;
-        temp2 = switch (category) {
-          case "Art" -> new ArtBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-          case "TechnologyBook" -> new TechnologyBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-          case "Science" -> new ScienceBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-          case "Computer" -> new ComputerBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-          case "HistoryBook" -> new HistoryBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-          case "EBook" -> new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-          case "Thesis" -> new ThesisBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-          default -> new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-        };
+      temp2 = switch (category) {
+        case "Art" -> new ArtBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "TechnologyBook" ->
+          new TechnologyBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Science" -> new ScienceBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Computer" -> new ComputerBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "HistoryBook" -> new HistoryBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "EBook" -> new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Thesis" -> new ThesisBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        default -> new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+      };
       return temp2;
     }
     return null;
+  }
+
+  public boolean haveBook(String isbn) throws SQLException {
+    String query = "SELECT * FROM books WHERE isbn = ?";
+    PreparedStatement stmt = connection.prepareStatement(query);
+    stmt.setString(1, isbn);
+    ResultSet rs = stmt.executeQuery();
+    return rs.next();
   }
 
   public ObservableList<Book> getBookByTitle(String title) throws SQLException {
@@ -154,16 +163,17 @@ public class BookDAO {
       String QRcode = rs.getString("QRcode");
 
       Book temp2;
-        temp2 = switch (category) {
-          case "Art" -> new ArtBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "TechnologyBook" -> new TechnologyBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "Science" -> new ScienceBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "Computer" -> new ComputerBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "HistoryBook" -> new HistoryBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "EBook" -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "Thesis" -> new ThesisBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          default -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-        };
+      temp2 = switch (category) {
+        case "Art" -> new ArtBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "TechnologyBook" ->
+          new TechnologyBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Science" -> new ScienceBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Computer" -> new ComputerBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "HistoryBook" -> new HistoryBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "EBook" -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Thesis" -> new ThesisBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        default -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+      };
       books.add(temp2);
     }
     return books;
@@ -188,17 +198,19 @@ public class BookDAO {
       String QRcode = rs.getString("QRcode");
 
       Book temp2;
-        temp2 = switch (category) {
-          case "Art" -> new ArtBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
-          case "TechnologyBook" -> new TechnologyBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
-          case "Science" -> new ScienceBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
-          case "Computer" -> new ComputerBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
-          case "HistoryBook" -> new HistoryBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
-          case "EBook" -> new ConcreteBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
-          case "Thesis" -> new ThesisBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
-          default -> new ConcreteBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
-        };
-        books.add(temp2);
+      temp2 = switch (category) {
+        case "Art" -> new ArtBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
+        case "TechnologyBook" ->
+          new TechnologyBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Science" -> new ScienceBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Computer" -> new ComputerBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
+        case "HistoryBook" ->
+          new HistoryBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
+        case "EBook" -> new ConcreteBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Thesis" -> new ThesisBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
+        default -> new ConcreteBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
+      };
+      books.add(temp2);
     }
     return books;
   }
@@ -220,17 +232,18 @@ public class BookDAO {
       String QRcode = rs.getString("QRcode");
 
       Book temp2;
-        temp2 = switch (category) {
-          case "Art" -> new ArtBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "TechnologyBook" -> new TechnologyBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "Science" -> new ScienceBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "Computer" -> new ComputerBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "HistoryBook" -> new HistoryBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "EBook" -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "Thesis" -> new ThesisBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          default -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-        };
-        books.add(temp2);
+      temp2 = switch (category) {
+        case "Art" -> new ArtBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "TechnologyBook" ->
+          new TechnologyBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Science" -> new ScienceBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Computer" -> new ComputerBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "HistoryBook" -> new HistoryBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "EBook" -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Thesis" -> new ThesisBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        default -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+      };
+      books.add(temp2);
     }
     return books;
   }

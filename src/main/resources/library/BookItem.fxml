@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="144.0" prefWidth="517.0" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-background-color: DFDFDF;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="library.controller.BookItemController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="144.0" prefWidth="517.0" styleClass="itemAnchor" stylesheets="@../styles/Ui.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="library.controller.BookItemController">
    <children>
       <ImageView fx:id="bookImage" fitHeight="134.0" fitWidth="100.0" layoutX="14.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" />
       <VBox layoutX="126.0" layoutY="14.0" prefHeight="128.0" prefWidth="383.0">

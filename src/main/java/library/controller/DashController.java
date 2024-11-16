@@ -139,9 +139,6 @@ public class DashController {
     settings.setVisible(false);
     home_Button.styleProperty().set("-fx-background-color: #777777");
 
-    List<BorrowRecord> borrowRecords = borrowRecordDAO.getBorrowRecordsByUserId(user);
-    setBorrowedBookItems(borrowRecords);
-
     int totalBooks = allDao.getTotalBooks();
     int totalUsers = allDao.getTotalUsers();
     int totalBorrowRecords = allDao.getTotalBorrowRecords();
@@ -177,12 +174,6 @@ public class DashController {
         }
         searchReturnBooks.add(bookItem, column++, row);
         GridPane.setMargin(bookItem, new Insets(5)); // Add margin of 5px between items
-        bookItem.setOnMouseEntered(event -> {
-          bookItem.setStyle("-fx-background-color: #D0D0D0;");
-        });
-        bookItem.setOnMouseExited(event -> {
-          bookItem.setStyle("-fx-background-color:  #DFDFDF;");
-        });
         bookItem.setOnMouseClicked(event -> {
           if (event.getClickCount() == 2) {
             showBookDetails(record.getBook());
@@ -227,12 +218,16 @@ public class DashController {
     resetStyle();
     books.setVisible(true);
     books_Button.styleProperty().set("-fx-background-color: #777777");
+    searchGG.setOnAction(event -> searchGoogle());
+    searchGG.setDefaultButton(true);
   }
 
-  public void gotoReturnBooks() {
+  public void gotoReturnBooks() throws SQLException {
     resetStyle();
     returnBooks.setVisible(true);
     returnBooks_Button.styleProperty().set("-fx-background-color: #777777");
+    List<BorrowRecord> borrowRecords = borrowRecordDAO.getBorrowRecordsByUserId(user);
+    setBorrowedBookItems(borrowRecords);
   }
 
   public void gotoIssueBooks() {
@@ -353,15 +348,35 @@ public class DashController {
   }
 
   @FXML
-  public void searchGoogle() {
+  public void SearchLibrary() {
+    String bookTitle = title.getText();
+    Task<Void> task = new Task<Void>() {
+      @Override
+      protected Void call() throws Exception {
+        List<Book> books;
+        if (bookTitle.isEmpty()) {
+          books = bookDAO.getAllBooks();
+        } else {
+          books = bookDAO.getBookByTitle(bookTitle);
+        }
+        Platform.runLater(() -> {
+          setBookItem(books, false);
+        });
+        return null;
+      }
+    };
+    new Thread(task).start();
+  }
 
+  @FXML
+  public void searchGoogle() {
     Task<Void> task = new Task<Void>() {
       @Override
       protected Void call() throws Exception {
         String bookTitle = title.getText();
         List<Book> books = bookController.searchBookByTitle(bookTitle);
         Platform.runLater(() -> {
-          setBookItem(books);
+          setBookItem(books, true);
         });
         return null;
       }
@@ -370,7 +385,7 @@ public class DashController {
 
   }
 
-  private void setBookItem(List<Book> books) {
+  private void setBookItem(List<Book> books, boolean needCheck) {
     searchView.getChildren().clear();
     int column = 1;
     int row = 1;
@@ -382,6 +397,12 @@ public class DashController {
         AnchorPane bookItem = loader.load();
         BookItemController controller = loader.getController();
         controller.setBookData(book, i, user);
+        if (needCheck) {
+          controller.setBorrowButtonVisible();
+        } else {
+          controller.checkBorrowed();
+        }
+
         if (column == 3) {
           column = 1;
           row++;
@@ -390,16 +411,6 @@ public class DashController {
         }
         searchView.add(bookItem, column++, row);
         GridPane.setMargin(bookItem, new Insets(5)); // Add margin of 20px between items
-        bookItem.setOnMouseEntered(event -> {
-          bookItem.setStyle("-fx-background-radius: 10;");
-          bookItem.setStyle("-fx-border-radius: 10;");
-          bookItem.setStyle("-fx-background-color: #D0D0D0;");
-        });
-        bookItem.setOnMouseExited(event -> {
-          bookItem.setStyle("-fx-background-radius: 10;");
-          bookItem.setStyle("-fx-border-radius: 10;");
-          bookItem.setStyle("-fx-background-color:  #DFDFDF;");
-        });
         bookItem.setOnMouseClicked(event -> {
           if (event.getClickCount() == 2) {
             showBookDetails(book);

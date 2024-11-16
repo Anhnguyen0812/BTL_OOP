@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import library.model.Book;
 import library.model.User;
 import java.time.LocalDate;
+import library.dao.BookDAO;
 import library.dao.BorrowRecordDAO;
 import library.model.BorrowRecord;
 
@@ -28,6 +29,7 @@ public class BookItemController {
     Book book;
 
     public void initialize() {
+
     }
 
     public void setBookData(Book books, int i, User user) {
@@ -43,11 +45,36 @@ public class BookItemController {
 
     }
 
+    public void setBorrowButtonVisible() {
+        BookDAO bookDao = BookDAO.getBookDAO();
+        try {
+            if (!bookDao.haveBook(book.getIsbn())) {
+                borrowButton.setVisible(false);
+            } else {
+                checkBorrowed();
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+    }
+
+    public void checkBorrowed() {
+        BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO();
+        if (borrowRecordDAO.isBorrowed(user, book)) {
+            borrowButton.setVisible(false);
+        } else {
+            borrowButton.setVisible(true);
+        }
+    }
+
     @FXML
     public void borrowAction() {
         BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO();
         BorrowRecord borrowRecord = new BorrowRecord(0, user, book, LocalDate.now(), null);
         borrowRecordDAO.addBorrowRecord(borrowRecord);
+        borrowButton.setVisible(false);
+
     }
 
 }

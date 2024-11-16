@@ -130,6 +130,19 @@ public class BorrowRecordDAO {
     return records;
   }
 
+  public boolean isBorrowed(User user, Book book) {
+    String query = "SELECT * FROM borrow_records WHERE user_id = ? AND book_id = ?";
+    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+      stmt.setInt(1, user.getId());
+      stmt.setInt(2, book.getId());
+      ResultSet rs = stmt.executeQuery();
+      return rs.next();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
   public int countBookBorrow(int user_id) {
     String sql = "SELECT COUNT(*) FROM books WHERE user_id = ?";
     try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
