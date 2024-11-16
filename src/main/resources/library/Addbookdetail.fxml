@@ -17,7 +17,7 @@
             <ImageView fx:id="qrCodeImageView" fitHeight="90.0" fitWidth="101.0" layoutX="945.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
             <Button fx:id="addbook" layoutX="934.0" layoutY="188.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="129.0" text="muon sach" />
             <Label fx:id="category" layoutX="12.0" layoutY="202.0" prefHeight="36.0" prefWidth="156.0" text="Label" />
-            <Label fx:id="notBorrowBook" layoutX="721.0" layoutY="192.0" prefHeight="36.0" prefWidth="165.0" text="Can not borrow book" visiable="false" />
+            <Label fx:id="notBorrowBook" layoutX="750.0" layoutY="184.0" prefHeight="36.0" prefWidth="165.0" text="Can not borrow book" textFill="RED" visible="false" />
          </children>
       </Pane>
    </children>

@@ -116,3 +116,7 @@
 .data1.chart-pie {
     -fx-pie-color: #54AAF3;
 }
+
+.pane-background {
+    -fx-background-color: #b1bdc2; /* Màu nền, ví dụ là màu xanh nhạt */
+}

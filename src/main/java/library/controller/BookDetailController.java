@@ -48,6 +48,8 @@ public class BookDetailController {
   @FXML private TextField updateTitle, updateAuthor, updateIsbn, updateDescription, updateImageUrl,updateQRcode, updateCategory;
   @FXML private Label notBorrowBook;
   @FXML private Pane updateBook;
+  @FXML private Label modelTitle, modelAuthor, modelIsbn;
+  @FXML private ImageView modelImage;
 
   private static User user;
   private static Book bookk;
@@ -69,9 +71,24 @@ public class BookDetailController {
     return new Image(inputStream); // Trả về hình ảnh QR dưới dạng Image
   }
 
+  public void test(Book book) {
+    modelTitle.setText(book.getTitle());
+    modelAuthor.setText(book.getAuthor());
+    modelIsbn.setText(book.getIsbn());
+    // isbnLabel.setText(book.getIsbn());
+    // Hiển thị hình ảnh nếu có
+    if (book.getImageUrl() != null) {
+      Image image = new Image(book.getImageUrl());
+      modelImage.setImage(image);
+    } else {
+      bookImageView.setImage(null);
+    }
+  }
+
   public void setBookDetails(Book book) {
     titleLabel.setText(book.getTitle());
     authorLabel.setText(book.getAuthor());
+    isbnLabel.setText(book.getIsbn());
     // isbnLabel.setText(book.getIsbn());
 
     // Hiển thị mô tả nếu có
@@ -264,6 +281,19 @@ public class BookDetailController {
     Parent bookDetail = loader.load();
     BookDetailController controller = loader.getController();
     controller.setBookDetails(book);
+    return bookDetail;
+  }
+
+
+
+  public Parent createPane(Book book) throws IOException {
+    if (book == null) {
+      return null;
+    }
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/modelbook.fxml"));
+    Parent bookDetail = loader.load();
+    BookDetailController controller = loader.getController();
+    controller.test(book);
     return bookDetail;
   }
 }

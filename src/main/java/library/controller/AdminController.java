@@ -20,19 +20,19 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 import library.dao.BookDAO;
 import library.dao.UserDAO;
@@ -102,10 +102,10 @@ public class AdminController extends DashController {
   private static final Logger LOGGER = Logger.getLogger(AdminController.class.getName());
   @FXML private ImageView logofb, logoytb;
   @FXML private Button delete, updateBook, update;
+  @FXML private PieChart pieChart;
   private final BookController bookController = new BookController();
   private final ObservableList<Book> bookList = FXCollections.observableArrayList();
   private ObservableList<User> userList = FXCollections.observableArrayList();
-  private GaussianBlur blur = new GaussianBlur();
   private Book bookk;
 
   public AdminController(User user, HostServices hostServices) {
@@ -169,8 +169,10 @@ public class AdminController extends DashController {
     searchBookButton.setOnAction(
         event -> {
           try {
+            detailBook.getChildren().clear();
             loading.setVisible(true);
-            handleSearchBookGG(searchBook.getText(), searchAuthor.getText(), searchResult);
+            detailBook.getChildren().add(loading);
+            // handleSearchBookGG(searchBook.getText(), searchAuthor.getText(), searchResult);
           } catch (Exception e) {
             showAlert("Error", "An error occurred while searching for books.");
           }

@@ -65,7 +65,7 @@ public class BookController {
                 : null;
         String bookUrl = volumeInfo.has("infoLink") ? (String) volumeInfo.get("infoLink") : null;
         ConcreteBook temp =
-            new ConcreteBook(title, authorName, isbn, description, imageUrl, bookUrl);
+            new ConcreteBook(title, authorName, isbn, false, description, imageUrl, bookUrl);
         temp.setCategories(categories);
         Book b = (Book) temp;
         books.add(b);
@@ -109,7 +109,9 @@ public class BookController {
               rs.getString("description"),
               rs.getString("imageUrl"),
               rs.getString("QRcode")));
+              rs.getString("categories");
     }
     return books;
   }
+
 }

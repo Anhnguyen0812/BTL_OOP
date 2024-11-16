@@ -208,6 +208,11 @@
         <version>5.0.0</version> <!-- Đảm bảo phiên bản này là mới nhất -->
     </dependency>
 
+    <dependency>
+        <groupId>de.jensd</groupId>
+        <artifactId>fontawesomefx</artifactId>
+        <version>8.9</version>
+    </dependency>
 
 <!-- Add your existing dependencies here -->
 

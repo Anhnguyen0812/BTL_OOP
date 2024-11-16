@@ -34,6 +34,17 @@ public class ConcreteBook extends Book {
   }
 
   public ConcreteBook(
+      String title,
+      String author,
+      String isbn,
+      boolean available,
+      String description,
+      String imageUrl,
+      String QRcode) {
+    super(title, author, isbn, available, description, imageUrl, QRcode);
+  }
+
+  public ConcreteBook(
       int id,
       String title,
       String author,
