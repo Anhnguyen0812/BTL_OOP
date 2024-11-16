@@ -62,10 +62,17 @@
             </PasswordField>
          </children>
       </GridPane>
-      <Button fx:id="hide" layoutX="403.0" layoutY="180.0" mnemonicParsing="false" onAction="#togglePass" prefHeight="26.0" prefWidth="11.0" styleClass="hide" text="o">
+      <Button fx:id="hide" graphicTextGap="0.0" layoutX="396.0" layoutY="180.0" mnemonicParsing="false" onAction="#togglePass" prefHeight="30.0" prefWidth="30.0" styleClass="hide">
          <font>
             <Font size="13.0" />
          </font>
+         <graphic>
+            <ImageView fx:id="imgHide" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../imgs/hidden.png" />
+               </image>
+            </ImageView>
+         </graphic>
       </Button>
       <Button fx:id="loginButton" layoutX="400.0" layoutY="282.0" mnemonicParsing="false" onAction="#MoveToAccount" prefHeight="30.0" prefWidth="65.0" styleClass="LoginButton" text="Login">
          <font>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="680.0" prefWidth="680.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="library.controller.DetailController">
+   <children>
+      <ScrollPane fx:id="scrollPane" prefHeight="680.0" prefWidth="680.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="678.0" prefWidth="678.0">
+               <children>
+                  <VBox fx:id="contentBox" prefHeight="680.0" prefWidth="680.0">
+                     <children>
+                        <HBox prefHeight="242.0" prefWidth="609.0">
+                           <children>
+                              <ImageView fx:id="bookImageView" fitHeight="193.0" fitWidth="140.0" pickOnBounds="true" preserveRatio="true">
+                                 <HBox.margin>
+                                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                 </HBox.margin>
+                              </ImageView>
+                              <VBox prefHeight="242.0" prefWidth="499.0">
+                                 <children>
+                                    <Label fx:id="titleLabel" prefHeight="30.0" prefWidth="503.0" text="Label">
+                                       <font>
+                                          <Font name="Segoe UI Bold" size="20.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets top="20.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <Label fx:id="authorLabel" prefHeight="37.0" prefWidth="500.0" text="Label">
+                                       <font>
+                                          <Font name="Segoe UI" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="isbnLabel" prefHeight="36.0" prefWidth="498.0" text="Label">
+                                       <font>
+                                          <Font name="Segoe UI" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <HBox prefHeight="132.0" prefWidth="499.0">
+                                       <children>
+                                          <VBox prefHeight="162.0" prefWidth="372.0">
+                                             <children>
+                                                <Label fx:id="avaiLable" prefHeight="24.0" prefWidth="238.0" text="Label">
+                                                   <font>
+                                                      <Font name="Segoe UI" size="14.0" />
+                                                   </font>
+                                                   <VBox.margin>
+                                                      <Insets top="10.0" />
+                                                   </VBox.margin>
+                                                </Label>
+                                                <Label fx:id="isBorrow" prefHeight="30.0" prefWidth="277.0" text="Label">
+                                                   <font>
+                                                      <Font name="Segoe UI" size="14.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                          </VBox>
+                                          <ImageView fx:id="qrCodeImageView" fitHeight="125.0" fitWidth="125.0" pickOnBounds="true" preserveRatio="true" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                        <Label fx:id="category" prefHeight="26.0" prefWidth="195.0" text="Label">
+                           <font>
+                              <Font name="Segoe UI" size="14.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets left="20.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Text fx:id="description" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+                           <font>
+                              <Font name="Segoe UI" size="14.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets left="20.0" top="20.0" />
+                           </VBox.margin>
+                        </Text>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>

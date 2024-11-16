@@ -13,6 +13,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import library.dao.UserDAO;
 import library.model.User;
@@ -35,6 +37,8 @@ public class SignupController {
   private Button hideButton;
   @FXML
   private Button hideButton1;
+  @FXML
+  private ImageView imgHide1, imgHide2;
 
   @FXML
   private Button signupButton, loginButton;
@@ -113,16 +117,16 @@ public class SignupController {
       CPass.setVisible(false);
       Passhide.setVisible(true);
       CPasshide.setVisible(true);
-      hideButton.setText("o");
-      hideButton1.setText("o");
+      imgHide1.setImage(new Image("/imgs/hidden.png"));
+      imgHide2.setImage(new Image("/imgs/hidden.png"));
 
     } else {
       Pass.setVisible(true);
       CPass.setVisible(true);
       Passhide.setVisible(false);
       CPasshide.setVisible(false);
-      hideButton.setText("-");
-      hideButton1.setText("-");
+      imgHide1.setImage(new Image("/imgs/show.png"));
+      imgHide2.setImage(new Image("/imgs/show.png"));
     }
   }
 }

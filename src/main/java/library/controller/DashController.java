@@ -4,8 +4,13 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
+
+import com.gluonhq.impl.charm.a.b.b.u;
 
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.geometry.Insets;
 import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -16,12 +21,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
+import javafx.scene.chart.StackedAreaChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -31,6 +39,7 @@ import library.model.Book;
 import library.model.BorrowRecord;
 import library.model.ConcreteBook;
 import library.model.User;
+import library.dao.AllDao;
 
 public class DashController {
 
@@ -75,13 +84,25 @@ public class DashController {
 
   @FXML
   protected ProgressIndicator loading;
+  @FXML
+  private ListView<String> notiList;
 
   @FXML
   private Label welcome;
+  @FXML
+  private GridPane searchView, searchReturnBooks;
 
   protected BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO();
   protected User user;
   protected HostServices hostServices;
+
+  @FXML
+  StackedAreaChart chart1;
+
+  @FXML
+  PieChart chart2;
+
+  AllDao allDao = new AllDao();
 
   @FXML
   private Button Books, logOut, user_Button;
@@ -118,6 +139,69 @@ public class DashController {
     settings.setVisible(false);
     home_Button.styleProperty().set("-fx-background-color: #777777");
 
+    List<BorrowRecord> borrowRecords = borrowRecordDAO.getBorrowRecordsByUserId(user);
+    setBorrowedBookItems(borrowRecords);
+
+    int totalBooks = allDao.getTotalBooks();
+    int totalUsers = allDao.getTotalUsers();
+    int totalBorrowRecords = allDao.getTotalBorrowRecords();
+
+    ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
+        new PieChart.Data("Books", totalBooks),
+        new PieChart.Data("Users", totalUsers),
+        new PieChart.Data("Borrow Records", totalBorrowRecords));
+    pieChartData.forEach(data -> {
+      data.setName(data.getName() + " (" + (int) data.getPieValue() + ")");
+    });
+    chart2.setData(pieChartData);
+
+  }
+
+  private void setBorrowedBookItems(List<BorrowRecord> borrowRecords) {
+    searchReturnBooks.getChildren().clear();
+    int column = 1;
+    int row = 1;
+    int i = 0;
+    for (BorrowRecord record : borrowRecords) {
+      try {
+        i++;
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/BookItem.fxml"));
+        AnchorPane bookItem = loader.load();
+        BookItemController controller = loader.getController();
+        controller.setBookData(record.getBook(), i, user);
+        if (column == 3) {
+          column = 1;
+          row++;
+          if (row >= 20)
+            break;
+        }
+        searchReturnBooks.add(bookItem, column++, row);
+        GridPane.setMargin(bookItem, new Insets(5)); // Add margin of 5px between items
+        bookItem.setOnMouseEntered(event -> {
+          bookItem.setStyle("-fx-background-color: #D0D0D0;");
+        });
+        bookItem.setOnMouseExited(event -> {
+          bookItem.setStyle("-fx-background-color:  #DFDFDF;");
+        });
+        bookItem.setOnMouseClicked(event -> {
+          if (event.getClickCount() == 2) {
+            showBookDetails(record.getBook());
+          }
+        });
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  private void saveSearchResults(List<Book> books) {
+    for (Book book : books) {
+      try {
+        bookDAO.addBook(book);
+      } catch (SQLException e) {
+        showAlert("Error", "Failed to save book: " + book.getTitle());
+      }
+    }
   }
 
   public void resetStyle() {
@@ -125,6 +209,7 @@ public class DashController {
     books.setVisible(false);
     returnBooks.setVisible(false);
     issueBooks.setVisible(false);
+    settings.setVisible(false);
     home_Button.styleProperty().set("-fx-background-color: #A6AEBF");
     books_Button.styleProperty().set("-fx-background-color: #A6AEBF");
     returnBooks_Button.styleProperty().set("-fx-background-color: #A6AEBF");
@@ -231,12 +316,14 @@ public class DashController {
         // Tìm kiếm theo tiêu đề
         if (!bookTitle.isEmpty()) {
           foundBooks.addAll(bookController.searchBook(bookTitle));
+          saveSearchResults(foundBooks);
+
         }
         // Tìm kiếm theo tác giả
         if (!bookAuthor.isEmpty()) {
           foundBooks.addAll(bookController.searchBook(bookAuthor));
         }
-        Thread.sleep(500); // Giả lập việc tìm kiếm mất thời gianThrea
+        Thread.sleep(0); // Giả lập việc tìm kiếm mất thời gianThrea
         return foundBooks;
       }
 
@@ -262,6 +349,66 @@ public class DashController {
     };
     // Chạy task trong một luồng riêng
     new Thread(task).start();
+
+  }
+
+  @FXML
+  public void searchGoogle() {
+
+    Task<Void> task = new Task<Void>() {
+      @Override
+      protected Void call() throws Exception {
+        String bookTitle = title.getText();
+        List<Book> books = bookController.searchBookByTitle(bookTitle);
+        Platform.runLater(() -> {
+          setBookItem(books);
+        });
+        return null;
+      }
+    };
+    new Thread(task).start();
+
+  }
+
+  private void setBookItem(List<Book> books) {
+    searchView.getChildren().clear();
+    int column = 1;
+    int row = 1;
+    int i = 0;
+    for (Book book : books) {
+      try {
+        i++;
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/BookItem.fxml"));
+        AnchorPane bookItem = loader.load();
+        BookItemController controller = loader.getController();
+        controller.setBookData(book, i, user);
+        if (column == 3) {
+          column = 1;
+          row++;
+          if (row >= 20)
+            break;
+        }
+        searchView.add(bookItem, column++, row);
+        GridPane.setMargin(bookItem, new Insets(5)); // Add margin of 20px between items
+        bookItem.setOnMouseEntered(event -> {
+          bookItem.setStyle("-fx-background-radius: 10;");
+          bookItem.setStyle("-fx-border-radius: 10;");
+          bookItem.setStyle("-fx-background-color: #D0D0D0;");
+        });
+        bookItem.setOnMouseExited(event -> {
+          bookItem.setStyle("-fx-background-radius: 10;");
+          bookItem.setStyle("-fx-border-radius: 10;");
+          bookItem.setStyle("-fx-background-color:  #DFDFDF;");
+        });
+        bookItem.setOnMouseClicked(event -> {
+          if (event.getClickCount() == 2) {
+            showBookDetails(book);
+          }
+        });
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   public void gotoNoti() {
@@ -280,6 +427,7 @@ public class DashController {
     }
   }
 
+  @FXML
   public void logOut() {
     try {
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Login.fxml"));
@@ -293,4 +441,23 @@ public class DashController {
       e.printStackTrace();
     }
   }
+
+  public void showBookDetails(Book book) {
+    try {
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Detail.fxml"));
+      Parent root = loader.load();
+
+      // Get the controller of Detail.fxml and set the book data
+      DetailController detailController = loader.getController();
+      detailController.setBookData(book);
+
+      Stage stage = new Stage();
+      stage.setScene(new Scene(root));
+      stage.setTitle("Book Details");
+      stage.show();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
 }

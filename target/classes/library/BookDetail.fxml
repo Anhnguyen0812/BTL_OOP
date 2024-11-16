@@ -1,21 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
 
-<AnchorPane prefHeight="304.0" prefWidth="754.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="library.controller.BookDetailController">
+<AnchorPane prefHeight="680.0" prefWidth="680.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="library.controller.BookDetailController">
    <children>
-      <Pane layoutY="-3.0" prefHeight="304.0" prefWidth="754.0">
-         <children>
-            <ImageView fx:id="bookImageView" fitHeight="234.0" fitWidth="174.0" layoutX="5.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
-            <Label fx:id="titleLabel" layoutX="190.0" layoutY="14.0" prefHeight="30.0" prefWidth="250.0" text="Label" />
-            <Label fx:id="authorLabel" layoutX="190.0" layoutY="44.0" prefHeight="30.0" prefWidth="250.0" text="Label" />
-            <Label fx:id="descriptionLabel" layoutX="190.0" layoutY="82.0" prefHeight="66.0" prefWidth="437.0" text="Label" wrapText="true" />
-            <ImageView fx:id="qrCodeImageView" fitHeight="77.0" fitWidth="87.0" layoutX="600.0" layoutY="196.0" pickOnBounds="true" preserveRatio="true" />
-            <Label fx:id="category" layoutX="16.0" layoutY="245.0" prefHeight="38.0" prefWidth="184.0" text="Label" />
-         </children>
-      </Pane>
+      <ScrollPane prefHeight="680.0" prefWidth="680.0">
+         <content>
+            <Pane prefHeight="678.0" prefWidth="677.0">
+               <children>
+                  <ImageView fx:id="bookImageView" fitHeight="193.0" fitWidth="140.0" layoutX="34.0" layoutY="29.0" pickOnBounds="true" preserveRatio="true" />
+                  <Label fx:id="titleLabel" layoutX="236.0" layoutY="14.0" prefHeight="30.0" prefWidth="250.0" text="Label">
+                     <font>
+                        <Font name="Segoe UI Bold" size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="authorLabel" layoutX="236.0" layoutY="44.0" prefHeight="30.0" prefWidth="250.0" text="Label">
+                     <font>
+                        <Font name="Segoe UI" size="14.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="descriptionLabel" layoutX="236.0" layoutY="82.0" prefHeight="56.0" prefWidth="437.0" text="Label">
+                     <font>
+                        <Font name="Segoe UI" size="14.0" />
+                     </font>
+                  </Label>
+                  <ImageView fx:id="qrCodeImageView" fitHeight="77.0" fitWidth="87.0" layoutX="600.0" layoutY="196.0" pickOnBounds="true" preserveRatio="true" />
+                  <Label fx:id="category" layoutX="53.0" layoutY="235.0" prefHeight="38.0" prefWidth="195.0" text="Label">
+                     <font>
+                        <Font name="Segoe UI" size="14.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="401.0" layoutY="187.0" prefHeight="17.0" prefWidth="54.0" text="Label">
+                     <font>
+                        <Font name="Segoe UI" size="14.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="611.0" layoutY="187.0" text="Label">
+                     <font>
+                        <Font name="Segoe UI" size="14.0" />
+                     </font>
+                  </Label>
+                  <TextFlow layoutX="34.0" layoutY="292.0" prefHeight="376.0" prefWidth="621.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+                           <font>
+                              <Font name="Segoe UI" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+               </children>
+            </Pane>
+         </content>
+      </ScrollPane>
    </children>
 </AnchorPane>

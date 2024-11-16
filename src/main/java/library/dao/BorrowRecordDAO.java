@@ -32,9 +32,8 @@ public class BorrowRecordDAO {
 
   // Thêm bản ghi mượn sách
   public void addBorrowRecord(BorrowRecord record) {
-    String query =
-        "INSERT INTO borrow_records (user_id, book_id, borrow_date, return_date) VALUES (?, ?, ?,"
-            + " ?)";
+    String query = "INSERT INTO borrow_records (user_id, book_id, borrow_date, return_date) VALUES (?, ?, ?,"
+        + " ?)";
     try (PreparedStatement stmt = connection.prepareStatement(query)) {
       stmt.setInt(1, record.getUser().getId());
       stmt.setInt(2, record.getBook().getId());
@@ -59,10 +58,10 @@ public class BorrowRecordDAO {
         int userId = rs.getInt("user_id");
         int bookId = rs.getInt("book_id");
         LocalDate borrowDate = rs.getDate("borrow_date").toLocalDate();
-        LocalDate returnDate =
-            rs.getDate("return_date") != null ? rs.getDate("return_date").toLocalDate() : null;
+        LocalDate returnDate = rs.getDate("return_date") != null ? rs.getDate("return_date").toLocalDate() : null;
 
-        // Giả sử bạn có lớp UserService và BookService để lấy thông tin người dùng và sách
+        // Giả sử bạn có lớp UserService và BookService để lấy thông tin người dùng và
+        // sách
         UserService userService = new UserService(UserDAO.getUserDAO());
         User user = userService.getUserById(userId); // Phương thức giả định
         Book book = bookDAO.getBookById(bookId); // Phương thức giả định
@@ -99,14 +98,12 @@ public class BorrowRecordDAO {
         int userId = rs.getInt("user_id");
         int bookId = rs.getInt("book_id");
         LocalDate borrowDate = rs.getDate("borrow_date").toLocalDate();
-        LocalDate returnDate =
-            rs.getDate("return_date") != null ? rs.getDate("return_date").toLocalDate() : null;
+        LocalDate returnDate = rs.getDate("return_date") != null ? rs.getDate("return_date").toLocalDate() : null;
         User user = new UserService(UserDAO.getUserDAO()).getUserById(userId);
         Book book = new BookService(bookDAO).getBookById(bookId);
         return new BorrowRecord(recordId, user, book, borrowDate, returnDate);
       }
     } catch (SQLException e) {
-      e.printStackTrace();
     }
     return null;
   }
@@ -128,7 +125,7 @@ public class BorrowRecordDAO {
               rs.getDate("return_date") != null
                   ? rs.getDate("return_date").toLocalDate()
                   : null // Return date can be null if not returned yet
-              ));
+          ));
     }
     return records;
   }

@@ -33,19 +33,26 @@ import library.model.User; // Add this import statement
 
 public class BookDetailController {
 
-  @FXML private Label titleLabel;
+  @FXML
+  private Label titleLabel;
 
-  @FXML private Label authorLabel;
+  @FXML
+  private Label authorLabel;
 
-  @FXML private Label isbnLabel;
+  @FXML
+  private Label isbnLabel;
 
-  @FXML private Label descriptionLabel, category;
+  @FXML
+  private Label descriptionLabel, category;
 
-  @FXML private ImageView bookImageView;
+  @FXML
+  private ImageView bookImageView;
 
-  @FXML private ImageView qrCodeImageView; // ImageView để hiển thị mã QR
+  @FXML
+  private ImageView qrCodeImageView; // ImageView để hiển thị mã QR
 
-  @FXML private Button returnbook, addbook, delete;
+  @FXML
+  private Button returnbook, addbook, delete;
 
   private static User user;
   private static Book bookk;
@@ -155,8 +162,7 @@ public class BookDetailController {
               if (bookk.isAvailable()) {
                 record = new BorrowRecord(0, user, bookk, today, today.plusMonths(2));
                 borrowRecordDAO.addBorrowRecord(record);
-              }
-              else {
+              } else {
                 // TODO
               }
             } catch (Exception ex) {

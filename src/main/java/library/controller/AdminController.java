@@ -46,54 +46,94 @@ import library.model.User;
 public class AdminController extends DashController {
 
   // Các trường nhập liệu cho quản lý sách
-  @FXML private TextField bookTitleField;
-  @FXML private TextField bookAuthorField;
-  @FXML private TextField bookISBNField;
-  @FXML private TextField bookCategoryField;
+  @FXML
+  private TextField bookTitleField;
+  @FXML
+  private TextField bookAuthorField;
+  @FXML
+  private TextField bookISBNField;
+  @FXML
+  private TextField bookCategoryField;
   // Bảng hiển thị danh sách sách
-  @FXML private TableView<Book> bookTable;
-  @FXML private TableColumn<Book, Integer> idC;
-  @FXML private TableColumn<Book, String> titleColumn;
-  @FXML private TableColumn<Book, String> authorColumn;
-  @FXML private TableColumn<Book, String> isbnColumn;
-  @FXML private TableColumn<Book, String> availableColumn;
+  @FXML
+  private TableView<Book> bookTable;
+  @FXML
+  private TableColumn<Book, Integer> idC;
+  @FXML
+  private TableColumn<Book, String> titleColumn;
+  @FXML
+  private TableColumn<Book, String> authorColumn;
+  @FXML
+  private TableColumn<Book, String> isbnColumn;
+  @FXML
+  private TableColumn<Book, String> availableColumn;
   // Các trường nhập liệu cho quản lý người dùng
-  @FXML private TextField usernameField;
-  @FXML private TextField emailField;
-  @FXML private TextField passwordField;
-  @FXML private TextField roleField;
+  @FXML
+  private TextField usernameField;
+  @FXML
+  private TextField emailField;
+  @FXML
+  private TextField passwordField;
+  @FXML
+  private TextField roleField;
   // Bảng hiển thị danh sách người dùng
-  @FXML private Button searchBookButton; // Add a button for search
+  @FXML
+  private Button searchBookButton; // Add a button for search
 
-  @FXML private TableColumn<?, ?> idColumn;
-  @FXML private TableView<User> userTable;
-  @FXML private TableColumn<User, String> usernameColumn;
-  @FXML private TableColumn<User, String> emailColumn;
-  @FXML private TableColumn<User, String> roleColumn;
-  @FXML private TextField searchBook;
+  @FXML
+  private TableColumn<?, ?> idColumn;
+  @FXML
+  private TableView<User> userTable;
+  @FXML
+  private TableColumn<User, String> usernameColumn;
+  @FXML
+  private TableColumn<User, String> emailColumn;
+  @FXML
+  private TableColumn<User, String> roleColumn;
+  @FXML
+  private TextField searchBook;
 
-  @FXML private Pane detailBook;
-  @FXML private TextField searchAuthor;
-  @FXML private TableView<Book> searchResult;
-  @FXML private TableColumn<Book, String> Title;
-  @FXML private TableColumn<Book, String> Author;
-  @FXML private TableColumn<Book, String> ISBN;
-  @FXML private TableColumn<?, ?> Categories;
+  @FXML
+  private Pane detailBook;
+  @FXML
+  private TextField searchAuthor;
+  @FXML
+  private TableView<Book> searchResult;
+  @FXML
+  private TableColumn<Book, String> Title;
+  @FXML
+  private TableColumn<Book, String> Author;
+  @FXML
+  private TableColumn<Book, String> ISBN;
+  @FXML
+  private TableColumn<?, ?> Categories;
 
-  @FXML private TableView<BorrowRecord> borrowRecord;
-  @FXML protected TableColumn<BorrowRecord, Integer> Id_User;
-  @FXML protected TableColumn<BorrowRecord, String> Username;
+  @FXML
+  private TableView<BorrowRecord> borrowRecord;
+  @FXML
+  protected TableColumn<BorrowRecord, Integer> Id_User;
+  @FXML
+  protected TableColumn<BorrowRecord, String> Username;
 
-  @FXML private Label totalBook, totalUser, totalBorrow;
+  @FXML
+  private Label totalBook, totalUser, totalBorrow;
 
-  @FXML private Label greetingLabel;
-  @FXML private Label dateTimeLabel;
-  @FXML private Pane searchBookPane;
-  @FXML private Pane manageBooksPane;
-  @FXML private Pane manageUsersPane, ManagerBorrowBook, infoBook, infoBorrow;
-  @FXML private Pane home;
-  @FXML private StackPane contentArea;
-  @FXML private ImageView logoytb, logofb;
+  @FXML
+  private Label greetingLabel;
+  @FXML
+  private Label dateTimeLabel;
+  @FXML
+  private Pane searchBookPane;
+  @FXML
+  private Pane manageBooksPane;
+  @FXML
+  private Pane manageUsersPane, ManagerBorrowBook, infoBook, infoBorrow;
+  @FXML
+  private Pane home;
+  @FXML
+  private StackPane contentArea;
+  @FXML
+  private ImageView logoytb, logofb;
   // private User user;
   // private HostServices hostServices;
   private final BookController bookController = new BookController();
@@ -172,20 +212,19 @@ public class AdminController extends DashController {
     logofb.setOnMouseClicked(this::handleFaceBookClick);
 
     logoutButton.setOnAction(event -> logOut());
-    
+
     greetingLabel.setText("Hello, admin " + user.getName() + "!");
     // Thiết lập ngày và giờ hiện tại
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy | EEEE, hh:mm a");
-    Timeline timeline =
-        new Timeline(
-            new KeyFrame(
-                Duration.seconds(1),
-                event -> {
-                  // Lấy thời gian hiện tại và định dạng
-                  String formattedDateTime = LocalDateTime.now().format(formatter);
-                  // Cập nhật vào label
-                  dateTimeLabel.setText(formattedDateTime);
-                }));
+    Timeline timeline = new Timeline(
+        new KeyFrame(
+            Duration.seconds(1),
+            event -> {
+              // Lấy thời gian hiện tại và định dạng
+              String formattedDateTime = LocalDateTime.now().format(formatter);
+              // Cập nhật vào label
+              dateTimeLabel.setText(formattedDateTime);
+            }));
 
     // Thiết lập lặp vô hạn
     timeline.setCycleCount(Timeline.INDEFINITE);
@@ -208,10 +247,11 @@ public class AdminController extends DashController {
           try {
             loading.setVisible(true);
             handleSearchBookGG(searchBook.getText(), searchAuthor.getText(), searchResult);
+
           } catch (Exception e) {
             showAlert("Error", "An error occurred while searching for books.");
           }
-      });
+        });
 
     searchResult.setOnMouseClicked(
         event -> {
@@ -243,26 +283,27 @@ public class AdminController extends DashController {
     borrowRecord.setOnMouseClicked(
         event -> {
           // if (event.getClickCount() == 2) { // Kiểm tra nhấp đúp
-          //     BorrowRecord selectedBook = borrowRecord.getSelectionModel().getSelectedItem();
-          //     if (selectedBook != null) {
-          //         infoBook.getChildren().clear();
+          // BorrowRecord selectedBook =
+          // borrowRecord.getSelectionModel().getSelectedItem();
+          // if (selectedBook != null) {
+          // infoBook.getChildren().clear();
 
-          //         // Sử dụng CompletableFuture để tải dữ liệu trong một luồng nền
-          //         CompletableFuture.runAsync(() -> {
-          //             BookDetailController detailController = new BookDetailController();
-          //             try {
-          //                 // Parent bookDetailParent = detailController.asParent(selectedBook);
+          // // Sử dụng CompletableFuture để tải dữ liệu trong một luồng nền
+          // CompletableFuture.runAsync(() -> {
+          // BookDetailController detailController = new BookDetailController();
+          // try {
+          // // Parent bookDetailParent = detailController.asParent(selectedBook);
 
-          //                 // Cập nhật giao diện trong luồng JavaFX
-          //                 Platform.runLater(() -> {
-          //                     // infoBook.getChildren().add(bookDetailParent);
-          //                 });
-          //             } catch (IOException e) {
-          //                 Platform.runLater(() -> showAlert("Error", "Could not load book
+          // // Cập nhật giao diện trong luồng JavaFX
+          // Platform.runLater(() -> {
+          // // infoBook.getChildren().add(bookDetailParent);
+          // });
+          // } catch (IOException e) {
+          // Platform.runLater(() -> showAlert("Error", "Could not load book
           // details."));
-          //             }
-          //         });
-          //     }
+          // }
+          // });
+          // }
           // }
         });
 
@@ -316,20 +357,19 @@ public class AdminController extends DashController {
     Id_Book.setCellValueFactory(
         cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getBook().getId()));
     Title_Book.setCellValueFactory(
-        cellData ->
-            new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getBook().getTitle())));
+        cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getBook().getTitle())));
     Id_User.setCellValueFactory(
         cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getUser().getId()));
     Username.setCellValueFactory(
-        cellData ->
-            new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getUser().getName())));
+        cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getUser().getName())));
     ngaymuon.setCellValueFactory(new PropertyValueFactory<>("borrowDate"));
     ngaytra.setCellValueFactory(new PropertyValueFactory<>("returnDate"));
     borrowRecord.setItems(borrowRecordDAO.getAllBorrowRecords());
   }
 
   // Xử lý sự kiện đăng xuất
-  @FXML private Button logoutButton; // Add a button for logout
+  @FXML
+  private Button logoutButton; // Add a button for logout
 
   @FXML
   private void handleAddBook() throws SQLException {
@@ -345,18 +385,18 @@ public class AdminController extends DashController {
     }
 
     // Thêm sách vào danh sách
-    
-     Book temp2;
-        temp2 = switch (category) {
-          case "Art" -> new ArtBook(0, title, authorName, isbn, true, description, null, null);
-          case "TechnologyBook" -> new TechnologyBook(0, title, authorName, isbn, true, description, null, null);
-          case "Science" -> new ScienceBook(0, title, authorName, isbn, true, description, null, null);
-          case "Computer" -> new ComputerBook(0, title, authorName, isbn, true, description, null, null);
-          case "HistoryBook" -> new HistoryBook(0, title, authorName, isbn, true, description, null, null);
-          case "EBook" -> new ConcreteBook(0, title, authorName, isbn, true, description, null, null);
-          case "Thesis" -> new ThesisBook(0, title, authorName, isbn, true, description, null, null);
-          default -> new ConcreteBook(0, title, authorName, isbn, true, description, null, null);
-        };
+
+    Book temp2;
+    temp2 = switch (category) {
+      case "Art" -> new ArtBook(0, title, authorName, isbn, true, description, null, null);
+      case "TechnologyBook" -> new TechnologyBook(0, title, authorName, isbn, true, description, null, null);
+      case "Science" -> new ScienceBook(0, title, authorName, isbn, true, description, null, null);
+      case "Computer" -> new ComputerBook(0, title, authorName, isbn, true, description, null, null);
+      case "HistoryBook" -> new HistoryBook(0, title, authorName, isbn, true, description, null, null);
+      case "EBook" -> new ConcreteBook(0, title, authorName, isbn, true, description, null, null);
+      case "Thesis" -> new ThesisBook(0, title, authorName, isbn, true, description, null, null);
+      default -> new ConcreteBook(0, title, authorName, isbn, true, description, null, null);
+    };
     bookList.add(temp2);
     BookDAO bookDAO = BookDAO.getBookDAO();
     bookDAO.addBook(temp2);

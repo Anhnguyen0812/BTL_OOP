@@ -11,6 +11,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import library.AppLaunch;
 import library.dao.UserDAO;
@@ -33,6 +35,8 @@ public class LoginController {
   private TextField Pass;
   @FXML
   private Button hide;
+  @FXML
+  private ImageView imgHide;
 
   private User user;
 
@@ -63,11 +67,11 @@ public class LoginController {
     if (Pass.isVisible()) {
       Pass.setVisible(false);
       Passhide.setVisible(true);
-      hide.setText("o");
+      imgHide.setImage(new Image("imgs/hidden.png"));
     } else {
       Pass.setVisible(true);
       Passhide.setVisible(false);
-      hide.setText("-");
+      imgHide.setImage(new Image("imgs/show.png"));
     }
   }
 

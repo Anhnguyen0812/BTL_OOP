@@ -80,14 +80,28 @@
                </font></TextField>
          </children>
       </GridPane>
-      <Button fx:id="hideButton" layoutX="416.0" layoutY="222.0" mnemonicParsing="false" onAction="#togglePass" prefHeight="3.0" prefWidth="10.0" styleClass="hide" text="o">
-         <font>
-            <Font size="13.0" />
-         </font></Button>
-      <Button fx:id="hideButton1" layoutX="416.0" layoutY="186.0" mnemonicParsing="false" onAction="#togglePass" prefHeight="3.0" prefWidth="10.0" styleClass="hide" text="o">
+      <Button fx:id="hideButton" layoutX="411.0" layoutY="222.0" mnemonicParsing="false" onAction="#togglePass" prefHeight="30.0" prefWidth="30.0" styleClass="hide">
          <font>
             <Font size="13.0" />
          </font>
+         <graphic>
+            <ImageView fx:id="imgHide1" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../imgs/hidden.png" />
+               </image>
+            </ImageView>
+         </graphic></Button>
+      <Button fx:id="hideButton1" layoutX="411.0" layoutY="186.0" mnemonicParsing="false" onAction="#togglePass" prefHeight="30.0" prefWidth="30.0" styleClass="hide">
+         <font>
+            <Font size="13.0" />
+         </font>
+         <graphic>
+            <ImageView fx:id="imgHide2" fitHeight="16.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../imgs/hidden.png" />
+               </image>
+            </ImageView>
+         </graphic>
       </Button>
       <Button fx:id="signupButton" layoutX="274.0" layoutY="288.0" mnemonicParsing="false" onAction="#MoveToSignup" prefHeight="32.0" prefWidth="82.0" styleClass="LoginButton" text="Sign up">
          <font>
