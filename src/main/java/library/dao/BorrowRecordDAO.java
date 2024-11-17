@@ -76,13 +76,49 @@ public class BorrowRecordDAO {
     return records;
   }
 
+  // Lấy danh sách bản ghi mượn sách khi cột returnDate Null
+  public ObservableList<BorrowRecord> getAllBorrowRecordsWithNullReturnDate() {
+    ObservableList<BorrowRecord> records = FXCollections.observableArrayList();
+    String query = "SELECT * FROM borrow_records WHERE return_date IS NULL";
+    try (PreparedStatement stmt = connection.prepareStatement(query);
+        ResultSet rs = stmt.executeQuery()) {
+      while (rs.next()) {
+        int userId = rs.getInt("user_id");
+        int bookId = rs.getInt("book_id");
+        LocalDate borrowDate = rs.getDate("borrow_date").toLocalDate();
+
+        UserService userService = new UserService(UserDAO.getUserDAO());
+        User user = userService.getUserById(userId);
+        Book book = bookDAO.getBookById(bookId);
+
+        int recordId = rs.getInt("id");
+        BorrowRecord record = new BorrowRecord(recordId, user, book, borrowDate, null);
+        records.add(record);
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return records;
+  }
+
+  // tra sach
+  public void returnBook(BorrowRecord record) {
+    String query = "UPDATE borrow_records SET return_date = ? WHERE id = ?";
+    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+      stmt.setDate(1, java.sql.Date.valueOf(LocalDate.now()));
+      stmt.setInt(2, record.getId());
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
   // Xóa bản ghi mượn sách
   public void deleteBorrowRecord(Book book) {
     String query = "DELETE FROM borrow_records WHERE book_id = ?";
     try (PreparedStatement stmt = connection.prepareStatement(query)) {
       stmt.setInt(1, book.getId());
       stmt.executeUpdate();
-      bookDAO.returnBook(book);
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -125,6 +161,43 @@ public class BorrowRecordDAO {
               rs.getDate("return_date") != null
                   ? rs.getDate("return_date").toLocalDate()
                   : null // Return date can be null if not returned yet
+          ));
+    }
+    return records;
+  }
+
+  public ObservableList<BorrowRecord> getReturnRecordsByUserId(User user) throws SQLException {
+    ObservableList<BorrowRecord> records = FXCollections.observableArrayList();
+    String query = "SELECT * FROM borrow_records WHERE user_id = ? AND return_date IS NOT NULL";
+    PreparedStatement stmt = connection.prepareStatement(query);
+    stmt.setInt(1, user.getId());
+    ResultSet rs = stmt.executeQuery();
+    while (rs.next()) {
+      records.add(
+          new BorrowRecord(
+              rs.getInt("id"),
+              user,
+              bookDAO.getBookById(rs.getInt("book_id")),
+              rs.getDate("borrow_date").toLocalDate(),
+              rs.getDate("return_date").toLocalDate()));
+    }
+    return records;
+  }
+
+  public ObservableList<BorrowRecord> getBorrowRecordsByUserIdWithoutReturnDate(User user) throws SQLException {
+    ObservableList<BorrowRecord> records = FXCollections.observableArrayList();
+    String query = "SELECT * FROM borrow_records WHERE user_id = ? AND return_date IS NULL";
+    PreparedStatement stmt = connection.prepareStatement(query);
+    stmt.setInt(1, user.getId());
+    ResultSet rs = stmt.executeQuery();
+    while (rs.next()) {
+      records.add(
+          new BorrowRecord(
+              rs.getInt("id"),
+              user,
+              bookDAO.getBookById(rs.getInt("book_id")),
+              rs.getDate("borrow_date").toLocalDate(),
+              null // Return date can be null if not returned yet
           ));
     }
     return records;

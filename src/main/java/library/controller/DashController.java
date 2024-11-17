@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.gluonhq.impl.charm.a.b.b.s;
 import com.gluonhq.impl.charm.a.b.b.u;
 
 import javafx.scene.control.Label;
@@ -24,6 +25,7 @@ import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.StackedAreaChart;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -91,10 +93,15 @@ public class DashController {
   private Label welcome;
   @FXML
   private GridPane searchView, searchReturnBooks;
+  @FXML
+  private ChoiceBox<String> searchChoice, returnChoice;
 
   protected BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO();
   protected User user;
   protected HostServices hostServices;
+
+  @FXML
+  private Button reloadReturnBooksButton;
 
   @FXML
   StackedAreaChart chart1;
@@ -139,6 +146,14 @@ public class DashController {
     settings.setVisible(false);
     home_Button.styleProperty().set("-fx-background-color: #777777");
 
+    // Set up ChoiceBox for search and return
+    searchChoice.getItems().addAll("Title", "Author", "ISBN");
+    returnChoice.getItems().addAll("Borrowed", "Returned", "unReturned");
+
+    // Set up values for ChoiceBox
+    searchChoice.setValue("Title");
+    returnChoice.setValue("Borrowed");
+
     int totalBooks = allDao.getTotalBooks();
     int totalUsers = allDao.getTotalUsers();
     int totalBorrowRecords = allDao.getTotalBorrowRecords();
@@ -166,10 +181,11 @@ public class DashController {
         AnchorPane bookItem = loader.load();
         BookItemController controller = loader.getController();
         controller.setBookData(record.getBook(), i, user);
+        controller.setReturnButton(record);
         if (column == 3) {
           column = 1;
           row++;
-          if (row >= 20)
+          if (row >= 30)
             break;
         }
         searchReturnBooks.add(bookItem, column++, row);
@@ -226,7 +242,7 @@ public class DashController {
     resetStyle();
     returnBooks.setVisible(true);
     returnBooks_Button.styleProperty().set("-fx-background-color: #777777");
-    List<BorrowRecord> borrowRecords = borrowRecordDAO.getBorrowRecordsByUserId(user);
+    List<BorrowRecord> borrowRecords = borrowRecordDAO.getBorrowRecordsByUserIdWithoutReturnDate(user);
     setBorrowedBookItems(borrowRecords);
   }
 
@@ -255,6 +271,20 @@ public class DashController {
       noti.setVisible(false);
     } else {
       noti.setVisible(true);
+    }
+  }
+
+  @FXML
+  public void reloadReturnBooksAction() throws SQLException {
+    if (returnChoice.getValue().equals("Borrowed")) {
+      List<BorrowRecord> borrowRecords = borrowRecordDAO.getBorrowRecordsByUserId(user);
+      setBorrowedBookItems(borrowRecords);
+    } else if (returnChoice.getValue().equals("Returned")) {
+      List<BorrowRecord> borrowRecords = borrowRecordDAO.getReturnRecordsByUserId(user);
+      setBorrowedBookItems(borrowRecords);
+    } else if (returnChoice.getValue().equals("unReturned")) {
+      List<BorrowRecord> borrowRecords = borrowRecordDAO.getBorrowRecordsByUserIdWithoutReturnDate(user);
+      setBorrowedBookItems(borrowRecords);
     }
   }
 
@@ -354,10 +384,15 @@ public class DashController {
       @Override
       protected Void call() throws Exception {
         List<Book> books;
+
         if (bookTitle.isEmpty()) {
           books = bookDAO.getAllBooks();
-        } else {
+        } else if (searchChoice.getValue().equals("Title")) {
           books = bookDAO.getBookByTitle(bookTitle);
+        } else if (searchChoice.getValue().equals("Author")) {
+          books = bookDAO.getBookByAuthor(bookTitle);
+        } else {
+          books = bookDAO.getListBookByISBN(bookTitle);
         }
         Platform.runLater(() -> {
           setBookItem(books, false);
@@ -390,36 +425,41 @@ public class DashController {
     int column = 1;
     int row = 1;
     int i = 0;
-    for (Book book : books) {
-      try {
-        i++;
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/BookItem.fxml"));
-        AnchorPane bookItem = loader.load();
-        BookItemController controller = loader.getController();
-        controller.setBookData(book, i, user);
-        if (needCheck) {
-          controller.setBorrowButtonVisible();
-        } else {
-          controller.checkBorrowed();
-        }
-
-        if (column == 3) {
-          column = 1;
-          row++;
-          if (row >= 20)
-            break;
-        }
-        searchView.add(bookItem, column++, row);
-        GridPane.setMargin(bookItem, new Insets(5)); // Add margin of 20px between items
-        bookItem.setOnMouseClicked(event -> {
-          if (event.getClickCount() == 2) {
-            showBookDetails(book);
+    if (books.size() == 0) {
+      showAlert("No result", "No book found");
+      Label noBooksLabel = new Label("No Books found!");
+      searchView.add(noBooksLabel, 1, 1);
+    } else
+      for (Book book : books) {
+        try {
+          i++;
+          FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/BookItem.fxml"));
+          AnchorPane bookItem = loader.load();
+          BookItemController controller = loader.getController();
+          controller.setBookData(book, i, user);
+          if (needCheck) {
+            controller.setBorrowButtonVisible();
+          } else {
+            controller.checkBorrowed();
           }
-        });
-      } catch (IOException e) {
-        e.printStackTrace();
+
+          if (column == 3) {
+            column = 1;
+            row++;
+            if (row >= 30)
+              break;
+          }
+          searchView.add(bookItem, column++, row);
+          GridPane.setMargin(bookItem, new Insets(5)); // Add margin of 20px between items
+          bookItem.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+              showBookDetails(book);
+            }
+          });
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
       }
-    }
   }
 
   public void gotoNoti() {

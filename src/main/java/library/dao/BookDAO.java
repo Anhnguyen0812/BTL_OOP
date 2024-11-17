@@ -136,6 +136,39 @@ public class BookDAO {
     return null;
   }
 
+  public ObservableList<Book> getListBookByISBN(String isbn) throws SQLException, InterruptedException {
+    ObservableList<Book> books = FXCollections.observableArrayList();
+    String query = "SELECT * FROM books WHERE isbn = ?";
+    PreparedStatement stmt = connection.prepareStatement(query);
+    stmt.setString(1, isbn);
+    ResultSet rs = stmt.executeQuery();
+    if (rs.next()) {
+      String category = rs.getString("categories");
+      int id = rs.getInt("id");
+      String title = rs.getString("title");
+      String authorName = rs.getString("author");
+      boolean available = rs.getBoolean("available");
+      String description = rs.getString("description");
+      String imageUrl = rs.getString("imageUrl");
+      String QRcode = rs.getString("QRcode");
+
+      Book temp2;
+      temp2 = switch (category) {
+        case "Art" -> new ArtBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "TechnologyBook" ->
+          new TechnologyBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Science" -> new ScienceBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Computer" -> new ComputerBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "HistoryBook" -> new HistoryBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "EBook" -> new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Thesis" -> new ThesisBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        default -> new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+      };
+      books.add(temp2);
+    }
+    return books;
+  }
+
   public boolean haveBook(String isbn) throws SQLException {
     String query = "SELECT * FROM books WHERE isbn = ?";
     PreparedStatement stmt = connection.prepareStatement(query);
@@ -181,15 +214,15 @@ public class BookDAO {
 
   public ObservableList<Book> getBookByAuthor(String author) throws SQLException {
     ObservableList<Book> books = FXCollections.observableArrayList();
-    String query = "SELECT * FROM books WHERE author = ?";
+    String query = "SELECT * FROM books WHERE author LIKE ?";
     PreparedStatement stmt = connection.prepareStatement(query);
-    stmt.setString(1, author);
+    stmt.setString(1, "%" + author + "%");
 
     ResultSet rs = stmt.executeQuery();
     while (rs.next()) {
       String category = rs.getString("categories");
       int id = rs.getInt("id");
-      String titleBook = rs.getString("title");
+      String title = rs.getString("title");
       String authorName = rs.getString("author");
       String isbn = rs.getString("isbn");
       boolean available = rs.getBoolean("available");
@@ -199,16 +232,15 @@ public class BookDAO {
 
       Book temp2;
       temp2 = switch (category) {
-        case "Art" -> new ArtBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Art" -> new ArtBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
         case "TechnologyBook" ->
-          new TechnologyBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
-        case "Science" -> new ScienceBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
-        case "Computer" -> new ComputerBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
-        case "HistoryBook" ->
-          new HistoryBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
-        case "EBook" -> new ConcreteBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
-        case "Thesis" -> new ThesisBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
-        default -> new ConcreteBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
+          new TechnologyBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Science" -> new ScienceBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Computer" -> new ComputerBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "HistoryBook" -> new HistoryBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "EBook" -> new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Thesis" -> new ThesisBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        default -> new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
       };
       books.add(temp2);
     }
@@ -216,6 +248,28 @@ public class BookDAO {
   }
 
   public List<Book> getAllBooks() throws SQLException {
+    List<Book> books = new ArrayList<>();
+    String query = "SELECT * FROM books";
+    Statement stmt = connection.createStatement();
+    ResultSet rs = stmt.executeQuery(query);
+    while (rs.next()) {
+      String category = rs.getString("categories");
+      int id = rs.getInt("id");
+      String title = rs.getString("title");
+      String authorName = rs.getString("author");
+      String isbn = rs.getString("isbn");
+      boolean available = rs.getBoolean("available");
+      String description = rs.getString("description");
+      String imageUrl = rs.getString("imageUrl");
+      String QRcode = rs.getString("QRcode");
+
+      Book temp2 = new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+      books.add(temp2);
+    }
+    return books;
+  }
+
+  public List<Book> getAllBooks1() throws SQLException {
     List<Book> books = new ArrayList<>();
     String query = "SELECT * FROM books";
     Statement stmt = connection.createStatement();

@@ -68,6 +68,17 @@ public class BookItemController {
         }
     }
 
+    public void setReturnButton(BorrowRecord record) {
+        borrowButton.setText("Return");
+        borrowButton.setOnAction(event -> returnAction(record));
+    }
+
+    public void returnAction(BorrowRecord record) {
+        BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO();
+        borrowRecordDAO.returnBook(record);
+        borrowButton.setVisible(true);
+    }
+
     @FXML
     public void borrowAction() {
         BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO();
