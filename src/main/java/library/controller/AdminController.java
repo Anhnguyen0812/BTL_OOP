@@ -75,7 +75,7 @@ public class AdminController extends DashController {
   @FXML private TableColumn<User, String> emailColumn;
   @FXML private TableColumn<User, String> roleColumn;
   @FXML private TextField searchBook;
-  @FXML private Button logoutButton;
+  @FXML private Button logOut;
   @FXML private Pane detailBook;
   @FXML private TextField searchAuthor;
   @FXML private TableView<Book> searchResult;
@@ -134,7 +134,7 @@ public class AdminController extends DashController {
     logofb.setImage(fb);
     logofb.setOnMouseClicked(this::handleFaceBookClick);
 
-    logoutButton.setOnAction(event -> logOut());
+    logOut.setOnAction(event -> logOut());
     
     greetingLabel.setText("Hello, admin " + user.getName() + "!");
     // Thiết lập ngày và giờ hiện tại
@@ -155,7 +155,7 @@ public class AdminController extends DashController {
     // Bắt đầu timeline
     timeline.play();
     try {
-      bookList.setAll(bookController.getAllBooks());
+      bookList.setAll(bookDAO.getAllBooks());
       userList.setAll(getUserList());
     } catch (SQLException e) {
       showAlert("Database Error", "Could not load books from the database.");
@@ -172,7 +172,9 @@ public class AdminController extends DashController {
             detailBook.getChildren().clear();
             loading.setVisible(true);
             detailBook.getChildren().add(loading);
-            // handleSearchBookGG(searchBook.getText(), searchAuthor.getText(), searchResult);
+            searchResult.getItems().clear();
+            handleSearchBookGG(searchBook.getText(), searchAuthor.getText(), searchResult);
+            
           } catch (Exception e) {
             showAlert("Error", "An error occurred while searching for books.");
           }
@@ -184,14 +186,12 @@ public class AdminController extends DashController {
             Book selectedBook = searchResult.getSelectionModel().getSelectedItem();
             if (selectedBook != null) {
               detailBook.getChildren().clear();
-
               // Sử dụng CompletableFuture để tải dữ liệu trong một luồng nền
               CompletableFuture.runAsync(
                   () -> {
                     BookDetailController detailController = new BookDetailController();
                     try {
                       Parent bookDetailParent = detailController.asParent(selectedBook);
-
                       // Cập nhật giao diện trong luồng JavaFX
                       Platform.runLater(
                           () -> {
@@ -335,8 +335,6 @@ public class AdminController extends DashController {
     ngaymuon.setCellValueFactory(new PropertyValueFactory<>("borrowDate"));
     ngaytra.setCellValueFactory(new PropertyValueFactory<>("returnDate"));
     borrowRecord.setItems(borrowRecordDAO.getAllBorrowRecords());
-
-    
   }
  @FXML
   public void Home() {
@@ -349,7 +347,7 @@ public class AdminController extends DashController {
   public void showManageBooksPane() throws SQLException {
     hideAllPanes(); // Hide all panes
     bookList.clear();
-    bookList.setAll(bookController.getAllBooks());
+    bookList.setAll(bookDAO.getAllBooks());
     bookTable.setItems(bookList);
     totalBook.setText(String.valueOf(bookList.size()));
     infoBook.getChildren().clear();
@@ -495,6 +493,8 @@ public class AdminController extends DashController {
     // manageBooksPane.setStyle("-fx-background-color-: rgba(157, 146, 146, 0.5);");
     manageBooksPane.setEffect(blur);
   }
+
+  @FXML
   private void xoalammo() {
     updateB.setVisible(false);
     manageBooksPane.setEffect(null);

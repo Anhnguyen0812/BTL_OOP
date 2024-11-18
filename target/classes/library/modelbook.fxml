@@ -6,13 +6,12 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.shape.SVGPath?>
 
-
-<Pane cacheShape="false" centerShape="false" focusTraversable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="224.0" prefWidth="478.0" scaleShape="false" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="library.controller.BookDetailController" >
+<Pane cacheShape="false" centerShape="false" focusTraversable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="224.0" prefWidth="608.0" scaleShape="false" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="library.controller.BookDetailController">
    <children>
       <ImageView fx:id="modelImage" fitHeight="204.0" fitWidth="145.0" layoutX="7.0" layoutY="9.0" pickOnBounds="true" preserveRatio="true" />
-      <Label fx:id="modelTitle" layoutX="179.0" layoutY="55.0" prefHeight="34.0" prefWidth="186.0" text="Title" />
-      <Label fx:id="modelAuthor" layoutX="179.0" layoutY="100.0" prefHeight="34.0" prefWidth="186.0" text="Author" />
-      <Label fx:id="modelIsbn" layoutX="179.0" layoutY="147.0" prefHeight="27.0" prefWidth="172.0" text="ISBN" />
+      <Label fx:id="modelTitle" layoutX="179.0" layoutY="55.0" prefHeight="34.0" prefWidth="378.0" text="Title" />
+      <Label fx:id="modelAuthor" layoutX="179.0" layoutY="100.0" prefHeight="34.0" prefWidth="378.0" text="Author" />
+      <Label fx:id="modelIsbn" layoutX="179.0" layoutY="147.0" prefHeight="27.0" prefWidth="369.0" text="ISBN" />
       <SVGPath accessibleRole="SPINNER" content="M25,5    L28,15    L38,15    L30,20    L33,30    L25,25    L17,30    L20,20    L12,15    L22,15    ZM25,5    L28,15    L38,15    L30,20    L33,30    L25,25    L17,30    L20,20    L12,15    L22,15    Z" fill="#dacfcf" layoutX="170.0" layoutY="14.0" strokeLineCap="ROUND" strokeLineJoin="ROUND">
          <cursor>
             <Cursor fx:constant="DEFAULT" />

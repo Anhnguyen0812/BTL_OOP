@@ -138,10 +138,10 @@ public class BookDAO {
       Book temp2;
         temp2 = switch (category) {
           case "Art" -> new ArtBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-          case "TechnologyBook" -> new TechnologyBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+          case "Technology" -> new TechnologyBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
           case "Science" -> new ScienceBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
           case "Computer" -> new ComputerBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-          case "HistoryBook" -> new HistoryBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+          case "History" -> new HistoryBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
           case "EBook" -> new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
           case "Thesis" -> new ThesisBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
           default -> new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
@@ -159,61 +159,71 @@ public class BookDAO {
 
     ResultSet rs = stmt.executeQuery();
     while (rs.next()) {
-      String category = rs.getString("categories");
+      String categories = rs.getString("categories");
       int id = rs.getInt("id");
-      String titlee = rs.getString("title");
+      title = rs.getString("title");
       String authorName = rs.getString("author");
       String isbn = rs.getString("isbn");
       boolean available = rs.getBoolean("available");
       String description = rs.getString("description");
       String imageUrl = rs.getString("imageUrl");
-      String QRcode = rs.getString("QRcode");
-
-      Book temp2;
-        temp2 = switch (category) {
-          case "Art" -> new ArtBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "TechnologyBook" -> new TechnologyBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "Science" -> new ScienceBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "Computer" -> new ComputerBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "HistoryBook" -> new HistoryBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "EBook" -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "Thesis" -> new ThesisBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          default -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-        };
-      books.add(temp2);
+      String bookUrl = rs.getString("QRcode");
+      Book temp2 = null;
+        categories = categories.toLowerCase();
+        if (categories.contains("art")) {
+          temp2 = new ArtBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl);
+        } else if (categories.contains("thesis")) {
+          temp2 = new ThesisBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl);
+        } else if (categories.contains("technology")) {
+          temp2 = new TechnologyBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl);
+        } else if (categories.contains("science")) {
+          temp2 = new ScienceBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl);
+        } else if (categories.contains("computer")) {
+          temp2 = new ComputerBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl);
+        } else if (categories.contains("history")) {
+          temp2 = new HistoryBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl);
+        } else if (categories.contains("EBook")) {
+          temp2 = new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl);
+        }
+        books.add(temp2);
     }
     return books;
   }
 
   public ObservableList<Book> getBookByAuthor(String author) throws SQLException {
     ObservableList<Book> books = FXCollections.observableArrayList();
-    String query = "SELECT * FROM books WHERE author = ?";
+    String query = "SELECT * FROM books WHERE author LIKE ?";
     PreparedStatement stmt = connection.prepareStatement(query);
-    stmt.setString(1, author);
+    stmt.setString(1, "%" + author + "%");
 
     ResultSet rs = stmt.executeQuery();
     while (rs.next()) {
-      String category = rs.getString("categories");
+      String categories = rs.getString("categories");
       int id = rs.getInt("id");
-      String titleBook = rs.getString("title");
+      String title = rs.getString("title");
       String authorName = rs.getString("author");
       String isbn = rs.getString("isbn");
       boolean available = rs.getBoolean("available");
       String description = rs.getString("description");
       String imageUrl = rs.getString("imageUrl");
-      String QRcode = rs.getString("QRcode");
-
-      Book temp2;
-        temp2 = switch (category) {
-          case "Art" -> new ArtBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
-          case "TechnologyBook" -> new TechnologyBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
-          case "Science" -> new ScienceBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
-          case "Computer" -> new ComputerBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
-          case "HistoryBook" -> new HistoryBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
-          case "EBook" -> new ConcreteBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
-          case "Thesis" -> new ThesisBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
-          default -> new ConcreteBook(id, titleBook, authorName, isbn, available, description, imageUrl, QRcode);
-        };
+      String bookUrl = rs.getString("QRcode");
+      Book temp2 = null;
+        categories = categories.toLowerCase();
+        if (categories.contains("art")) {
+          temp2 = new ArtBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl);
+        } else if (categories.contains("thesis")) {
+          temp2 = new ThesisBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl);
+        } else if (categories.contains("technology")) {
+          temp2 = new TechnologyBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl);
+        } else if (categories.contains("science")) {
+          temp2 = new ScienceBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl);
+        } else if (categories.contains("computer")) {
+          temp2 = new ComputerBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl);
+        } else if (categories.contains("history")) {
+          temp2 = new HistoryBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl);
+        } else if (categories.contains("EBook")) {
+          temp2 = new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl);
+        }
         books.add(temp2);
     }
     return books;
@@ -225,27 +235,32 @@ public class BookDAO {
     Statement stmt = connection.createStatement();
     ResultSet rs = stmt.executeQuery(query);
     while (rs.next()) {
-      String category = rs.getString("categories");
+      String categories = rs.getString("categories");
       int id = rs.getInt("id");
-      String titlee = rs.getString("title");
+      String title = rs.getString("title");
       String authorName = rs.getString("author");
       String isbn = rs.getString("isbn");
       boolean available = rs.getBoolean("available");
       String description = rs.getString("description");
       String imageUrl = rs.getString("imageUrl");
-      String QRcode = rs.getString("QRcode");
-
-      Book temp2;
-        temp2 = switch (category) {
-          case "Art" -> new ArtBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "TechnologyBook" -> new TechnologyBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "Science" -> new ScienceBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "Computer" -> new ComputerBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "HistoryBook" -> new HistoryBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "EBook" -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          case "Thesis" -> new ThesisBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-          default -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-        };
+      String bookUrl = rs.getString("QRcode");
+      Book temp2 = null;
+        categories = categories.toLowerCase();
+        if (categories.contains("art")) {
+          temp2 = new ArtBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl);
+        } else if (categories.contains("thesis")) {
+          temp2 = new ThesisBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl);
+        } else if (categories.contains("technology")) {
+          temp2 = new TechnologyBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl);
+        } else if (categories.contains("science")) {
+          temp2 = new ScienceBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl);
+        } else if (categories.contains("computer")) {
+          temp2 = new ComputerBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl);
+        } else if (categories.contains("history")) {
+          temp2 = new HistoryBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl);
+        } else if (categories.contains("EBook")) {
+          temp2 = new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl);
+        }
         books.add(temp2);
     }
     return books;

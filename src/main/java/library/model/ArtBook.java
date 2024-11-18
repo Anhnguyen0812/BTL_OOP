@@ -2,7 +2,7 @@ package library.model;
 
 public class ArtBook extends Book {
     private final String ART_CATEGORIES = "Art";
-    
+        
     public ArtBook(
         int id,
         String title,

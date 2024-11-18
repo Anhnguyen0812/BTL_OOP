@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -12,14 +14,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import library.api.GoogleBooksAPI;
 import library.dao.BookDAO;
-import library.model.Book;
-import library.model.ComputerBook;
-import library.model.ConcreteBook;
+import library.model.*;
 import library.util.DBConnection;
 
 public class BookController {
   private final GoogleBooksAPI googleBooksAPI;
-
+  private BookDAO bookDAO = BookDAO.getBookDAO();
+  public static List<Book> list = new ArrayList<>();
   // private ObservableList<Book> books = FXCollections.observableArrayList();
 
   private final DBConnection connection = DBConnection.getInstance();
@@ -29,7 +30,7 @@ public class BookController {
   }
 
   public ObservableList<Book> searchBook(String query) throws IOException, SQLException {
-    String response = googleBooksAPI.searchBook("subject:" + query);
+    String response = googleBooksAPI.searchBook(query);
     return parseBooks(response);
   }
 
@@ -40,7 +41,7 @@ public class BookController {
 
     // Kiểm tra xem có trường "items" trong JSON không
     if (jsonObject.has("items")) {
-      JSONArray booksArray = jsonObject.getJSONArray("items");
+      JSONArray booksArray = jsonObject.getJSONArray("items");  
       for (int i = 0; i < booksArray.length(); i++) {
         JSONObject volumeInfo = booksArray.getJSONObject(i).getJSONObject("volumeInfo");
         String title = volumeInfo.getString("title");
@@ -65,52 +66,41 @@ public class BookController {
                 : null;
         String bookUrl = volumeInfo.has("infoLink") ? (String) volumeInfo.get("infoLink") : null;
         ConcreteBook temp =
-            new ConcreteBook(title, authorName, isbn, false, description, imageUrl, bookUrl);
+            new ConcreteBook(-1, title, authorName, isbn, false, description, imageUrl, bookUrl);
         temp.setCategories(categories);
         Book b = (Book) temp;
         books.add(b);
-        Book temp2;
-        // temp2 = switch (categories) {
-        //   case "Art" -> new ArtBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-        //   case "TechnologyBook" -> new TechnologyBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-        //   case "Science" -> new ScienceBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-        //   case "Computer" -> new ComputerBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-        //   case "HistoryBook" -> new HistoryBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-        //   case "EBook" -> new ConcreteBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-        //   case "Thesis" -> new ThesisBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-        //   default -> new ConcreteBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-        // };
-        if (categories.equalsIgnoreCase("computer") || categories.equalsIgnoreCase("computers")) {
-          temp2 = new ComputerBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-        BookDAO bookDAO = BookDAO.getBookDAO();
-        bookDAO.addBook(temp2);
+        Book temp2 = null;
+        categories = categories.toLowerCase();
+        if (categories.contains("art")) {
+          temp2 = new ArtBook(-1, title, authorName, isbn, true, description, imageUrl, bookUrl);
+
+        } else if (categories.contains("thesis")) {
+          temp2 = new ThesisBook(-1, title, authorName, isbn, true, description, imageUrl, bookUrl);
+        } else if (categories.contains("technology")) {
+          temp2 = new TechnologyBook(-1, title, authorName, isbn, true, description, imageUrl, bookUrl);
+        } else if (categories.contains("science")) {
+          temp2 = new ScienceBook(-1, title, authorName, isbn, true, description, imageUrl, bookUrl);
+        } else if (categories.contains("computer")) {
+          temp2 = new ComputerBook(-1, title, authorName, isbn, true, description, imageUrl, bookUrl);
+        } else if (categories.contains("history")) {
+          temp2 = new HistoryBook(-1, title, authorName, isbn, true, description, imageUrl, bookUrl);
+        } else if (categories.contains("EBook")) {
+          temp2 = new ConcreteBook(-1, title, authorName, isbn, true, description, imageUrl, bookUrl);
         }
+    if (temp2 != null) {
+      try {
+        bookDAO.addBook(temp2);  
+      } catch (SQLException e) {
+        System.err.println("Error while adding book to database: " + e.getMessage());
+        e.printStackTrace();
+      }
+    }
       }
     } else {
       System.out.println("No books found in JSON data.");
     }
 
-    return books;
-  }
-
-  public ObservableList<Book> getAllBooks() throws SQLException {
-    ObservableList<Book> books = FXCollections.observableArrayList();
-    String query = "SELECT * FROM books";
-    Statement stmt = connection.getConnection().createStatement();
-    ResultSet rs = stmt.executeQuery(query);
-    while (rs.next()) {
-      books.add(
-          new ConcreteBook(
-              rs.getInt("id"),
-              rs.getString("title"),
-              rs.getString("author"),
-              rs.getString("isbn"),
-              rs.getBoolean("available"),
-              rs.getString("description"),
-              rs.getString("imageUrl"),
-              rs.getString("QRcode")));
-              rs.getString("categories");
-    }
     return books;
   }
 

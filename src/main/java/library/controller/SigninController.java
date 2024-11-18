@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -28,6 +29,7 @@ public class SigninController {
   @FXML private TextField CPass;
   @FXML private Button hideButton;
   @FXML private Button hideButton1;
+  @FXML private Label info;
 
   @FXML private Button LoginButton;
 
@@ -40,33 +42,48 @@ public class SigninController {
     return Base64.getEncoder().encodeToString(salt);
   }
 
-  public void initialize() {
+  public void initialize() throws NoSuchAlgorithmException, SQLException {
     Passhide.textProperty().bindBidirectional(Pass.textProperty());
     CPasshide.textProperty().bindBidirectional(CPass.textProperty());
     Pass.setVisible(false);
     CPass.setVisible(false);
-  }
 
-  public void MoveToLogin() throws SQLException, NoSuchAlgorithmException {
-    System.out.println(
-        "Username: "
-            + Username.getText()
-            + " Email: "
-            + Email.getText()
-            + " Password: "
-            + Passhide.getText()
-            + " Confirm Password: "
-            + CPasshide.getText());
     UserDAO userDAO = UserDAO.getUserDAO();
     LoginButton.setDefaultButton(true);
-    if (Passhide.getText().equals(CPasshide.getText())
-        && !Username.getText().isEmpty()
-        && !Email.getText().isEmpty()
-        && UserDAO.getUserByName(Username.getText()) == null) {
+    SigninButton.setOnAction(e -> {
+      if (Passhide.getText().equals(CPasshide.getText())
+          && !Username.getText().isEmpty()
+          && !Email.getText().isEmpty()
+              && Email.getText().contains("@vnu.edu.vn")) {
+            try {
+              if (UserDAO.getUserByName(Username.getText()) == null) {
+                User user =
+                    new User(Username.getText(), Email.getText(), Passhide.getText(), "User", getSalt());
+                userDAO.addUser(user);
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Login.fxml"));
+                Parent root = loader.load();
+                Stage stage = (Stage) SigninButton.getScene().getWindow();
+                stage.setScene(new Scene(root));
+                stage.show();
+              }
+            } catch (SQLException ex) {
+              ex.printStackTrace();
+              info.setVisible(true);
+            } catch (IOException ex) {
+              ex.printStackTrace();
+              info.setVisible(true);
+            } catch (NoSuchAlgorithmException ex) {
+              ex.printStackTrace();
+              info.setVisible(true);
+            }
+          } else {
+            info.setVisible(true);
+          }
+        });
+  }
+
+  public void MoveToLogin() {
       try {
-        User user =
-            new User(Username.getText(), Email.getText(), Passhide.getText(), "User", getSalt());
-        userDAO.addUser(user);
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Login.fxml"));
         Parent root = loader.load();
         Stage stage = (Stage) SigninButton.getScene().getWindow();
@@ -75,17 +92,6 @@ public class SigninController {
       } catch (IOException e) {
         e.printStackTrace();
       }
-    } else if (LoginButton.isDefaultButton()) {
-      try {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Login.fxml"));
-        Parent root = loader.load();
-        Stage stage = (Stage) SigninButton.getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
   }
 
   public void togglePass() {

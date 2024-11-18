@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -32,6 +34,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -50,17 +53,18 @@ public class DashController {
 
   @FXML private TextField title;
   @FXML private Pane home, books, issueBooks, returnBooks, settings, noti, subUser;
-  @FXML private Button home_Button, books_Button, returnBook, Books, logOut, user_Button;
+  @FXML protected Button home_Button, books_Button, returnBook, Books, logOut, user_Button;
   @FXML protected TableColumn<BorrowRecord, Integer> Id_Book;
   @FXML protected TableColumn<BorrowRecord, String> Title_Book;
   @FXML protected TableColumn<BorrowRecord, Date> ngaymuon;
   @FXML protected TableColumn<BorrowRecord, Date> ngaytra;
-  @FXML private Label welcome;
+  @FXML private Label welcome, date;
   @FXML private Button searchLib, searchGG, X, returnBooks_Button, issueBooks_Button, settings_Button;
   @FXML private TableView<BorrowRecord> List_Borrow;
   @FXML private Pane return_Book, add_Book;
-
+  @FXML private Button changepass;  
   @FXML protected ProgressIndicator loading;
+
   @FXML
   public ImageView imageBook;
   @FXML
@@ -70,18 +74,23 @@ public class DashController {
   @FXML
   public Button seeDetailBook;  // Adjust based on your Book class
   @FXML
-  public ScrollPane stackPane;
+  private ScrollPane stackPane;
   @FXML
   public Pane book;
   @FXML
   public Pane moredetail;
   @FXML
-  private Button borrowBook, previous, next;
+  private Button borrowBook;
   @FXML
   private Label error;
+  @FXML
+  private HBox Recently;
       private int currentIndex = 0;
       private List<Book> bookLists = new ArrayList<>();
-      private List<Pane> paneList = new ArrayList<>();  // List to store all panes
+      private List<Pane> paneList = new ArrayList<>(); // List to store all panes
+      protected List<Book> recentBook = new ArrayList<>();
+      protected List<Pane> paneRecentBook = new ArrayList<>();
+      private List<BorrowRecord> borrowRecords = new ArrayList<>();
   protected BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO();
   private BorrowRecord record;
   protected LocalDate today = LocalDate.now();
@@ -113,6 +122,22 @@ public class DashController {
     welcome.setText("Welcome " + user.getName() + "!");
     user_Button.setText(user.getName());
 
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy | EEEE, hh:mm a");
+    Timeline timeline =
+        new Timeline(
+            new KeyFrame(
+                Duration.seconds(1),
+                event -> {
+                  // Lấy thời gian hiện tại và định dạng
+                  String formattedDateTime = LocalDateTime.now().format(formatter);
+                  // Cập nhật vào label
+                  date.setText(formattedDateTime);
+                }));
+
+    // Thiết lập lặp vô hạn
+    timeline.setCycleCount(Timeline.INDEFINITE);
+    // Bắt đầu timeline
+    timeline.play();
     home.setVisible(true);
     books.setVisible(false);
     returnBooks.setVisible(false);
@@ -120,13 +145,14 @@ public class DashController {
     settings.setVisible(false);
     home_Button.styleProperty().set("-fx-background-color: #777777");
 
+    borrowRecords.addAll(borrowRecordDAO.getBorrowRecordsByUserId(user));
 
     searchGG.setOnAction(
         e -> {
           loading.setVisible(true);
           String bookTitle = title.getText();
           String bookAuthor = author.getText();
-          handleSearchBookGG(bookTitle, bookAuthor, stackPane);
+          handleSearchBookGG(bookTitle, bookAuthor, new TableView<>());
           stackPane.setVisible(true);
           String defaultImagePath = getClass().getResource("/imgs/unnamed.jpg").toExternalForm();
           imageBook.setImage(new Image(defaultImagePath));
@@ -135,10 +161,14 @@ public class DashController {
 
     searchLib.setOnAction(
         e -> {
+          loading.setVisible(true);
           String bookTitle = title.getText();
           String bookAuthor = author.getText();
-          loading.setVisible(true);
+          stackPane.setVisible(true);
           handleSearchBookLib(bookTitle, bookAuthor);
+          String defaultImagePath = getClass().getResource("/imgs/unnamed.jpg").toExternalForm();
+          imageBook.setImage(new Image(defaultImagePath));
+          book.setVisible(true);
         });
     // <TableColumn fx:id="Id" prefWidth="84.0" text="STT" />
     // Id.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -192,6 +222,32 @@ public class DashController {
         moredetail.getChildren().add(error);
         moredetail.setStyle("-fx-background-color-:rgb(187, 189, 180);");
     });
+
+    borrowRecordDAO.getBookRecent(recentBook);
+    for (Book recent : recentBook) {
+      Pane model = new Pane();
+      model.getChildren().add(bookDetailController.recentBook(recent));
+      Recently.getChildren().add(model);
+      paneRecentBook.add(model);
+
+      model.setOnMouseClicked(event -> {
+        if (event.getClickCount() == 2) {
+          model.setStyle("-fx-background-color: #D0E8FF;");
+          moredetail.getChildren().clear();
+          lammo();
+          try {
+              moredetail.getChildren().add(bookDetailController.asParent(recent));
+          } catch (IOException e) {
+              showAlert("Error", "Could not load book details.");
+          }
+          moredetail.getChildren().add(X);
+          moredetail.getChildren().add(borrowBook);
+          moredetail.getChildren().add(error);
+          moredetail.setStyle("-fx-background-color-:rgb(187, 189, 180);");
+          }
+        });
+      }
+      
   }
 
   public void resetStyle() {
@@ -204,6 +260,7 @@ public class DashController {
     returnBooks_Button.styleProperty().set("-fx-background-color: #A6AEBF");
     issueBooks_Button.styleProperty().set("-fx-background-color: #A6AEBF");
     settings_Button.styleProperty().set("-fx-background-color: #A6AEBF");
+    xoalammo();
   }
 
   public void gotoHome() {
@@ -218,9 +275,10 @@ public class DashController {
     books_Button.styleProperty().set("-fx-background-color: #777777");
   }
 
-  public void gotoReturnBooks() {
+  public void gotoReturnBooks() throws SQLException {
     resetStyle();
     returnBooks.setVisible(true);
+    List_Borrow.setItems(borrowRecordDAO.getBorrowRecordsByUserId(user));
     returnBooks_Button.styleProperty().set("-fx-background-color: #777777");
   }
 
@@ -298,7 +356,7 @@ public class DashController {
     new Thread(task).start();
   }
 
-  protected void handleSearchBookGG(String bookTitle, String bookAuthor, ScrollPane ListBook) {
+  protected void handleSearchBookGG(String bookTitle, String bookAuthor, TableView<Book> tableView) {
     Task<ObservableList<Book>> task =
         new Task<ObservableList<Book>>() {
           @Override
@@ -324,6 +382,7 @@ public class DashController {
                 () -> {
                   bookLists.clear(); // Xóa kết quả cũ
                   bookLists.addAll(getValue()); // Thêm kết quả mới
+                  tableView.setItems(getValue());
                   try {
                     show(getValue());
                   } catch (IOException ioException) {
@@ -358,15 +417,16 @@ public class DashController {
     }
   }
 
-    public void show(List<Book> books) throws IOException {
+    private void show(List<Book> books) throws IOException {
         VBox vbox = new VBox(20); // Create a VBox for the books with 10px spacing
         vbox.getStyleClass().add("sidebar");
         vbox.setStyle("-fx-background-radius: 15px;");
         paneList.clear();
-        for (Book book : books) {
+        for (Book b : books) {
+            System.out.println(b.getTitle() + " " + b.getAuthor() + " " + b.getCategories());
             Pane bookPane = new Pane();
             try {
-                bookPane.getChildren().add(bookDetailController.createPane(book)); // Create a Pane for each book
+                bookPane.getChildren().add(bookDetailController.createPane(b)); // Create a Pane for each book
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -375,12 +435,13 @@ public class DashController {
 
             bookPane.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2) {
-                    processSelected(bookPane, book);
+                    processSelected(bookPane, b);
                 }
             });
         }
         stackPane.setContent(vbox); // Set the VBox as the content of the ScrollPane
         bookLists = books;
+        System.out.println("Pane list size: " + paneList.size());
     }
 
     private void processSelected(Pane pane, Book book) {
@@ -464,12 +525,20 @@ public class DashController {
       X.setVisible(true);
       // manageBooksPane.setStyle("-fx-background-color-: rgba(157, 146, 146, 0.5);");
       books.setEffect(blur);
+      home.setEffect(blur);
+      returnBooks.setEffect(blur);
+      issueBooks.setEffect(blur);
+      settings.setEffect(blur);
     }
 
     @FXML
     private void xoalammo() {
       moredetail.setVisible(false);
       books.setEffect(null);
+      home.setEffect(null);
+      returnBooks.setEffect(null);
+      issueBooks.setEffect(null);
+      settings.setEffect(null); 
       X.setVisible(false);
     }
 
@@ -477,11 +546,22 @@ public class DashController {
     private void borrowBook() {
       Book selectedBook = getCurrentBook();
       try {
-              if (selectedBook.isAvailable()) {
-                record = new BorrowRecord(0, user, selectedBook, today, today.plusMonths(2));
-                borrowRecordDAO.addBorrowRecord(record);
+        if (selectedBook.isAvailable()) {
+          record = new BorrowRecord(0, user, selectedBook, today, today.plusMonths(2));
+          borrowRecordDAO.addBorrowRecord(record);
+          borrowRecords.add(record);
+          error.setText("Borrowed successfully!");
+          error.setVisible(true);
+                // Tạo Timeline để ẩn Label sau 5 giây
+                Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
+                    error.setVisible(false); // Ẩn Label sau 5 giây
+                }));
+                timeline.setCycleCount(1); // Chỉ chạy một lần
+                timeline.play();
+                xoalammo();
               }
               else {
+                error.setText("Can not borrow this book!");
                 error.setVisible(true);
                 // Tạo Timeline để ẩn Label sau 5 giây
                 Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {

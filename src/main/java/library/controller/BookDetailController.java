@@ -40,9 +40,10 @@ public class BookDetailController {
 
   @FXML private Label titleLabel;
   @FXML private Label authorLabel;
-  @FXML private Label isbnLabel;
+  @FXML private Label isbnLabel, idLabel, assertLabel;
   @FXML private Label descriptionLabel, category;
-  @FXML private ImageView bookImageView;
+  @FXML private ImageView bookImageView, imageRecentBook;
+  @FXML private Label titleRecentBook;
   @FXML private ImageView qrCodeImageView; // ImageView để hiển thị mã QR
   @FXML private Button returnbook, addbook, delete, update;
   @FXML private TextField updateTitle, updateAuthor, updateIsbn, updateDescription, updateImageUrl,updateQRcode, updateCategory;
@@ -81,19 +82,20 @@ public class BookDetailController {
       Image image = new Image(book.getImageUrl());
       modelImage.setImage(image);
     } else {
-      bookImageView.setImage(null);
+      String defaultImagePath = getClass().getResource("/imgs/unnamed.jpg").toExternalForm();
+      modelImage.setImage(new Image(defaultImagePath));
     }
   }
 
   public void setBookDetails(Book book) {
-    titleLabel.setText(book.getTitle());
-    authorLabel.setText(book.getAuthor());
-    isbnLabel.setText(book.getIsbn());
-    // isbnLabel.setText(book.getIsbn());
+    titleLabel.setText("Title : " + book.getTitle());
+    authorLabel.setText("Author : " + book.getAuthor());
+    // isbnLabel.setText("Isbn : " + book.getIsbn());
+    // idLabel.setText(book.getId() > -1 ? "Id : " + book.getId() : "book not exist in database");
 
     // Hiển thị mô tả nếu có
     if (book.getDescription() != null) {
-      descriptionLabel.setText(book.getDescription());
+      descriptionLabel.setText("Description : " + book.getDescription());
     } else {
       descriptionLabel.setText("No description available.");
     }
@@ -103,7 +105,8 @@ public class BookDetailController {
       Image image = new Image(book.getImageUrl());
       bookImageView.setImage(image);
     } else {
-      bookImageView.setImage(null);
+      String defaultImagePath = getClass().getResource("/imgs/unnamed.jpg").toExternalForm();
+      bookImageView.setImage(new Image(defaultImagePath));
     }
 
     if (book.getQRcode() != null) {
@@ -117,7 +120,7 @@ public class BookDetailController {
       }
     }
 
-    category.setText(book.getCategories());
+    category.setText("Category : " + book.getCategories());
   }
 
   public void showBookDetails(Book book) {
@@ -296,4 +299,38 @@ public class BookDetailController {
     controller.test(book);
     return bookDetail;
   }
+
+
+  public ImageView getImageRecentBook() {
+    return imageRecentBook;
+  }
+
+  public Label getTitleRecentBook() {
+    return titleRecentBook;
+  }
+
+  public Parent recentBook(Book book) throws IOException {
+    System.out.println("book: " + book);
+   
+    if (book == null) {
+        return null; // Nếu book null, trả về null ngay lập tức.
+    }
+    // Load giao diện FXML của chi tiết sách
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/RecentBook.fxml"));
+    Parent bookDetail = loader.load();
+    // Lấy controller từ FXML
+    BookDetailController controller = loader.getController();
+    // Kiểm tra và thiết lập ảnh
+    Image image;
+    if (book.getImageUrl() != null && !book.getImageUrl().isEmpty()) {
+        image = new Image(book.getImageUrl(), true); // true để tải ảnh không đồng bộ.
+    } else {
+        String defaultImagePath = getClass().getResource("/imgs/unnamed.jpg").toExternalForm();
+        image = new Image(defaultImagePath);
+    }
+    controller.getImageRecentBook().setImage(image);
+    controller.getTitleRecentBook().setText(book.getTitle());
+    return bookDetail;
+}
+
 }

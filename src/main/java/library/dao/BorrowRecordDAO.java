@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate; // Add this import
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,8 +34,7 @@ public class BorrowRecordDAO {
   // Thêm bản ghi mượn sách
   public void addBorrowRecord(BorrowRecord record) {
     String query =
-        "INSERT INTO borrow_records (user_id, book_id, borrow_date, return_date) VALUES (?, ?, ?,"
-            + " ?)";
+        "INSERT INTO borrow_records (user_id, book_id, borrow_date, return_date) VALUES (?, ?, ?, ?)";
     try (PreparedStatement stmt = connection.prepareStatement(query)) {
       stmt.setInt(1, record.getUser().getId());
       stmt.setInt(2, record.getBook().getId());
@@ -134,7 +134,7 @@ public class BorrowRecordDAO {
   }
 
   public int countBookBorrow(int user_id) {
-    String sql = "SELECT COUNT(*) FROM books WHERE user_id = ?";
+    String sql = "SELECT COUNT(*) FROM borrow_records WHERE user_id = ?";
     try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
       pstmt.setInt(1, user_id);
       ResultSet rs = pstmt.executeQuery();
@@ -145,5 +145,16 @@ public class BorrowRecordDAO {
       e.printStackTrace();
     }
     return 0;
+  }
+
+  public void getBookRecent(List<Book> bookRecent) throws SQLException {
+    String query = "SELECT * FROM borrow_records ORDER BY id DESC LIMIT 5";
+    PreparedStatement stmt = connection.prepareStatement(query);
+    ResultSet rs = stmt.executeQuery();
+    while (rs.next()) {
+        int id = rs.getInt("book_id");
+        Book book = bookDAO.getBookById(id);
+        bookRecent.add(book);
+    }
   }
 }
