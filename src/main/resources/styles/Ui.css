@@ -154,3 +154,14 @@
 .a {
     -fx-background-color: #a1afb8;
 }
+
+.circular-image {
+    -fx-fit-width: 100px;
+    /* Adjust the size as needed */
+    -fx-fit-height: 100px;
+    /* Adjust the size as needed */
+    -fx-background-radius: 50%;
+    /* This won't clip the image but is useful for other styling */
+    -fx-border-radius: 50%;
+    /* This won't clip the image but is useful for other styling */
+}

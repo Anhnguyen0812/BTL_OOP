@@ -32,15 +32,11 @@ public class BorrowRecordDAO {
 
   // Thêm bản ghi mượn sách
   public void addBorrowRecord(BorrowRecord record) {
-    String query = "INSERT INTO borrow_records (user_id, book_id, borrow_date, return_date) VALUES (?, ?, ?,"
-        + " ?)";
+    String query = "INSERT INTO borrow_records (user_id, book_id, borrow_date) VALUES (?, ?, ?)";
     try (PreparedStatement stmt = connection.prepareStatement(query)) {
       stmt.setInt(1, record.getUser().getId());
       stmt.setInt(2, record.getBook().getId());
       stmt.setDate(3, java.sql.Date.valueOf(record.getBorrowDate()));
-      stmt.setDate(
-          4, record.getReturnDate() != null ? java.sql.Date.valueOf(record.getReturnDate()) : null);
-      stmt.executeUpdate();
       bookDAO.borrowBook(record.getBook());
     } catch (SQLException e) {
       Logger.getLogger(BorrowRecordDAO.class.getName()).log(Level.SEVERE, null, e);

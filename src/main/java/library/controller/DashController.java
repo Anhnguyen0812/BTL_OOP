@@ -6,10 +6,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.gluonhq.charm.glisten.control.Avatar;
+import com.gluonhq.impl.charm.a.a.a;
+import com.gluonhq.impl.charm.a.b.a.b;
 import com.gluonhq.impl.charm.a.b.b.s;
 import com.gluonhq.impl.charm.a.b.b.u;
 
 import javafx.scene.control.Label;
+import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.geometry.Insets;
 import javafx.application.HostServices;
@@ -18,6 +22,7 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -31,6 +36,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -40,6 +47,7 @@ import library.dao.BorrowRecordDAO;
 import library.model.Book;
 import library.model.BorrowRecord;
 import library.model.ConcreteBook;
+import library.model.ImageHandler;
 import library.model.User;
 import library.dao.AllDao;
 
@@ -95,6 +103,9 @@ public class DashController {
   private GridPane searchView, searchReturnBooks;
   @FXML
   private ChoiceBox<String> searchChoice, returnChoice;
+
+  @FXML
+  private ImageView avatar, avatar1;
 
   protected BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO();
   protected User user;
@@ -166,6 +177,9 @@ public class DashController {
       data.setName(data.getName() + " (" + (int) data.getPieValue() + ")");
     });
     chart2.setData(pieChartData);
+
+    handleLoadImage(avatar);
+    avatar1.setImage(avatar.getImage());
 
   }
 
@@ -271,6 +285,24 @@ public class DashController {
       noti.setVisible(false);
     } else {
       noti.setVisible(true);
+    }
+  }
+
+  @FXML
+  private void handleSaveImage(ActionEvent event) {
+    ImageHandler imageHandler = new ImageHandler();
+    imageHandler.saveImage((Stage) ((Node) event.getSource()).getScene().getWindow(), user.getId());
+
+    handleLoadImage(avatar);
+    avatar1.setImage(avatar.getImage());
+  }
+
+  private void handleLoadImage(ImageView imageView_) {
+    ImageHandler imageHandler = new ImageHandler();
+    ImageView imageView = imageHandler.loadImage(user.getId() + ".png"); // replace with your image file name
+    if (imageView != null) {
+      // Add the ImageView to your scene or layout
+      imageView_.setImage(imageView.getImage());
     }
   }
 
@@ -395,7 +427,7 @@ public class DashController {
           books = bookDAO.getListBookByISBN(bookTitle);
         }
         Platform.runLater(() -> {
-          setBookItem(books, false);
+          setBookItem(books, 1, false, true);
         });
         return null;
       }
@@ -411,7 +443,7 @@ public class DashController {
         String bookTitle = title.getText();
         List<Book> books = bookController.searchBookByTitle(bookTitle);
         Platform.runLater(() -> {
-          setBookItem(books, true);
+          setBookItem(books, 1, true, true);
         });
         return null;
       }
@@ -420,19 +452,23 @@ public class DashController {
 
   }
 
-  private void setBookItem(List<Book> books, boolean needCheck) {
-    searchView.getChildren().clear();
-    int column = 1;
-    int row = 1;
-    int i = 0;
+  int i = 1;
+
+  private void setBookItem(List<Book> books, int j, boolean needCheck, boolean needClear) {
+    i = j;
+    if (needClear)
+      searchView.getChildren().clear();
+    int column = i % 2;
+    int row = i / 2 + 1;
+
     if (books.size() == 0) {
       showAlert("No result", "No book found");
       Label noBooksLabel = new Label("No Books found!");
       searchView.add(noBooksLabel, 1, 1);
     } else
-      for (Book book : books) {
+      for (; i <= books.size(); i++) {
+        Book book = books.get(i - 1);
         try {
-          i++;
           FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/BookItem.fxml"));
           AnchorPane bookItem = loader.load();
           BookItemController controller = loader.getController();
@@ -449,8 +485,21 @@ public class DashController {
             if (row >= 30)
               break;
           }
+
           searchView.add(bookItem, column++, row);
           GridPane.setMargin(bookItem, new Insets(5)); // Add margin of 20px between items
+
+          if (i % 20 == 0) {
+            Button loadMoreButton = new Button("Load More");
+            loadMoreButton.setOnAction(event -> {
+              searchView.getChildren().remove(loadMoreButton);
+              setBookItem(books, i + 1, needCheck, false);
+            });
+            searchView.add(loadMoreButton, 2, row + 1, 3, 1);
+            GridPane.setMargin(loadMoreButton, new Insets(5));
+            break;
+          }
+
           bookItem.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
               showBookDetails(book);
