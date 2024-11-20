@@ -63,7 +63,7 @@ public class BorrowRecordDAO {
             rs.getDate("return_date") != null ? rs.getDate("return_date").toLocalDate() : null;
 
         // Giả sử bạn có lớp UserService và BookService để lấy thông tin người dùng và sách
-        UserService userService = new UserService(UserDAO.getUserDAO());
+        UserService userService = new UserService();
         User user = userService.getUserById(userId); // Phương thức giả định
         Book book = bookDAO.getBookById(bookId); // Phương thức giả định
 
@@ -101,7 +101,7 @@ public class BorrowRecordDAO {
         LocalDate borrowDate = rs.getDate("borrow_date").toLocalDate();
         LocalDate returnDate =
             rs.getDate("return_date") != null ? rs.getDate("return_date").toLocalDate() : null;
-        User user = new UserService(UserDAO.getUserDAO()).getUserById(userId);
+        User user = new UserService().getUserById(userId);
         Book book = new BookService(bookDAO).getBookById(bookId);
         return new BorrowRecord(recordId, user, book, borrowDate, returnDate);
       }
@@ -111,7 +111,7 @@ public class BorrowRecordDAO {
     return null;
   }
 
-  public ObservableList<BorrowRecord> getBorrowRecordsByUserId(User user) throws SQLException {
+  public ObservableList<BorrowRecord> getBorrowRecordsByUser(User user) throws SQLException {
 
     ObservableList<BorrowRecord> records = FXCollections.observableArrayList();
     String query = "SELECT * FROM borrow_records WHERE user_id = ?";

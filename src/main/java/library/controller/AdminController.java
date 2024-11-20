@@ -1,12 +1,14 @@
 package library.controller;
 
 import java.io.IOException;
+import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
+import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,6 +21,7 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
@@ -32,7 +35,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 import library.dao.BookDAO;
 import library.dao.UserDAO;
@@ -46,8 +49,10 @@ import library.model.ScienceBook;
 import library.model.TechnologyBook;
 import library.model.ThesisBook;
 import library.model.User;
+import library.service.UserService;
 
-public class AdminController extends DashController {
+
+public class AdminController extends DashController implements Initializable {
 
   // Các trường nhập liệu cho quản lý sách
   @FXML private TextField bookTitleField;
@@ -88,6 +93,13 @@ public class AdminController extends DashController {
   @FXML protected TableColumn<BorrowRecord, Integer> Id_User;
   @FXML protected TableColumn<BorrowRecord, String> Username;
 
+  @FXML private Pane paneAU;
+  @FXML private Button AU;
+
+  @FXML private Label iduser, username, email, newpassword,totalbook;
+  @FXML private Button create;
+  @FXML private Pane detailUser;
+  
   @FXML private Label totalBook, totalUser, totalBorrow;
   @FXML private TextField updateTitle, updateAuthor, updateIsbn, updateDescription, updateImageUrl,updateQRcode, updateCategory;
   @FXML private Label greetingLabel;
@@ -97,7 +109,6 @@ public class AdminController extends DashController {
   @FXML private Pane manageUsersPane, ManagerBorrowBook, infoBorrow, updateB;
   @FXML private Pane infoBook;
   @FXML private Pane home;
-  @FXML private StackPane contentArea;
   @FXML private AnchorPane origin;
   private static final Logger LOGGER = Logger.getLogger(AdminController.class.getName());
   @FXML private ImageView logofb, logoytb;
@@ -119,15 +130,12 @@ public class AdminController extends DashController {
     searchBookPane.setVisible(true); // Show Search Book Pane
   }
 
- 
-
   // Phương thức khởi tạo, thiết lập các cột cho bảng sách và người dùng
-  @FXML
   @Override
-  public void initialize() {
+  public void initialize(URL location, ResourceBundle resources) {
     // origin.getStyleClass().add("pane-background");
-    Image ytb = new Image("/imgs/logoytb.png");
-    Image fb = new Image("/imgs/logofb.png");
+    Image ytb = new Image("/imgs/logoytb.png", true);
+    Image fb = new Image("/imgs/logofb.png", true);
     logoytb.setImage(ytb);
     logoytb.setOnMouseClicked(this::handleYouTubeClick);
 
@@ -207,29 +215,69 @@ public class AdminController extends DashController {
 
     borrowRecord.setOnMouseClicked(
         event -> {
-          // if (event.getClickCount() == 2) { // Kiểm tra nhấp đúp
-          //     BorrowRecord selectedBook = borrowRecord.getSelectionModel().getSelectedItem();
-          //     if (selectedBook != null) {
-          //         infoBook.getChildren().clear();
+          if (event.getClickCount() == 2) { // Kiểm tra nhấp đúp
+              BorrowRecord record = borrowRecord.getSelectionModel().getSelectedItem();
+              if (record != null) {
+                  infoBook.getChildren().clear();
 
-          //         // Sử dụng CompletableFuture để tải dữ liệu trong một luồng nền
-          //         CompletableFuture.runAsync(() -> {
-          //             BookDetailController detailController = new BookDetailController();
-          //             try {
-          //                 // Parent bookDetailParent = detailController.asParent(selectedBook);
-
-          //                 // Cập nhật giao diện trong luồng JavaFX
-          //                 Platform.runLater(() -> {
-          //                     // infoBook.getChildren().add(bookDetailParent);
-          //                 });
-          //             } catch (IOException e) {
-          //                 Platform.runLater(() -> showAlert("Error", "Could not load book
-          // details."));
-          //             }
-          //         });
-          //     }
-          // }
+                  // Sử dụng CompletableFuture để tải dữ liệu trong một luồng nền
+                  CompletableFuture.runAsync(() -> {
+                      BookDetailController detailController = new BookDetailController();
+                      try {
+                          Parent bookDetailParent = detailController.infoBorrow(record.getBook(), record.getUser());
+                          // Cập nhật giao diện trong luồng JavaFX
+                          Platform.runLater(() -> {
+                              infoBook.getChildren().add(bookDetailParent);
+                          });
+                      } catch (IOException e) {
+                          Platform.runLater(() -> showAlert("Error", "Could not load book details."));
+                      }
+                  });
+              }
+          }
         });
+
+    userTable.setOnMouseClicked(event -> {
+      if (event.getClickCount() == 2) { // Kiểm tra nhấp đúp
+        detailUser.setVisible(true);
+        manageUsersPane.setEffect(blur);
+        User selectedUser = userTable.getSelectionModel().getSelectedItem();
+        iduser.setText(String.valueOf("ID : " +selectedUser.getId()));
+        username.setText("Username : " + selectedUser.getName());
+        email.setText("Email : " + selectedUser.getEmail());
+        ObservableList<BorrowRecord> borrowRecords = FXCollections.observableArrayList();
+        try {
+            borrowRecords = borrowRecordDAO.getBorrowRecordsByUser(selectedUser);
+        } catch (SQLException e) {
+            showAlert("Database Error", "Could not load borrow records from the database.");
+        }
+        totalbook.setText("Total Book : " + borrowRecords.size());
+
+      create.setOnAction(
+        e -> {
+          newpassword.setText("123456" );
+          newpassword.setVisible(true);
+          String salt = null;
+          try {
+              salt = getSalt();
+          } catch (NoSuchAlgorithmException ex) {
+              showAlert("Error", "Could not generate salt for password hashing.");
+              return;
+          }
+          String pass = null;
+          try {
+              pass = UserService.hashPassword("123456", salt);
+          } catch (NoSuchAlgorithmException ex) {
+              showAlert("Error", "Could not hash password.");
+          }
+          selectedUser.setPassword(pass);
+          selectedUser.setSalt(salt);
+          UserService userService = new UserService();
+          userService.editUser(selectedUser);
+        });
+      }
+    });
+    
     bookTable.setOnMouseClicked(
         event -> {
           if (event.getClickCount() == 2) { // Kiểm tra nhấp đúp
@@ -335,6 +383,16 @@ public class AdminController extends DashController {
     ngaymuon.setCellValueFactory(new PropertyValueFactory<>("borrowDate"));
     ngaytra.setCellValueFactory(new PropertyValueFactory<>("returnDate"));
     borrowRecord.setItems(borrowRecordDAO.getAllBorrowRecords());
+
+    AU.setOnAction(
+        e -> {
+          try {
+            paneAU.setVisible(true);
+            manageUsersPane.setEffect(blur);
+          } catch (Exception ex) {
+            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+          }
+        });
   }
  @FXML
   public void Home() {
@@ -445,9 +503,9 @@ public class AdminController extends DashController {
       showAlert("Input Error", "All fields must be filled.");
       return;
     }
-
+    String hashPassword = UserService.hashPassword(password, getSalt());
     // Thêm người dùng vào danh sách
-    User newUser = new User(0, username, email, password, role, getSalt());
+    User newUser = new User(0, username, email, hashPassword, role, getSalt());
     UserDAO userDAO = UserDAO.getUserDAO();
     userDAO.addUser(newUser);
 
@@ -477,7 +535,7 @@ public class AdminController extends DashController {
 
   private void handleFaceBookClick(MouseEvent event) {
     try {
-      String url = "https://www.instagram.com/cristiano/";
+      String url = "https://www.facebook.com/th1enq";
       // Mở link bằng trình duyệt mặc định
       hostServices.showDocument(url);
     } catch (Exception e) {
@@ -498,5 +556,32 @@ public class AdminController extends DashController {
   private void xoalammo() {
     updateB.setVisible(false);
     manageBooksPane.setEffect(null);
+    manageUsersPane.setEffect(null);
+    newpassword.setVisible(false);
+    detailUser.setVisible(false);
+    paneAU.setVisible(false);
+  }
+
+  @FXML private TextField infoUser;
+  @FXML private TextFlow searchField;
+
+  @FXML
+  private void searchUser() {
+    String info = infoUser.getText();
+    String search = searchField.getChildren().toString();
+    try {
+      userList.clear();
+      if (search.equals("Username")) {
+        userList.setAll(UserDAO.getUserByName(info));
+      } else if (search.equals("Email")) {
+        userList.setAll(UserDAO.getUserByEmail(info));
+      } else {
+        UserDAO userDAO = UserDAO.getUserDAO();
+        userList.setAll(userDAO.getUserById(Integer.parseInt(info)));
+      }
+      userTable.setItems(userList);
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
   }
 }

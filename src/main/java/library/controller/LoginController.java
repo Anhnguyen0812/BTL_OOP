@@ -3,6 +3,7 @@ package library.controller;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+
 import javafx.application.HostServices;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,8 +22,7 @@ public class LoginController {
 
   // Method to get user by username and password
 
-  @FXML private Button LoginButton;
-  @FXML private Button SigninButton;
+  @FXML private Button loginButton;
   @FXML private TextField Username;
   @FXML private PasswordField Passhide;
   @FXML private TextField Pass;
@@ -36,17 +36,16 @@ public class LoginController {
   public void initialize() {
     Passhide.textProperty().bindBidirectional(Pass.textProperty());
     Pass.setVisible(false);
-    LoginButton.setDefaultButton(true);
+    loginButton.setDefaultButton(true);
   }
 
   @FXML
-  public void MoveToSignin() {
+  public void MoveToSignup() {
 
     try {
-      FXMLLoader loader = new FXMLLoader(AppLaunch.class.getResource("/library/Signin.fxml"));
+      FXMLLoader loader = new FXMLLoader(AppLaunch.class.getResource("/library/Signup.fxml"));
       Parent root = loader.load();
-      SigninController controller = loader.getController();
-      Stage stage = (Stage) LoginButton.getScene().getWindow();
+      Stage stage = (Stage) loginButton.getScene().getWindow();
       stage.setScene(new Scene(root, 500, 350));
       stage.setTitle("Library Management System");
       stage.show();
@@ -68,23 +67,18 @@ public class LoginController {
     }
   }
 
-  private User getUserbyname(String username) throws SQLException {
-    UserDAO userdao = UserDAO.getUserDAO();
-    return userdao.getUserByName(username);
-  }
-
   @FXML
   public void MoveToAccount() throws SQLException, NoSuchAlgorithmException {
     System.out.println("Username: " + Username.getText() + ", Password: " + Pass.getText());
     int check = UserService.checkLogin(Username.getText(), Pass.getText(), "admin");
     if (check == 1) {
       try {
-        user = getUserbyname(Username.getText());
+        user = UserDAO.getUserByName(Username.getText());
         AdminController adminController = new AdminController(user, hostServices);
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Admin.fxml"));
         loader.setController(adminController);
         Parent root = loader.load();
-        Stage stage = (Stage) LoginButton.getScene().getWindow();
+        Stage stage = (Stage) loginButton.getScene().getWindow();
         stage.setScene(new Scene(root, 960, 720));
         stage.setTitle("Library Management System");
         stage.centerOnScreen();
@@ -94,23 +88,12 @@ public class LoginController {
       }
     } else if (check == 2) {
       try {
-        // user = getUserbyname(Username.getText());
-        // // DashController dashController = new DashController(user, hostServices);
-        // UserController userController = new UserController(user, hostServices);
-        // FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/dash.fxml"));
-        // loader.setController(userController);
-        // Parent root = loader.load();
-        // Stage stage = (Stage) LoginButton.getScene().getWindow();
-        // stage.setScene(new Scene(root, 960, 720));
-        // stage.setTitle("Library Management System");
-        // stage.centerOnScreen();
-        // stage.show();
-        user = getUserbyname(Username.getText());
+        user = UserDAO.getUserByName(Username.getText());
         DashController dashController = new DashController(user, hostServices);
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/dash.fxml"));
         loader.setController(dashController);
         Parent root = loader.load();
-        Stage stage = (Stage) LoginButton.getScene().getWindow();
+        Stage stage = (Stage) loginButton.getScene().getWindow();
         stage.setScene(new Scene(root));
         stage.setTitle("Library Management System");
         stage.centerOnScreen();

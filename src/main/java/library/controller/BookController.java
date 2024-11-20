@@ -1,9 +1,7 @@
 package library.controller;
 
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +12,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import library.api.GoogleBooksAPI;
 import library.dao.BookDAO;
-import library.model.*;
+import library.model.Book;
+import library.model.ConcreteBook;
 import library.util.DBConnection;
 
 public class BookController {
@@ -70,32 +69,32 @@ public class BookController {
         temp.setCategories(categories);
         Book b = (Book) temp;
         books.add(b);
-        Book temp2 = null;
-        categories = categories.toLowerCase();
-        if (categories.contains("art")) {
-          temp2 = new ArtBook(-1, title, authorName, isbn, true, description, imageUrl, bookUrl);
+        // Book temp2 = null;
+        // categories = categories.toLowerCase();
+        // if (categories.contains("art")) {
+        //   temp2 = new ArtBook(-1, title, authorName, isbn, true, description, imageUrl, bookUrl);
 
-        } else if (categories.contains("thesis")) {
-          temp2 = new ThesisBook(-1, title, authorName, isbn, true, description, imageUrl, bookUrl);
-        } else if (categories.contains("technology")) {
-          temp2 = new TechnologyBook(-1, title, authorName, isbn, true, description, imageUrl, bookUrl);
-        } else if (categories.contains("science")) {
-          temp2 = new ScienceBook(-1, title, authorName, isbn, true, description, imageUrl, bookUrl);
-        } else if (categories.contains("computer")) {
-          temp2 = new ComputerBook(-1, title, authorName, isbn, true, description, imageUrl, bookUrl);
-        } else if (categories.contains("history")) {
-          temp2 = new HistoryBook(-1, title, authorName, isbn, true, description, imageUrl, bookUrl);
-        } else if (categories.contains("EBook")) {
-          temp2 = new ConcreteBook(-1, title, authorName, isbn, true, description, imageUrl, bookUrl);
-        }
-    if (temp2 != null) {
-      try {
-        bookDAO.addBook(temp2);  
-      } catch (SQLException e) {
-        System.err.println("Error while adding book to database: " + e.getMessage());
-        e.printStackTrace();
-      }
-    }
+        // } else if (categories.contains("thesis")) {
+        //   temp2 = new ThesisBook(-1, title, authorName, isbn, true, description, imageUrl, bookUrl);
+        // } else if (categories.contains("technology")) {
+        //   temp2 = new TechnologyBook(-1, title, authorName, isbn, true, description, imageUrl, bookUrl);
+        // } else if (categories.contains("science")) {
+        //   temp2 = new ScienceBook(-1, title, authorName, isbn, true, description, imageUrl, bookUrl);
+        // } else if (categories.contains("computer")) {
+        //   temp2 = new ComputerBook(-1, title, authorName, isbn, true, description, imageUrl, bookUrl);
+        // } else if (categories.contains("history")) {
+        //   temp2 = new HistoryBook(-1, title, authorName, isbn, true, description, imageUrl, bookUrl);
+        // } else if (categories.contains("EBook")) {
+        //   temp2 = new ConcreteBook(-1, title, authorName, isbn, true, description, imageUrl, bookUrl);
+        // }
+    // if (temp2 != null) {
+    //   try {
+    //     bookDAO.addBook(temp2);  
+    //   } catch (SQLException e) {
+    //     System.err.println("Error while adding book to database: " + e.getMessage());
+    //     e.printStackTrace();
+    //   }
+    // }
       }
     } else {
       System.out.println("No books found in JSON data.");

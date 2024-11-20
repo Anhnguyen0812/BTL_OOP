@@ -41,7 +41,6 @@ public class User {
   public String getRole() {
     return role;
   }
-  ;
 
   // Getters và Setters
   public int getId() {
@@ -62,5 +61,29 @@ public class User {
 
   public String getSalt() {
     return salt;
+  }
+
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public void setRole(String role) {
+    this.role = role;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public void setSalt(String salt) {
+    this.salt = salt;
   }
 }

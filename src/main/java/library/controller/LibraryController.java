@@ -38,7 +38,7 @@ public class LibraryController {
   DBConnection connection = DBConnection.getInstance();
 
   public LibraryController() {
-    this.userService = new UserService(UserDAO.getUserDAO());
+    this.userService = new UserService();
     this.bookService = new BookService(BookDAO.getBookDAO());
     this.borrowService =
         new BorrowService(new BorrowRecordDAO(connection.getConnection()), BookDAO.getBookDAO());

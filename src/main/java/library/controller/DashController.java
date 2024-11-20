@@ -9,7 +9,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-
+import java.net.URL;
+import java.security.NoSuchAlgorithmException;
+import java.util.ResourceBundle;
+import com.gluonhq.impl.charm.a.b.b.s;
+import com.gluonhq.impl.charm.a.b.b.u;
+import javafx.scene.control.ChoiceBox;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.HostServices;
@@ -21,6 +26,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -44,10 +50,16 @@ import library.dao.BorrowRecordDAO;
 import library.model.Book;
 import library.model.BorrowRecord;
 import library.model.User;
+import library.service.UserService;
 
-public class DashController {
+public class DashController implements Initializable {
+
+  @FXML
+  private ChoiceBox<String> searchChoice, returnChoice;
 
   @FXML private TextField author, publisher, isbn, bookId, search;
+  @FXML
+  private Button reloadReturnBooksButton;
   // @FXML
   // private Insets  title;
 
@@ -65,6 +77,9 @@ public class DashController {
   @FXML private Button changepass;  
   @FXML protected ProgressIndicator loading;
 
+  @FXML private Label neww, old, verify;
+  @FXML private TextField newpass, oldpass, verifypass;
+
   @FXML
   public ImageView imageBook;
   @FXML
@@ -76,13 +91,13 @@ public class DashController {
   @FXML
   private ScrollPane stackPane;
   @FXML
-  public Pane book;
+  public Pane book, boxchange;
   @FXML
   public Pane moredetail;
   @FXML
   private Button borrowBook;
   @FXML
-  private Label error;
+  private Label error, iduser, username, email;
   @FXML
   private HBox Recently;
       private int currentIndex = 0;
@@ -117,11 +132,25 @@ public class DashController {
     alert.showAndWait();
   }
 
-  public void initialize() throws SQLException , IOException {
+  @Override
+  public void initialize(URL url, ResourceBundle res) {
+
+    // Set up ChoiceBox for search and return
+    // searchChoice.getItems().addAll("Title", "Author", "ISBN");
+    // returnChoice.getItems().addAll("Borrowed", "Returned", "unReturned");
+
+    // // Set up values for ChoiceBox
+    // searchChoice.setValue("Title");
+    // returnChoice.setValue("Borrowed");
+
 
     welcome.setText("Welcome " + user.getName() + "!");
     user_Button.setText(user.getName());
 
+    iduser.setText(String.valueOf("Id : " + user.getId()));
+    username.setText("Username : " + user.getName());
+    email.setText("Email : " + user.getEmail());
+    
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy | EEEE, hh:mm a");
     Timeline timeline =
         new Timeline(
@@ -145,7 +174,11 @@ public class DashController {
     settings.setVisible(false);
     home_Button.styleProperty().set("-fx-background-color: #777777");
 
-    borrowRecords.addAll(borrowRecordDAO.getBorrowRecordsByUserId(user));
+    try {
+        borrowRecords.addAll(borrowRecordDAO.getBorrowRecordsByUser(user));
+    } catch (SQLException e) {
+        showAlert("Error", "Could not load borrow records.");
+    }
 
     searchGG.setOnAction(
         e -> {
@@ -155,7 +188,7 @@ public class DashController {
           handleSearchBookGG(bookTitle, bookAuthor, new TableView<>());
           stackPane.setVisible(true);
           String defaultImagePath = getClass().getResource("/imgs/unnamed.jpg").toExternalForm();
-          imageBook.setImage(new Image(defaultImagePath));
+          imageBook.setImage(new Image(defaultImagePath, true));
           book.setVisible(true);
         });
 
@@ -167,7 +200,7 @@ public class DashController {
           stackPane.setVisible(true);
           handleSearchBookLib(bookTitle, bookAuthor);
           String defaultImagePath = getClass().getResource("/imgs/unnamed.jpg").toExternalForm();
-          imageBook.setImage(new Image(defaultImagePath));
+          imageBook.setImage(new Image(defaultImagePath, true));
           book.setVisible(true);
         });
     // <TableColumn fx:id="Id" prefWidth="84.0" text="STT" />
@@ -180,7 +213,11 @@ public class DashController {
     ngaymuon.setCellValueFactory(new PropertyValueFactory<>("borrowDate"));
     ngaytra.setCellValueFactory(new PropertyValueFactory<>("returnDate"));
 
-    List_Borrow.setItems(borrowRecordDAO.getBorrowRecordsByUserId(user));
+    try {
+        List_Borrow.setItems(borrowRecordDAO.getBorrowRecordsByUser(user));
+    } catch (SQLException e) {
+        showAlert("Error", "Could not load borrow records.");
+    }
 
     List_Borrow.setOnMouseClicked(
         event -> {
@@ -223,10 +260,18 @@ public class DashController {
         moredetail.setStyle("-fx-background-color-:rgb(187, 189, 180);");
     });
 
-    borrowRecordDAO.getBookRecent(recentBook);
+    try {
+        borrowRecordDAO.getBookRecent(recentBook);
+    } catch (SQLException e) {
+        showAlert("Error", "Could not load recent books.");
+    }
     for (Book recent : recentBook) {
       Pane model = new Pane();
-      model.getChildren().add(bookDetailController.recentBook(recent));
+      try {
+          model.getChildren().add(bookDetailController.recentBook(recent));
+      } catch (IOException e) {
+          showAlert("Error", "Could not load recent book details.");
+      }
       Recently.getChildren().add(model);
       paneRecentBook.add(model);
 
@@ -247,6 +292,14 @@ public class DashController {
           }
         });
       }
+
+      changepass.setOnAction(event -> {
+        boxchange.setVisible(true);
+        lammo();
+        moredetail.setVisible(false);
+        borrowBook.setVisible(false);
+        X.setVisible(false);
+      });
       
   }
 
@@ -278,7 +331,7 @@ public class DashController {
   public void gotoReturnBooks() throws SQLException {
     resetStyle();
     returnBooks.setVisible(true);
-    List_Borrow.setItems(borrowRecordDAO.getBorrowRecordsByUserId(user));
+    List_Borrow.setItems(borrowRecordDAO.getBorrowRecordsByUser(user));
     returnBooks_Button.styleProperty().set("-fx-background-color: #777777");
   }
 
@@ -376,7 +429,6 @@ public class DashController {
 
           @Override
           protected void succeeded() {
-            loading.setVisible(false);
             super.succeeded();
             Platform.runLater(
                 () -> {
@@ -423,7 +475,6 @@ public class DashController {
         vbox.setStyle("-fx-background-radius: 15px;");
         paneList.clear();
         for (Book b : books) {
-            System.out.println(b.getTitle() + " " + b.getAuthor() + " " + b.getCategories());
             Pane bookPane = new Pane();
             try {
                 bookPane.getChildren().add(bookDetailController.createPane(b)); // Create a Pane for each book
@@ -439,9 +490,9 @@ public class DashController {
                 }
             });
         }
-        stackPane.setContent(vbox); // Set the VBox as the content of the ScrollPane
+        stackPane.setContent(vbox);
+        loading.setVisible(false); // Set the VBox as the content of the ScrollPane
         bookLists = books;
-        System.out.println("Pane list size: " + paneList.size());
     }
 
     private void processSelected(Pane pane, Book book) {
@@ -481,10 +532,10 @@ public class DashController {
     private void updateMainDisplay(Book book) {
         // Update the main display with the selected book's details
         if (book.getImageUrl() != null && !book.getImageUrl().isEmpty()) {
-            imageBook.setImage(new Image(book.getImageUrl()));
+            imageBook.setImage(new Image(book.getImageUrl(), true));
         } else {
             String defaultImagePath = getClass().getResource("/imgs/unnamed.jpg").toExternalForm();
-            imageBook.setImage(new Image(defaultImagePath));
+            imageBook.setImage(new Image(defaultImagePath, true));
         }
         titleBook.setText(book.getTitle());
         authorBook.setText(book.getAuthor());
@@ -540,6 +591,7 @@ public class DashController {
       issueBooks.setEffect(null);
       settings.setEffect(null); 
       X.setVisible(false);
+      boxchange.setVisible(false);
     }
 
     @FXML
@@ -576,5 +628,33 @@ public class DashController {
               java.util.logging.Logger.getLogger(DashController.class.getName()).log(Level.SEVERE, null, ex);
             }
       
+    }
+
+    @FXML
+    private void changePassword() throws SQLException, NoSuchAlgorithmException {
+      String oldPassword = oldpass.getText();
+      oldPassword = UserService.hashPassword(oldPassword, user.getSalt());
+      String newPassword = newpass.getText();
+      String checkPassword = UserService.hashPassword(newPassword, user.getSalt());
+      String verifyPassword = verifypass.getText();
+      if (!oldPassword.equals(user.getPassword())) {
+        old.setVisible(true);
+      } else if (checkPassword.equals(oldPassword)) {
+        neww.setVisible(true);
+        old.setVisible(false);
+      } else if (!newPassword.equals(verifyPassword)) {
+        verify.setVisible(true);
+        neww.setVisible(false);
+      } else {
+          String salt = AdminController.getSalt();
+          String hashedPassword = UserService.hashPassword(newPassword, salt);
+          user.setPassword(hashedPassword);
+          user.setSalt(salt);
+          UserService userService =  new UserService();
+          userService.editUser(user);
+          old.setVisible(false);
+          neww.setVisible(false);
+          verify.setVisible(false);
+      }
     }
 }

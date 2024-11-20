@@ -59,7 +59,7 @@ public class BookDAO {
   }
 
   public boolean isbnExists(String isbn) {
-    String sql = "SELECT COUNT(*) FROM books WHERE isbn = ?";
+    String sql = "SELECT COUNT(*) FROM books WHERE isbn LIKE ?";
     try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
       pstmt.setString(1, isbn);
       ResultSet rs = pstmt.executeQuery();
