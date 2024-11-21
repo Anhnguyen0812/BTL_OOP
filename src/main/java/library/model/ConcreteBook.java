@@ -1,7 +1,6 @@
 package library.model;
 
 public class ConcreteBook extends Book {
-  private final String concreteCategories = "Else";
 
   public ConcreteBook(
       int id,
@@ -45,16 +44,39 @@ public class ConcreteBook extends Book {
     super(id, title, author, isbn, available, description, imageUrl, QRcode);
   }
 
+  public ConcreteBook(
+      int id,
+      String title,
+      String author,
+      String isbn,
+      boolean available,
+      String description,
+      String imageUrl,
+      String QRcode,
+      Double rate_avg) {
+    super(id, title, author, isbn, available, description, imageUrl, QRcode, rate_avg);
+  }
+
   @Override
   public String getCategories() {
-    return concreteCategories;
+    return categories;
+  }
+
+  @Override
+  public void setCategories(String categories) {
+    this.categories = categories;
+  }
+
+  @Override
+  public void setRateAvg(Double rateAvg) {
+    this.rate_avg = rateAvg;
   }
 
   @Override
   public String toString() {
     return String.format(
-        "ConcreteBook{id=%d, title='%s', author='%s', description='%s', imageUrl='%s', isbn='%s', availability=%s}",
-        this.id, this.title, this.author, this.description, this.imageUrl, this.isbn, this.available);
-  
+        "ConcreteBook{id=%d, title='%s', author='%s', imageUrl='%s', isbn='%s', availability=%s}",
+        this.id, this.title, this.author, this.imageUrl, this.isbn, this.available);
+
   }
 }

@@ -49,11 +49,10 @@
 }
 
 .Pane {
-    -fx-background-color: #ffffff;
+    -fx-background-color: #DFDFDF;
     -fx-background-radius: 10;
     -fx-border-radius: 10;
-    -fx-border-color: #016e63;
-    -fx-border-width: 5;
+
 
 }
 
@@ -146,14 +145,107 @@
 }
 
 .itemAnchor:hover {
-    -fx-background-color: #b5b5b5;
+    -fx-background-color: #c1c1c1;
+    -fx-translate-y: -2px;
     -fx-background-radius: 10;
     -fx-border-radius: 10;
+}
+
+.homeInfoPane {
+    -fx-background-color: #c7d0e3;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+
+}
+
+.homeInfoPane:hover {
+    -fx-background-color: #a1afb8;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.progressHome {
+    -fx-progress-color: #8a2be2;
+    -fx-indicator-position: center;
+
 }
 
 .a {
     -fx-background-color: #a1afb8;
 }
+
+.hboxTitle {
+    -fx-background-color: #b4bbca;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+}
+
+.ScrollPane {
+    -fx-background-color: transparent;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: transparent
+}
+
+.ScrollPane:pressed {
+    -fx-background-color: transparent;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: transparent
+}
+
+.detailBookPane {
+    -fx-background-color: #8fa6b9;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.detailPane {
+    -fx-background-color: #a5c4dd;
+    -fx-border-color: #a5c4dd;
+}
+
+.VboxDash {
+    -fx-background-color: #A6AEBF;
+    -fx-background-radius: 0px 20px 20px 0px;
+}
+
+.PaneIn {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 20px;
+}
+
+.transparent {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.transparent:hover {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-opacity: 0.7;
+    -fx-translate-y: -2px;
+}
+
+.multiChoice {
+    -fx-background-color: #bdbdbd;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+
+}
+
+.multiChoice:hover {
+    -fx-background-color: #838383;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.multiChoice:pressed {
+    -fx-background-color: #bdbdbd;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
 
 .circular-image {
     -fx-fit-width: 100px;

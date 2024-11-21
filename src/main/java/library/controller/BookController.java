@@ -38,6 +38,17 @@ public class BookController {
     return parseBooksNoCheck(response);
   }
 
+  public ObservableList<Book> searchBookByTitleMaxResult(String query, int maxResult) throws IOException, SQLException {
+    String response = googleBooksAPI.searchBookMaxResult("" + query, maxResult);
+    return parseBooksNoCheck(response);
+  }
+
+  public ObservableList<Book> searchBookByTitleWithStartIndex(String query, int startIndex, int maxResult)
+      throws IOException, SQLException {
+    String response = googleBooksAPI.searchBookMaxResultWithStartIndex("" + query, startIndex, maxResult);
+    return parseBooksNoCheck(response);
+  }
+
   public ObservableList<Book> searchBook(String query) throws IOException, SQLException {
     String response = googleBooksAPI.searchBook("subject:" + query);
     return parseBooks(response);
@@ -58,7 +69,9 @@ public class BookController {
       String imageUrl = volumeInfo.has("imageLinks") ? volumeInfo.getJSONObject("imageLinks").getString("thumbnail")
           : null;
       String bookUrl = volumeInfo.has("infoLink") ? (String) volumeInfo.get("infoLink") : null;
+      Double rateAvg = volumeInfo.has("averageRating") ? volumeInfo.getDouble("averageRating") : null;
       Book temp = new ConcreteBook(title, authorName, isbn, description, imageUrl, bookUrl);
+      temp.setRateAvg(rateAvg);
       temp.setCategories(categories);
       books.add(temp);
     }
@@ -97,6 +110,8 @@ public class BookController {
         temp.setCategories(categories);
 
         books.add(temp);
+        temp.setCategories(categories);
+
         Book temp2;
         temp2 = switch (categories) {
           case "Art" -> new ArtBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
@@ -134,7 +149,8 @@ public class BookController {
               rs.getBoolean("available"),
               rs.getString("description"),
               rs.getString("imageUrl"),
-              rs.getString("QRcode")));
+              rs.getString("QRcode"),
+              rs.getDouble("rate_avg")));
     }
     return books;
   }

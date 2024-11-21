@@ -15,7 +15,7 @@ import java.nio.file.FileAlreadyExistsException;
 
 public class ImageHandler {
 
-    private static final String USER_LIBRARY_PATH = "/user/";
+    private static final String USER_LIBRARY_PATH = "src/main/resources/imgs/user/";
 
     public ImageHandler() {
         // Create the directory if it doesn't exist

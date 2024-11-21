@@ -56,6 +56,20 @@ public class BookDAO {
     return false;
   }
 
+  public boolean titleExists(String title) {
+    String sql = "SELECT COUNT(*) FROM books WHERE title = ?";
+    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+      pstmt.setString(1, title);
+      ResultSet rs = pstmt.executeQuery();
+      if (rs.next()) {
+        return rs.getInt(1) > 0;
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
   public void addBook(Book book) throws SQLException {
 
     String query = "INSERT INTO books (title, author, isbn, available, description, imageUrl, QRcode, categories) VALUES ("
@@ -64,12 +78,29 @@ public class BookDAO {
     stmt.setString(1, book.getTitle());
     stmt.setString(2, book.getAuthor());
     stmt.setString(3, book.getIsbn());
-    stmt.setBoolean(4, book.isAvailable());
+    stmt.setBoolean(4, false);
     stmt.setString(5, book.getDescription());
     stmt.setString(6, book.getImageUrl());
     stmt.setString(7, book.getQRcode());
     stmt.setString(8, book.getCategories());
     stmt.executeUpdate();
+  }
+
+  // thêm sách để không bị trùng isbn
+  public void addBookNoDuplicateIsbn(Book book) throws SQLException {
+
+    if (book.getIsbn() != "N/A") {
+      if (!isbnExists(book.getIsbn())) {
+        addBook(book);
+        System.out.println("no duplicate isbn");
+      }
+    } else {
+      if (!titleExists(book.getTitle())) {
+        addBook(book);
+        System.out.println("no duplicate title");
+      }
+    }
+    System.out.println("no add book");
   }
 
   public Book getBookById(int id) throws SQLException {
@@ -262,8 +293,9 @@ public class BookDAO {
       String description = rs.getString("description");
       String imageUrl = rs.getString("imageUrl");
       String QRcode = rs.getString("QRcode");
-
-      Book temp2 = new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+      Double rate_avg = rs.getObject("rate_avg") != null ? rs.getDouble("rate_avg") : null;
+      Book temp2 = new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode, rate_avg);
+      temp2.setCategories(category);
       books.add(temp2);
     }
     return books;
@@ -298,6 +330,60 @@ public class BookDAO {
         default -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
       };
       books.add(temp2);
+    }
+    return books;
+  }
+
+  // lấy sách có thứ tự đánh giá cao nhất
+  public List<Book> getTopBooks() throws SQLException {
+    List<Book> books = new ArrayList<>();
+    String query = "SELECT * FROM books ORDER BY rate_avg DESC";
+    Statement stmt = connection.createStatement();
+    ResultSet rs = stmt.executeQuery(query);
+    while (rs.next()) {
+      String categories = rs.getString("categories");
+      int id = rs.getInt("id");
+      String title = rs.getString("title");
+      String authorName = rs.getString("author");
+      String isbn = rs.getString("isbn");
+      boolean available = rs.getBoolean("available");
+      String description = rs.getString("description");
+      String imageUrl = rs.getString("imageUrl");
+      String bookUrl = rs.getString("QRcode");
+      Double rate_avg = rs.getObject("rate_avg") != null ? rs.getDouble("rate_avg") : null;
+      Book temp2 = new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl, rate_avg);
+      temp2.setCategories(categories);
+      books.add(temp2);
+      if (books.size() == 10) {
+        break;
+      }
+    }
+    return books;
+  }
+
+  // lấy danh sách sách mới thêm vào
+  public List<Book> getNewBooks() throws SQLException {
+    List<Book> books = new ArrayList<>();
+    String query = "SELECT * FROM books ORDER BY id DESC";
+    Statement stmt = connection.createStatement();
+    ResultSet rs = stmt.executeQuery(query);
+    while (rs.next()) {
+      String categories = rs.getString("categories");
+      int id = rs.getInt("id");
+      String title = rs.getString("title");
+      String authorName = rs.getString("author");
+      String isbn = rs.getString("isbn");
+      boolean available = rs.getBoolean("available");
+      String description = rs.getString("description");
+      String imageUrl = rs.getString("imageUrl");
+      String bookUrl = rs.getString("QRcode");
+      Double rate_avg = rs.getObject("rate_avg") != null ? rs.getDouble("rate_avg") : null;
+      Book temp2 = new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl, rate_avg);
+      temp2.setCategories(categories);
+      books.add(temp2);
+      if (books.size() == 10) {
+        break;
+      }
     }
     return books;
   }

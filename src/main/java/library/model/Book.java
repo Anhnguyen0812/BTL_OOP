@@ -10,6 +10,7 @@ public abstract class Book {
   protected String categories; // Thêm thuộc tính danh mục
   protected String imageUrl; // Thêm thuộc tính URL hình ảnh
   protected String QRcode; // Thêm thuộc tính QRcode
+  protected Double rate_avg; // Thêm thuộc tính rate_avg
 
   public Book(
       int id,
@@ -72,6 +73,27 @@ public abstract class Book {
       String description,
       String imageUrl,
       String QRcode,
+      Double rate_avg) {
+    this.id = id;
+    this.title = title;
+    this.author = author;
+    this.isbn = isbn;
+    this.available = available;
+    this.description = description;
+    this.imageUrl = imageUrl;
+    this.QRcode = QRcode;
+    this.rate_avg = rate_avg;
+  }
+
+  public Book(
+      int id,
+      String title,
+      String author,
+      String isbn,
+      boolean available,
+      String description,
+      String imageUrl,
+      String QRcode,
       String categories) {
     this.id = id;
     this.title = title;
@@ -117,7 +139,9 @@ public abstract class Book {
     return available;
   }
 
-  public abstract String getCategories();
+  public String getCategories() {
+    return categories;
+  }
 
   public void setCategories(String categories) {
     this.categories = categories;
@@ -126,4 +150,13 @@ public abstract class Book {
   public void setAvailable(boolean available) {
     this.available = available;
   }
+
+  public void setRateAvg(Double rate_avg) {
+    this.rate_avg = rate_avg;
+  }
+
+  public Double getRateAvg() {
+    return rate_avg;
+  }
+
 }

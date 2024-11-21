@@ -3,6 +3,7 @@ package library.model;
 import java.time.LocalDate;
 
 public class BorrowRecord {
+
   private int id;
   private User user;
   private Book book;
