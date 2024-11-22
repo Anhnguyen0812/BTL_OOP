@@ -1,81 +1,162 @@
 package library.model;
 
 public abstract class Book {
-    protected int id;
-    protected String title;
-    protected String author;
-    protected String isbn;
-    protected boolean available;
-    protected String description; // Thêm thuộc tính mô tả
-    protected String imageUrl; // Thêm thuộc tính URL hình ảnh
-    protected String QRcode; // Thêm thuộc tính QRcode
+  protected int id;
+  protected String title;
+  protected String author;
+  protected String isbn;
+  protected boolean available;
+  protected String description; // Thêm thuộc tính mô tả
+  protected String categories; // Thêm thuộc tính danh mục
+  protected String imageUrl; // Thêm thuộc tính URL hình ảnh
+  protected String QRcode; // Thêm thuộc tính QRcode
+  protected Double rate_avg; // Thêm thuộc tính rate_avg
 
-    public Book(int id, String title, String author, String isbn, boolean available, String description, String imgaeUrl) {}
+  public Book(
+      int id,
+      String title,
+      String author,
+      String isbn,
+      boolean available,
+      String genre,
+      String imgaeUrl) {
+  }
 
-    public Book(int id, String title, String author, String isbn, boolean available) {
-        this.id = id;
-        this.title = title;
-        this.author = author;
-        this.isbn = isbn;
-        this.available = available;
-    }
-    public Book(String title, String author, String isbn, String description, String imageUrl, String QRcode) {
-        this.title = title;
-        this.author = author;
-        this.isbn = isbn;
-        this.description = description;
-        this.imageUrl = imageUrl;
-        this.QRcode = QRcode;
-    }
+  public Book(int id, String title, String author, String isbn, boolean available) {
+    this.id = id;
+    this.title = title;
+    this.author = author;
+    this.isbn = isbn;
+    this.available = available;
+  }
 
-    public Book(int id, String title, String author, String isbn, boolean available, String description, String imageUrl, String QRcode) {
-        this.id = id;
-        this.title = title;
-        this.author = author;
-        this.isbn = isbn;
-        this.available = available;
-        this.description = description;
-        this.imageUrl = imageUrl;
-        this.QRcode = QRcode; 
-    }
+  public Book(
+      String title,
+      String author,
+      String isbn,
+      String description,
+      String imageUrl,
+      String QRcode) {
+    this.title = title;
+    this.author = author;
+    this.isbn = isbn;
+    this.description = description;
+    this.imageUrl = imageUrl;
+    this.QRcode = QRcode;
+  }
 
-    public abstract String getType();
+  public Book(
+      int id,
+      String title,
+      String author,
+      String isbn,
+      boolean available,
+      String description,
+      String imageUrl,
+      String QRcode) {
+    this.id = id;
+    this.title = title;
+    this.author = author;
+    this.isbn = isbn;
+    this.available = available;
+    this.description = description;
+    this.imageUrl = imageUrl;
+    this.QRcode = QRcode;
+  }
 
-    // Getters và Setters
-    public int getId() {
-        return id;
-    }
+  public Book(
+      int id,
+      String title,
+      String author,
+      String isbn,
+      boolean available,
+      String description,
+      String imageUrl,
+      String QRcode,
+      Double rate_avg) {
+    this.id = id;
+    this.title = title;
+    this.author = author;
+    this.isbn = isbn;
+    this.available = available;
+    this.description = description;
+    this.imageUrl = imageUrl;
+    this.QRcode = QRcode;
+    this.rate_avg = rate_avg;
+  }
 
-    public String getTitle() {
-        return title;
-    }
+  public Book(
+      int id,
+      String title,
+      String author,
+      String isbn,
+      boolean available,
+      String description,
+      String imageUrl,
+      String QRcode,
+      String categories) {
+    this.id = id;
+    this.title = title;
+    this.author = author;
+    this.isbn = isbn;
+    this.available = available;
+    this.description = description;
+    this.imageUrl = imageUrl;
+    this.QRcode = QRcode;
+    this.categories = categories;
+  }
 
-    public String getAuthor() {
-        return author;
-    }
+  // Getters và Setters
+  public int getId() {
+    return id;
+  }
 
-    public String getIsbn() {
-        return isbn;
-    }
+  public String getTitle() {
+    return title;
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  public String getAuthor() {
+    return author;
+  }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
+  public String getIsbn() {
+    return isbn;
+  }
 
-    public String getQRcode() {
-        return QRcode;
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    public boolean isAvailable() {
-        return available;
-    }
+  public String getImageUrl() {
+    return imageUrl;
+  }
 
-    public void setAvailable(boolean available) {
-        this.available = available;
-    }
+  public String getQRcode() {
+    return QRcode;
+  }
+
+  public boolean isAvailable() {
+    return available;
+  }
+
+  public String getCategories() {
+    return categories;
+  }
+
+  public void setCategories(String categories) {
+    this.categories = categories;
+  }
+
+  public void setAvailable(boolean available) {
+    this.available = available;
+  }
+
+  public void setRateAvg(Double rate_avg) {
+    this.rate_avg = rate_avg;
+  }
+
+  public Double getRateAvg() {
+    return rate_avg;
+  }
+
 }
-

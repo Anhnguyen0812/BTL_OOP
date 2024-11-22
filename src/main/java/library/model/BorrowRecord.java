@@ -3,43 +3,43 @@ package library.model;
 import java.time.LocalDate;
 
 public class BorrowRecord {
-    private int id;
-    private User user;
-    private Book book;
-    private LocalDate borrowDate;
-    private LocalDate returnDate;
 
-    public BorrowRecord(int id, User user, Book book, LocalDate borrowDate, LocalDate returnDate) {
-        this.id = id;
-        this.user = user;
-        this.book = book;
-        this.borrowDate = borrowDate;
-        this.returnDate = returnDate;
-    }
+  private int id;
+  private User user;
+  private Book book;
+  private LocalDate borrowDate;
+  private LocalDate returnDate;
 
-    // Getters và Setters
-    public int getId() {
-        return id;
-    }
+  public BorrowRecord(int id, User user, Book book, LocalDate borrowDate, LocalDate returnDate) {
+    this.id = id;
+    this.user = user;
+    this.book = book;
+    this.borrowDate = borrowDate;
+    this.returnDate = returnDate;
+  }
 
-    public User getUser() {
-        return user;
-    }
+  // Getters và Setters
+  public int getId() {
+    return id;
+  }
 
-    public Book getBook() {
-        return book;
-    }
+  public User getUser() {
+    return user;
+  }
 
-    public LocalDate getBorrowDate() {
-        return borrowDate;
-    }
+  public Book getBook() {
+    return book;
+  }
 
-    public LocalDate getReturnDate() {
-        return returnDate;
-    }
+  public LocalDate getBorrowDate() {
+    return borrowDate;
+  }
 
-    public void setReturnDate(LocalDate returnDate) {
-        this.returnDate = returnDate;
-    }
+  public LocalDate getReturnDate() {
+    return returnDate;
+  }
+
+  public void setReturnDate(LocalDate returnDate) {
+    this.returnDate = returnDate;
+  }
 }
-

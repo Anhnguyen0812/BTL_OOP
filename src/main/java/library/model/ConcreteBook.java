@@ -1,64 +1,82 @@
 package library.model;
 
 public class ConcreteBook extends Book {
-    private String publisher;
-    private int year;
 
-    public ConcreteBook(int id, String title, String author, String description, String imageUrl, String publisher,
-            int year, String isbn, boolean availability) {
-        super(id, title, author, isbn, availability, description, imageUrl);
-        this.publisher = publisher;
-        this.year = year;
-    }
+  public ConcreteBook(
+      int id,
+      String title,
+      String author,
+      String description,
+      String imageUrl,
+      String isbn,
+      boolean available) {
+    super(id, title, author, isbn, available, description, imageUrl);
+  }
 
-    public ConcreteBook(int id, String title, String author, String isbn, int year, String publisher,
-            boolean available) {
-        super(id, title, author, isbn, available);
-        this.publisher = publisher;
-        this.year = year;
-    }
+  public ConcreteBook(
+      int id,
+      String title,
+      String author,
+      String isbn,
+      boolean available) {
+    super(id, title, author, isbn, available);
+  }
 
-    public ConcreteBook(String title, String author, String isbn, String description, String imageUrl, String QRcode) {
-        super(title, author, isbn, description, imageUrl, QRcode);
-    }
+  public ConcreteBook(
+      String title,
+      String author,
+      String isbn,
+      String description,
+      String imageUrl,
+      String QRcode) {
+    super(title, author, isbn, description, imageUrl, QRcode);
+  }
 
-    public ConcreteBook(int id, String title, String author, String isbn, boolean available, String description,
-            String imageUrl, String QRcode) {
-        super(id, title, author, isbn, available, description, imageUrl, QRcode);
-    }
+  public ConcreteBook(
+      int id,
+      String title,
+      String author,
+      String isbn,
+      boolean available,
+      String description,
+      String imageUrl,
+      String QRcode) {
+    super(id, title, author, isbn, available, description, imageUrl, QRcode);
+  }
 
-    @Override
-    public String getTitle() {
-        return title;
-    }
+  public ConcreteBook(
+      int id,
+      String title,
+      String author,
+      String isbn,
+      boolean available,
+      String description,
+      String imageUrl,
+      String QRcode,
+      Double rate_avg) {
+    super(id, title, author, isbn, available, description, imageUrl, QRcode, rate_avg);
+  }
 
-    public int getId() {
-        return id;
-    }
+  @Override
+  public String getCategories() {
+    return categories;
+  }
 
-    public String getIsbn() {
-        return isbn;
-    }
+  @Override
+  public void setCategories(String categories) {
+    this.categories = categories;
+  }
 
-    public boolean isAvailable() {
-        return available;
-    }
+  @Override
+  public void setRateAvg(Double rateAvg) {
+    this.rate_avg = rateAvg;
+  }
 
-    public String getPublisher() {
-        return publisher;
-    }
+  @Override
+  public String toString() {
+    return String.format(
+        "ConcreteBook{id=%d, title='%s', author='%s', imageUrl='%s', isbn='%s', availability=%s}",
+        this.id, this.title, this.author, this.imageUrl, this.isbn, this.available);
 
-    public int getYear() {
-        return year;
-    }
-
-    @Override
-    public String getType() {
-        return "ConcreteBook";
-    }
-
-    @Override
-    public String toString() {
-        return title + " by " + author + " ISBN :" + isbn;
-    }
+  }
 }

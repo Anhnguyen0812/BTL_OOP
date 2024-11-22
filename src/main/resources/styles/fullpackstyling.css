@@ -1,22 +1,22 @@
 .button {
-    -fx-background-color: #E5E5E5;
+    -fx-background-color: #A6AEBF;
     -fx-text-fill: #383838;
     -fx-text-alignment: left;
 }
 
 .button:hover {
-    -fx-background-color: #E5E5E5;
+    -fx-background-color: #A6AEBF;
     -fx-text-fill: #000;
 }
 
 .button:pressed {
-    -fx-background-color: #E5E5E5;
+    -fx-background-color: #A6AEBF;
     -fx-text-fill: #364FCD;
 }
 
 .button:focused {
-    -fx-background-color: #D9D9D9;
-    -fx-text-fill: #364FCD;
+    -fx-background-color: #777777;
+    -fx-text-fill: #c7cbe1;
 }
 
 .button2 {
@@ -68,7 +68,8 @@
 /* scroll bar starts here */
 
 /* The increment and decrement button CSS class of scrollbar */
-.table-view .increment-button, .table-view .decrement-button {
+.table-view .increment-button,
+.table-view .decrement-button {
     -fx-background-color: transparent;
     -fx-background-radius: 2em;
 
@@ -116,4 +117,3 @@
 .data1.chart-pie {
     -fx-pie-color: #54AAF3;
 }
-

@@ -1,16 +1,19 @@
 package library.controller;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
+import javafx.application.HostServices;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.control.PasswordField;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.sql.SQLException;
 import library.AppLaunch;
 import library.dao.UserDAO;
 import library.model.User;
@@ -18,110 +21,132 @@ import library.service.UserService;
 
 public class LoginController {
 
-    // Method to get user by username and password
-    private User getUserbynamepassword(String username, String password) throws SQLException {
-        UserDAO userdao = new UserDAO();
-        return userdao.getUserByNamePassword(username, password);
+  // Method to get user by username and password
+
+  @FXML
+  private Button loginButton;
+  @FXML
+  private Button signupButton;
+  @FXML
+  private TextField Username;
+  @FXML
+  private PasswordField Passhide;
+  @FXML
+  private TextField Pass;
+  @FXML
+  private Button hide;
+  @FXML
+  private ImageView imgHide;
+
+  private User user;
+
+  private HostServices hostServices;
+
+  @FXML
+  public void initialize() {
+    Passhide.textProperty().bindBidirectional(Pass.textProperty());
+    Pass.setVisible(false);
+    // LoginButton.setDefaultButton(true);
+    loginButton.setDefaultButton(true);
+    loginButton.setOnAction(event -> {
+      try {
+        MoveToAccount();
+      } catch (SQLException | NoSuchAlgorithmException e) {
+        e.printStackTrace();
+      }
+    });
+
+  }
+
+  @FXML
+  public void MoveToSignup() {
+    try {
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Signup.fxml"));
+      Parent root = loader.load();
+      Stage stage = (Stage) signupButton.getScene().getWindow();
+      stage.setScene(new Scene(root));
+      stage.show();
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+  }
 
-    @FXML
-    private Button LoginButton;
-    @FXML
-    private Button SigninButton;
-    @FXML
-    private TextField Username;
-    @FXML
-    private PasswordField Passhide;
-    @FXML
-    private TextField Pass;
-    @FXML
-    private Button hide;
-
-    private User user;
-
-    @FXML
-    public void initialize() {
-        Passhide.textProperty().bindBidirectional(Pass.textProperty());
-        Pass.setVisible(false);
-        LoginButton.setDefaultButton(true);
+  @FXML
+  public void togglePass() {
+    if (Pass.isVisible()) {
+      Pass.setVisible(false);
+      Passhide.setVisible(true);
+      imgHide.setImage(new Image("imgs/hidden.png"));
+    } else {
+      Pass.setVisible(true);
+      Passhide.setVisible(false);
+      imgHide.setImage(new Image("imgs/show.png"));
     }
+  }
 
-    @FXML
-    public void MoveToSignin() {
+  private User getUserbyname(String username) throws SQLException {
+    UserDAO userdao = UserDAO.getUserDAO();
+    return userdao.getUserByName(username);
+  }
 
-        try {
-            FXMLLoader loader = new FXMLLoader(AppLaunch.class.getResource("/library/Signin.fxml"));
-            Parent root = loader.load();
-            SigninController controller = loader.getController();
-            Stage stage = (Stage) LoginButton.getScene().getWindow();
-            stage.setScene(new Scene(root, 500, 350));
-            stage.setTitle("Library Management System");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+  @FXML
+  public void MoveToAccount() throws SQLException, NoSuchAlgorithmException {
+    System.out.println("Username: " + Username.getText() + ", Password: " + Pass.getText());
+    int check = UserService.checkLogin(Username.getText(), Pass.getText(), "admin");
+    if (check == 1) {
+      try {
+        user = getUserbyname(Username.getText());
+        AdminController adminController = new AdminController(user, hostServices);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Admin.fxml"));
+        loader.setController(adminController);
+        Parent root = loader.load();
+        Stage stage = (Stage) loginButton.getScene().getWindow();
+        stage.setScene(new Scene(root, 960, 720));
+        stage.setTitle("Library Management System");
+        stage.centerOnScreen();
+        stage.show();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    } else if (check == 2) {
+      try {
+        // user = getUserbyname(Username.getText());
+        // // DashController dashController = new DashController(user, hostServices);
+        // UserController userController = new UserController(user, hostServices);
+        // FXMLLoader loader = new
+        // FXMLLoader(getClass().getResource("/library/dash.fxml"));
+        // loader.setController(userController);
+        // Parent root = loader.load();
+        // Stage stage = (Stage) loginButton.getScene().getWindow();
+        // stage.setScene(new Scene(root, 960, 720));
+        // stage.setTitle("Library Management System");
+        // stage.centerOnScreen();
+        // stage.show();
+        user = getUserbyname(Username.getText());
+        DashController dashController = new DashController(user, hostServices);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/dash.fxml"));
+        loader.setController(dashController);
+        Parent root = loader.load();
+        Stage stage = (Stage) loginButton.getScene().getWindow();
 
+        stage.setScene(new Scene(root));
+        stage.setTitle("Library Management System");
+        stage.centerOnScreen();
+        stage.show();
+
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    } else {
+      System.out.println("Login failed");
     }
+  }
 
-    @FXML
-    public void togglePass() {
-        if (Pass.isVisible()) {
-            Pass.setVisible(false);
-            Passhide.setVisible(true);
-            hide.setText("o");
-        } else {
-            Pass.setVisible(true);
-            Passhide.setVisible(false);
-            hide.setText("-");
-        }
-    }
+  public void setHostServices(HostServices hostServices) {
+    this.hostServices = hostServices;
+  }
 
-    @FXML
-    public void MoveToAccount() throws SQLException {
-        System.out.println("Username: " + Username.getText() + ", Password: " + Pass.getText());
-        int check = UserService.checkLogin(Username.getText(), Pass.getText(), "admin");
-        if (check == 1) {
-            try {
-                user = getUserbynamepassword(Username.getText(), Pass.getText());
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Dash.fxml"));
-                Parent root = loader.load();
-                Stage stage = (Stage) LoginButton.getScene().getWindow();
-                stage.setScene(new Scene(root));
-                stage.setTitle("Library Management System");
-                stage.centerOnScreen();
-                stage.show();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else if (check == 2) {
-            try {
-                user = getUserbynamepassword(Username.getText(), Pass.getText());
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/User.fxml"));
-                Parent root = loader.load();
-                Stage stage = (Stage) LoginButton.getScene().getWindow();
-                stage.setScene(new Scene(root, 960, 720));
-                stage.setTitle("Library Management System");
-                stage.centerOnScreen();
-                stage.show();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-
-            // Display error message for 3 seconds
-            Stage stage = (Stage) LoginButton.getScene().getWindow();
-            Parent root = stage.getScene().getRoot();
-            TextField errorMessage = new TextField("Username hoặc password không hợp lệ, vui lòng nhập lại");
-            errorMessage.setEditable(false);
-            errorMessage.setStyle("-fx-text-fill: red; -fx-background-color: transparent;");
-            ((Parent) root).getChildrenUnmodifiable().add(errorMessage);
-
-        }
-    }
-
-    public User getUser() {
-        return user;
-    }
-
+  public User getUser() {
+    return user;
+  }
 }

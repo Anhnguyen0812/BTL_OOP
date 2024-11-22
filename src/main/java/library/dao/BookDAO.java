@@ -1,127 +1,430 @@
 package library.dao;
 
-import library.model.*;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import library.model.ArtBook;
+import library.model.Book;
+import library.model.ComputerBook;
+import library.model.ConcreteBook;
+import library.model.HistoryBook;
+import library.model.ScienceBook;
+import library.model.TechnologyBook;
+import library.model.ThesisBook;
+import library.util.DBConnection;
 
 public class BookDAO {
-    
-    private Connection connection;
+  private final Connection connection;
+  private static BookDAO instance;
 
-    public BookDAO(Connection connection) {
-        this.connection = connection;
+  private BookDAO() {
+    this.connection = DBConnection.getInstance().getConnection();
+  }
+
+  public static BookDAO getBookDAO() {
+    if (instance == null) {
+      instance = new BookDAO();
     }
+    return instance;
+  }
 
-    public void updateBook(Book book) {
-        // Implementation for updating the book in the database
-        // This is a placeholder implementation
-        System.out.println("Updating book: " + book.getTitle());
+  public void updateBook(Book book) {
+    // Implementation for updating the book in the database
+    // This is a placeholder implementation
+
+    System.out.println("Updating book: " + book.getTitle());
+  }
+
+  public boolean isbnExists(String isbn) {
+    String sql = "SELECT COUNT(*) FROM books WHERE isbn = ?";
+    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+      pstmt.setString(1, isbn);
+      ResultSet rs = pstmt.executeQuery();
+      if (rs.next()) {
+        return rs.getInt(1) > 0;
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
+    return false;
+  }
 
-    public boolean isbnExists(String isbn) {
-        String sql = "SELECT COUNT(*) FROM books WHERE isbn = ?";
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, isbn);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1) > 0;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
+  public boolean titleExists(String title) {
+    String sql = "SELECT COUNT(*) FROM books WHERE title = ?";
+    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+      pstmt.setString(1, title);
+      ResultSet rs = pstmt.executeQuery();
+      if (rs.next()) {
+        return rs.getInt(1) > 0;
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
-    
-    public void addBook(Book book) throws SQLException {
+    return false;
+  }
 
-        if (isbnExists(book.getIsbn())) {
-            return;
-        }
+  public void addBook(Book book) throws SQLException {
 
-        String query = "INSERT INTO books (title, author, isbn, available, description, imageUrl, QRcode) VALUES ( ?, ?, ?, ?, ?, ?, ?)";
-        PreparedStatement stmt = connection.prepareStatement(query);
-        stmt.setString(1, book.getTitle());
-        stmt.setString(2, book.getAuthor());
-        stmt.setString(3, book.getIsbn());
-        stmt.setBoolean(4, book.isAvailable());
-        stmt.setString(5, book.getDescription());
-        stmt.setString(6, book.getImageUrl());
-        stmt.setString(7, book.getQRcode());
-        stmt.executeUpdate();
+    String query = "INSERT INTO books (title, author, isbn, available, description, imageUrl, QRcode, categories) VALUES ("
+        + " ?, ?, ?, ?, ?, ?, ?, ?)";
+    PreparedStatement stmt = connection.prepareStatement(query);
+    stmt.setString(1, book.getTitle());
+    stmt.setString(2, book.getAuthor());
+    stmt.setString(3, book.getIsbn());
+    stmt.setBoolean(4, false);
+    stmt.setString(5, book.getDescription());
+    stmt.setString(6, book.getImageUrl());
+    stmt.setString(7, book.getQRcode());
+    stmt.setString(8, book.getCategories());
+    stmt.executeUpdate();
+  }
+
+  // thêm sách để không bị trùng isbn
+  public void addBookNoDuplicateIsbn(Book book) throws SQLException {
+
+    if (book.getIsbn() != "N/A") {
+      if (!isbnExists(book.getIsbn())) {
+        addBook(book);
+        System.out.println("no duplicate isbn");
+      }
+    } else {
+      if (!titleExists(book.getTitle())) {
+        addBook(book);
+        System.out.println("no duplicate title");
+      }
     }
+    System.out.println("no add book");
+  }
 
-    public Book getBookById(int id) throws SQLException {
-        String query = "SELECT * FROM books WHERE id = ?";
-        PreparedStatement stmt = connection.prepareStatement(query);
-        stmt.setInt(1, id);
-        ResultSet rs = stmt.executeQuery();
-        if (rs.next()) {
-            return new ReferenceBook(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getString("isbn"), rs.getBoolean("available"));
-        }
-        return null;
+  public Book getBookById(int id) throws SQLException {
+    String query = "SELECT * FROM books WHERE id = ?";
+    PreparedStatement stmt = connection.prepareStatement(query);
+    stmt.setInt(1, id);
+    ResultSet rs = stmt.executeQuery();
+    if (rs.next()) {
+      String category = rs.getString("categories");
+      String titlee = rs.getString("title");
+      String authorName = rs.getString("author");
+      String isbn = rs.getString("isbn");
+      boolean available = rs.getBoolean("available");
+      String description = rs.getString("description");
+      String imageUrl = rs.getString("imageUrl");
+      String QRcode = rs.getString("QRcode");
+
+      Book temp2;
+      temp2 = switch (category) {
+        case "Art" -> new ArtBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "TechnologyBook" ->
+          new TechnologyBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Science" -> new ScienceBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Computer" -> new ComputerBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "HistoryBook" -> new HistoryBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "EBook" -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Thesis" -> new ThesisBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        default -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+      };
+      return temp2;
     }
+    return null;
+  }
 
-    public Book getBookByISBN(String isbn) throws SQLException {
-        String query = "SELECT * FROM books WHERE isbn = ?";
-        PreparedStatement stmt = connection.prepareStatement(query);
-        stmt.setString(1, isbn);
-        ResultSet rs = stmt.executeQuery();
-        if (rs.next()) {
-            return new ReferenceBook(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getString("isbn"), rs.getBoolean("available"));
-        }
-        return null;
+  public Book getBookByISBN(String isbn) throws SQLException, InterruptedException {
+    String query = "SELECT * FROM books WHERE isbn = ?";
+    PreparedStatement stmt = connection.prepareStatement(query);
+    stmt.setString(1, isbn);
+    ResultSet rs = stmt.executeQuery();
+    if (rs.next()) {
+      String category = rs.getString("categories");
+      int id = rs.getInt("id");
+      String title = rs.getString("title");
+      String authorName = rs.getString("author");
+      boolean available = rs.getBoolean("available");
+      String description = rs.getString("description");
+      String imageUrl = rs.getString("imageUrl");
+      String QRcode = rs.getString("QRcode");
+
+      Book temp2;
+      temp2 = switch (category) {
+        case "Art" -> new ArtBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "TechnologyBook" ->
+          new TechnologyBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Science" -> new ScienceBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Computer" -> new ComputerBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "HistoryBook" -> new HistoryBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "EBook" -> new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Thesis" -> new ThesisBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        default -> new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+      };
+      return temp2;
     }
+    return null;
+  }
 
-    public List<Book> getAllBooks() throws SQLException {
-        List<Book> books = new ArrayList<>();
-        String query = "SELECT * FROM books";
-        Statement stmt = connection.createStatement();
-        ResultSet rs = stmt.executeQuery(query);
-        while (rs.next()) {
-            books.add(new ReferenceBook(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getString("isbn"), rs.getBoolean("available")));
-        }
-        return books;
+  public ObservableList<Book> getListBookByISBN(String isbn) throws SQLException, InterruptedException {
+    ObservableList<Book> books = FXCollections.observableArrayList();
+    String query = "SELECT * FROM books WHERE isbn = ?";
+    PreparedStatement stmt = connection.prepareStatement(query);
+    stmt.setString(1, isbn);
+    ResultSet rs = stmt.executeQuery();
+    if (rs.next()) {
+      String category = rs.getString("categories");
+      int id = rs.getInt("id");
+      String title = rs.getString("title");
+      String authorName = rs.getString("author");
+      boolean available = rs.getBoolean("available");
+      String description = rs.getString("description");
+      String imageUrl = rs.getString("imageUrl");
+      String QRcode = rs.getString("QRcode");
+
+      Book temp2;
+      temp2 = switch (category) {
+        case "Art" -> new ArtBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "TechnologyBook" ->
+          new TechnologyBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Science" -> new ScienceBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Computer" -> new ComputerBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "HistoryBook" -> new HistoryBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "EBook" -> new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Thesis" -> new ThesisBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        default -> new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+      };
+      books.add(temp2);
     }
+    return books;
+  }
 
-    public List<Book> searchBooks(String query) {
+  public boolean haveBook(String isbn) throws SQLException {
+    String query = "SELECT * FROM books WHERE isbn = ?";
+    PreparedStatement stmt = connection.prepareStatement(query);
+    stmt.setString(1, isbn);
+    ResultSet rs = stmt.executeQuery();
+    return rs.next();
+  }
 
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'searchBooks'");
+  public ObservableList<Book> getBookByTitle(String title) throws SQLException {
+    ObservableList<Book> books = FXCollections.observableArrayList();
+    String query = "SELECT * FROM books WHERE title LIKE ?";
+    PreparedStatement stmt = connection.prepareStatement(query);
+    stmt.setString(1, "%" + title + "%");
+
+    ResultSet rs = stmt.executeQuery();
+    while (rs.next()) {
+      String category = rs.getString("categories");
+      int id = rs.getInt("id");
+      String titlee = rs.getString("title");
+      String authorName = rs.getString("author");
+      String isbn = rs.getString("isbn");
+      boolean available = rs.getBoolean("available");
+      String description = rs.getString("description");
+      String imageUrl = rs.getString("imageUrl");
+      String QRcode = rs.getString("QRcode");
+
+      Book temp2;
+      temp2 = switch (category) {
+        case "Art" -> new ArtBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "TechnologyBook" ->
+          new TechnologyBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Science" -> new ScienceBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Computer" -> new ComputerBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "HistoryBook" -> new HistoryBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "EBook" -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Thesis" -> new ThesisBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        default -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+      };
+      books.add(temp2);
     }
+    return books;
+  }
 
-    public boolean borrowBook(Book book) throws SQLException {
-        // Implement the logic to borrow a book
-        // For example, update the book's availability in the database
-        Book dbBook = getBookById(book.getId());
-        if (dbBook.isAvailable()) {
-            String sql = "UPDATE books SET available = ? WHERE id = ?";
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setBoolean(1, false);
-                return true;
-            }
-        }
-        return false;
-    }
+  public ObservableList<Book> getBookByAuthor(String author) throws SQLException {
+    ObservableList<Book> books = FXCollections.observableArrayList();
+    String query = "SELECT * FROM books WHERE author LIKE ?";
+    PreparedStatement stmt = connection.prepareStatement(query);
+    stmt.setString(1, "%" + author + "%");
 
-    public void deleteBook(int id) throws SQLException {
-        String query = "DELETE FROM books WHERE id = ?";
-        PreparedStatement stmt = connection.prepareStatement(query);
-        stmt.setInt(1, id);
-        stmt.executeUpdate();
-    }
+    ResultSet rs = stmt.executeQuery();
+    while (rs.next()) {
+      String category = rs.getString("categories");
+      int id = rs.getInt("id");
+      String title = rs.getString("title");
+      String authorName = rs.getString("author");
+      String isbn = rs.getString("isbn");
+      boolean available = rs.getBoolean("available");
+      String description = rs.getString("description");
+      String imageUrl = rs.getString("imageUrl");
+      String QRcode = rs.getString("QRcode");
 
-    public boolean returnBook(Book book) throws SQLException {
-        // Implement the logic to return a book
-        // For example, update the book's availability in the database
-        String sql = "UPDATE books SET available = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setBoolean(1, true);
-            int rowsUpdated = statement.executeUpdate();
-            return rowsUpdated > 0;
-        }
+      Book temp2;
+      temp2 = switch (category) {
+        case "Art" -> new ArtBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "TechnologyBook" ->
+          new TechnologyBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Science" -> new ScienceBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Computer" -> new ComputerBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "HistoryBook" -> new HistoryBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "EBook" -> new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Thesis" -> new ThesisBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+        default -> new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+      };
+      books.add(temp2);
     }
+    return books;
+  }
+
+  public List<Book> getAllBooks() throws SQLException {
+    List<Book> books = new ArrayList<>();
+    String query = "SELECT * FROM books";
+    Statement stmt = connection.createStatement();
+    ResultSet rs = stmt.executeQuery(query);
+    while (rs.next()) {
+      String category = rs.getString("categories");
+      int id = rs.getInt("id");
+      String title = rs.getString("title");
+      String authorName = rs.getString("author");
+      String isbn = rs.getString("isbn");
+      boolean available = rs.getBoolean("available");
+      String description = rs.getString("description");
+      String imageUrl = rs.getString("imageUrl");
+      String QRcode = rs.getString("QRcode");
+      Double rate_avg = rs.getObject("rate_avg") != null ? rs.getDouble("rate_avg") : null;
+      Book temp2 = new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode, rate_avg);
+      temp2.setCategories(category);
+      books.add(temp2);
+    }
+    return books;
+  }
+
+  public List<Book> getAllBooks1() throws SQLException {
+    List<Book> books = new ArrayList<>();
+    String query = "SELECT * FROM books";
+    Statement stmt = connection.createStatement();
+    ResultSet rs = stmt.executeQuery(query);
+    while (rs.next()) {
+      String category = rs.getString("categories");
+      int id = rs.getInt("id");
+      String titlee = rs.getString("title");
+      String authorName = rs.getString("author");
+      String isbn = rs.getString("isbn");
+      boolean available = rs.getBoolean("available");
+      String description = rs.getString("description");
+      String imageUrl = rs.getString("imageUrl");
+      String QRcode = rs.getString("QRcode");
+
+      Book temp2;
+      temp2 = switch (category) {
+        case "Art" -> new ArtBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "TechnologyBook" ->
+          new TechnologyBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Science" -> new ScienceBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Computer" -> new ComputerBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "HistoryBook" -> new HistoryBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "EBook" -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        case "Thesis" -> new ThesisBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+        default -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+      };
+      books.add(temp2);
+    }
+    return books;
+  }
+
+  // lấy sách có thứ tự đánh giá cao nhất
+  public List<Book> getTopBooks() throws SQLException {
+    List<Book> books = new ArrayList<>();
+    String query = "SELECT * FROM books ORDER BY rate_avg DESC";
+    Statement stmt = connection.createStatement();
+    ResultSet rs = stmt.executeQuery(query);
+    while (rs.next()) {
+      String categories = rs.getString("categories");
+      int id = rs.getInt("id");
+      String title = rs.getString("title");
+      String authorName = rs.getString("author");
+      String isbn = rs.getString("isbn");
+      boolean available = rs.getBoolean("available");
+      String description = rs.getString("description");
+      String imageUrl = rs.getString("imageUrl");
+      String bookUrl = rs.getString("QRcode");
+      Double rate_avg = rs.getObject("rate_avg") != null ? rs.getDouble("rate_avg") : null;
+      Book temp2 = new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl, rate_avg);
+      temp2.setCategories(categories);
+      books.add(temp2);
+      if (books.size() == 10) {
+        break;
+      }
+    }
+    return books;
+  }
+
+  // lấy danh sách sách mới thêm vào
+  public List<Book> getNewBooks() throws SQLException {
+    List<Book> books = new ArrayList<>();
+    String query = "SELECT * FROM books ORDER BY id DESC";
+    Statement stmt = connection.createStatement();
+    ResultSet rs = stmt.executeQuery(query);
+    while (rs.next()) {
+      String categories = rs.getString("categories");
+      int id = rs.getInt("id");
+      String title = rs.getString("title");
+      String authorName = rs.getString("author");
+      String isbn = rs.getString("isbn");
+      boolean available = rs.getBoolean("available");
+      String description = rs.getString("description");
+      String imageUrl = rs.getString("imageUrl");
+      String bookUrl = rs.getString("QRcode");
+      Double rate_avg = rs.getObject("rate_avg") != null ? rs.getDouble("rate_avg") : null;
+      Book temp2 = new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl, rate_avg);
+      temp2.setCategories(categories);
+      books.add(temp2);
+      if (books.size() == 10) {
+        break;
+      }
+    }
+    return books;
+  }
+
+  public boolean borrowBook(Book book) throws SQLException {
+    // Implement the logic to borrow a book
+    // For example, update the book's availability in the database
+    System.out.println("Borrowing book: " + book);
+    if (book.isAvailable()) {
+      String sql = "UPDATE books SET available = ? WHERE id = ?";
+      try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        statement.setBoolean(1, false);
+        statement.setInt(2, book.getId());
+        statement.executeUpdate();
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public void deleteBook(int id) throws SQLException {
+    String query = "DELETE FROM books WHERE id = ?";
+    PreparedStatement stmt = connection.prepareStatement(query);
+    stmt.setInt(1, id);
+    stmt.executeUpdate();
+
+    // String resetAutoIncrementQuery = "ALTER TABLE books AUTO_INCREMENT = 1";
+    // Statement resetStmt = connection.createStatement();
+    // resetStmt.execute(resetAutoIncrementQuery);
+  }
+
+  public boolean returnBook(Book book) throws SQLException {
+    // Implement the logic to return a book
+    // For example, update the book's availability in the database
+    System.out.println("Returning book: " + book);
+    String sql = "UPDATE books SET available = ? WHERE id = ?";
+    try (PreparedStatement statement = connection.prepareStatement(sql)) {
+      statement.setBoolean(1, true);
+      statement.setInt(2, book.getId());
+      int rowsUpdated = statement.executeUpdate();
+      return rowsUpdated > 0;
+    }
+  }
 }
-
