@@ -47,6 +47,15 @@ public class LoginController {
     Passhide.textProperty().bindBidirectional(Pass.textProperty());
     Pass.setVisible(false);
     // LoginButton.setDefaultButton(true);
+    loginButton.setDefaultButton(true);
+    loginButton.setOnAction(event -> {
+      try {
+        MoveToAccount();
+      } catch (SQLException | NoSuchAlgorithmException e) {
+        e.printStackTrace();
+      }
+    });
+
   }
 
   @FXML
@@ -113,16 +122,48 @@ public class LoginController {
         // stage.setTitle("Library Management System");
         // stage.centerOnScreen();
         // stage.show();
-        user = getUserbyname(Username.getText());
-        DashController dashController = new DashController(user, hostServices);
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/dash.fxml"));
-        loader.setController(dashController);
-        Parent root = loader.load();
-        Stage stage = (Stage) loginButton.getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.setTitle("Library Management System");
-        stage.centerOnScreen();
-        stage.show();
+        // user = getUserbyname(Username.getText());
+        // DashController dashController = new DashController(user, hostServices);
+        // FXMLLoader loader = new
+        // FXMLLoader(getClass().getResource("/library/dash.fxml"));
+        // loader.setController(dashController);
+        // Parent root = loader.load();
+        // Stage stage = (Stage) loginButton.getScene().getWindow();
+        // stage.setScene(new Scene(root));
+        // stage.setTitle("Library Management System");
+        // stage.centerOnScreen();
+        // stage.show();
+        // // Show loading screen
+        // FXMLLoader loadingLoader = new
+        // FXMLLoader(getClass().getResource("/library/Loading.fxml"));
+        // Parent loadingRoot = loadingLoader.load();
+        // Stage loadingStage = new Stage();
+        // loadingStage.setScene(new Scene(loadingRoot));
+        // loadingStage.setTitle("Loading...");
+        // loadingStage.show();
+
+        // Load the dashboard in a new thread
+        new Thread(() -> {
+          try {
+            user = getUserbyname(Username.getText());
+            DashController dashController = new DashController(user, hostServices);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/dash.fxml"));
+            loader.setController(dashController);
+            Parent root = loader.load();
+            javafx.application.Platform.runLater(() -> {
+              Stage stage = (Stage) loginButton.getScene().getWindow();
+              stage.setScene(new Scene(root));
+              stage.setTitle("Library Management System");
+              stage.centerOnScreen();
+              stage.show();
+              loadingStage.close(); // Close loading screen
+            });
+          } catch (IOException | SQLException e) {
+            e.printStackTrace();
+          } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+          }
+        }).start();
       } catch (IOException e) {
         e.printStackTrace();
       }

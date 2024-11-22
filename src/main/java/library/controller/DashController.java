@@ -52,6 +52,7 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import library.dao.BookDAO;
 import library.dao.BorrowRecordDAO;
+import library.dao.NotiDAO;
 import library.model.Book;
 import library.model.BorrowRecord;
 import library.model.ConcreteBook;
@@ -106,7 +107,7 @@ public class DashController {
   private ListView<String> notiList;
 
   @FXML
-  private Label welcome, date;
+  private Label welcome, date, notiNewLabel;
   @FXML
   private GridPane searchView, searchReturnBooks, featuredBookGridPane;
   @FXML
@@ -148,6 +149,7 @@ public class DashController {
   List<Book> booksRecent;
 
   private BookDAO bookDAO = BookDAO.getBookDAO();
+  private NotiDAO notiDAO = NotiDAO.geNotiDAO();
   protected final BookController bookController = new BookController();
 
   double scrollSpeed = 2; // Tốc độ cuộn (pixels/giây)
@@ -240,6 +242,11 @@ public class DashController {
 
     // Display borrow information in notiList
     notiList.getItems().clear();
+    List<String> ListNoti = notiDAO.getNotificationsFromAdminToUser(user.getId());
+    notiNewLabel.setText(String.valueOf(ListNoti.size()));
+    for (int i = 0; i < ListNoti.size(); i++) {
+      notiList.getItems().add(i + 1 + ". " + ListNoti.get(i));
+    }
     notiList.getItems().add("Borrow Requests: " + bookStatus0);
     notiList.getItems().add("Books Borrowed: " + bookStatus1);
     notiList.getItems().add("Return Requests: " + bookStatus2);
@@ -305,6 +312,8 @@ public class DashController {
     featuredBookButton.setOnMouseExited(event -> {
       timeline.play(); // Tiếp tục Timeline khi trỏ chuột ra ngoài
     });
+
+    // Set up notiList
 
   }
 
@@ -833,4 +842,34 @@ public class DashController {
     }
   }
 
+  @FXML
+  public void gotoDarkMode() {
+    // Set up dark mode
+    home.setStyle("-fx-background-color: #333333");
+    books.setStyle("-fx-background-color: #333333");
+    issueBooks.setStyle("-fx-background-color: #333333");
+    returnBooks.setStyle("-fx-background-color: #333333");
+    settings.setStyle("-fx-background-color: #333333");
+    noti.setStyle("-fx-background-color: #333333");
+    subUser.setStyle("-fx-background-color: #333333");
+    pane.setStyle("-fx-background-color: #333333");
+    searchView.setStyle("-fx-background-color: #333333");
+    searchReturnBooks.setStyle("-fx-background-color: #333333");
+    featuredBookGridPane.setStyle("-fx-background-color: #333333");
+    featuredScrollPane.setStyle("-fx-background-color: #333333");
+    featuredBookButton.setStyle("-fx-background-color: #333333");
+    featuredBookButton.setTextFill(javafx.scene.paint.Color.WHITE);
+    featuredBookButton.setEffect(new javafx.scene.effect.DropShadow());
+    featuredBookButton.setOpacity(0.8);
+    featuredBookButton.setPadding(new Insets(10, 20, 10, 20));
+    featuredBookButton.setPrefSize(200, 50);
+    featuredBookButton.setLayoutX(50);
+    featuredBookButton.setLayoutY(50);
+    featuredBookButton.setWrapText(true);
+    featuredBookButton.setGraphicTextGap(10);
+    featuredBookButton.setGraphic(new ImageView(new Image("/imgs/featured.png")));
+    featuredBookButton.setOnAction(event -> {
+      gotoHome();
+    });
+  }
 }

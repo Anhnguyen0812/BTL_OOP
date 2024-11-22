@@ -246,6 +246,20 @@
     -fx-border-radius: 10;
 }
 
+.listViewNoti {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-font-size: 15px;
+
+}
+
+.notiLabel {
+    -fx-background-color: #e96122;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+}
+
 
 .circular-image {
     -fx-fit-width: 100px;

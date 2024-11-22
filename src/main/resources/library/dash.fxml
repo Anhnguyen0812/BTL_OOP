@@ -31,7 +31,7 @@
          <children>
             <HBox layoutX="1063.0" layoutY="14.0" prefHeight="50.0" prefWidth="125.0" styleClass="hboxTitle" stylesheets="@../styles/Ui.css">
                <children>
-                  <Button fx:id="darkModeButton" mnemonicParsing="false" prefHeight="34.0" prefWidth="9.0" styleClass="transparent">
+                  <Button fx:id="darkModeButton" mnemonicParsing="false" onAction="#gotoDarkMode" prefHeight="34.0" prefWidth="9.0" styleClass="transparent">
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -47,7 +47,7 @@
                      <graphic>
                         <ImageView fitHeight="34.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../imgs/noti_empty.png" />
+                              <Image url="@../imgs/noti.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -529,15 +529,20 @@
                   <TextFlow layoutX="28.0" layoutY="82.0" prefHeight="25.0" prefWidth="197.0" />
                </children>
             </Pane>
-            <Pane fx:id="noti" layoutX="972.0" layoutY="87.0" prefHeight="408.0" prefWidth="278.0" visible="false">
+            <Pane fx:id="noti" layoutX="866.0" layoutY="87.0" prefHeight="362.0" prefWidth="394.0" visible="false">
                <children>
-                  <ScrollPane prefHeight="408.0" prefWidth="278.0">
+                  <ScrollPane prefHeight="362.0" prefWidth="394.0">
                      <content>
-                        <ListView fx:id="notiList" prefHeight="406.0" prefWidth="276.0" />
+                        <ListView fx:id="notiList" prefHeight="358.0" prefWidth="390.0" styleClass="listViewNoti" />
                      </content>
                   </ScrollPane>
                </children>
             </Pane>
+            <Label fx:id="notiNewLabel" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" layoutX="1159.0" layoutY="20.0" prefHeight="15.0" prefWidth="15.0" styleClass="notiLabel" text="9" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="10.0" />
+               </font>
+            </Label>
          </children>
       </Pane>
    </children>

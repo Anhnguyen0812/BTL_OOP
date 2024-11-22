@@ -3,20 +3,6 @@
     "configurations": [
         {
             "type": "java",
-            "name": "AllDao",
-            "request": "launch",
-            "mainClass": "library.dao.AllDao",
-            "projectName": "librarymanager"
-        },
-        {
-            "type": "java",
-            "name": "App",
-            "request": "launch",
-            "mainClass": "library.App",
-            "projectName": "librarymanager"
-        },
-        {
-            "type": "java",
             "name": "AppLaunch",
             "request": "launch",
             "mainClass": "library.AppLaunch",

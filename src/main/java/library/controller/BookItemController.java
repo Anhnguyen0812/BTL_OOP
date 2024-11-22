@@ -16,6 +16,7 @@ import library.model.User;
 import java.time.LocalDate;
 import library.dao.BookDAO;
 import library.dao.BorrowRecordDAO;
+import library.dao.NotiDAO;
 import library.model.BorrowRecord;
 
 public class BookItemController {
@@ -85,6 +86,13 @@ public class BookItemController {
     public void returnAction(BorrowRecord record) {
         BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO();
         borrowRecordDAO.returnBook(record);
+        NotiDAO notiDAO = NotiDAO.geNotiDAO();
+        try {
+            notiDAO.addNotificationFromUserToAdmin(1,
+                    "User " + user.getId() + ", Name: " + user.getName() + " return book " + book.getTitle());
+        } catch (Exception e) {
+            System.out.println(e);
+        }
         borrowButton.setVisible(true);
     }
 
@@ -153,7 +161,14 @@ public class BookItemController {
         BorrowRecord borrowRecord = new BorrowRecord(1, user, book, LocalDate.now(), null);
         borrowRecordDAO.addResquestBorrowRecord(borrowRecord);
         borrowButton.setVisible(false);
-
+        NotiDAO notiDAO = NotiDAO.geNotiDAO();
+        try {
+            notiDAO.addNotificationFromUserToAdmin(1,
+                    "User " + user.getId() + ", Name: " + user.getName() + " request to borrow book "
+                            + book.getTitle());
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
 }

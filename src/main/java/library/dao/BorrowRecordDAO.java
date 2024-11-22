@@ -276,7 +276,7 @@ public class BorrowRecordDAO {
 
   // tra sach
   public void returnBook(BorrowRecord record) {
-    String query = "UPDATE borrow_records SET return_date = ? WHERE id = ?";
+    String query = "UPDATE borrow_records SET return_date = ?, status = 2 WHERE id = ?";
     try (PreparedStatement stmt = connection.prepareStatement(query)) {
       stmt.setDate(1, java.sql.Date.valueOf(LocalDate.now()));
       stmt.setInt(2, record.getId());
