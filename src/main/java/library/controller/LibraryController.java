@@ -21,14 +21,22 @@ import library.service.UserService;
 import library.util.DBConnection;
 
 public class LibraryController {
-  @FXML private TextField userNameField;
-  @FXML private TextField userEmailField;
-  @FXML private TextField bookTitleField;
-  @FXML private TextField bookAuthorField;
-  @FXML private TextField bookISBNField;
-  @FXML private TextArea searchResultsArea;
-  @FXML private ListView<String> userListView;
-  @FXML private ListView<String> bookListView;
+  @FXML
+  private TextField userNameField;
+  @FXML
+  private TextField userEmailField;
+  @FXML
+  private TextField bookTitleField;
+  @FXML
+  private TextField bookAuthorField;
+  @FXML
+  private TextField bookISBNField;
+  @FXML
+  private TextArea searchResultsArea;
+  @FXML
+  private ListView<String> userListView;
+  @FXML
+  private ListView<String> bookListView;
 
   private UserService userService;
   private BookService bookService;
@@ -38,10 +46,9 @@ public class LibraryController {
   DBConnection connection = DBConnection.getInstance();
 
   public LibraryController() {
-    this.userService = new UserService(UserDAO.getUserDAO());
+    this.userService = new UserService();
     this.bookService = new BookService(BookDAO.getBookDAO());
-    this.borrowService =
-        new BorrowService(new BorrowRecordDAO(connection.getConnection()), BookDAO.getBookDAO());
+    this.borrowService = new BorrowService(new BorrowRecordDAO(connection.getConnection()), BookDAO.getBookDAO());
     this.googleBooksAPI = new GoogleBooksAPI();
   }
 
@@ -67,12 +74,10 @@ public class LibraryController {
     String selectedBook = bookListView.getSelectionModel().getSelectedItem();
 
     if (selectedUser != null && selectedBook != null) {
-      User user =
-          userService.getUserById(
-              Integer.parseInt(selectedUser.split(" ")[0])); // Giả sử ID là số đầu tiên trong chuỗi
-      Book book =
-          bookService.getBookById(
-              Integer.parseInt(selectedBook.split(" ")[0])); // Giả sử ID là số đầu tiên trong chuỗi
+      User user = userService.getUserById(
+          Integer.parseInt(selectedUser.split(" ")[0])); // Giả sử ID là số đầu tiên trong chuỗi
+      Book book = bookService.getBookById(
+          Integer.parseInt(selectedBook.split(" ")[0])); // Giả sử ID là số đầu tiên trong chuỗi
 
       borrowService.borrowBook(user, book);
       updateBookList();

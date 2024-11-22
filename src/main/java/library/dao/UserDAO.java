@@ -59,7 +59,7 @@ public class UserDAO {
     stmt.setInt(1, id);
     ResultSet rs = stmt.executeQuery();
     if (rs.next()) {
-        return new User(rs.getInt("id"), rs.getString("name"), rs.getString("email"));
+      return new User(rs.getInt("id"), rs.getString("name"), rs.getString("email"));
     }
     return null;
   }
@@ -81,6 +81,23 @@ public class UserDAO {
     String query = "SELECT * FROM users WHERE name = ?";
     PreparedStatement stmt = connection.prepareStatement(query);
     stmt.setString(1, username);
+    ResultSet rs = stmt.executeQuery();
+    if (rs.next()) {
+      return new User(
+          rs.getInt("id"),
+          rs.getString("name"),
+          rs.getString("email"),
+          rs.getString("password"),
+          rs.getString("role"),
+          rs.getString("salt"));
+    }
+    return null;
+  }
+
+  public static User getUserByEmail(String userEmail) throws SQLException {
+    String query = "SELECT * FROM users WHERE email LIKE ?";
+    PreparedStatement stmt = connection.prepareStatement(query);
+    stmt.setString(1, userEmail);
     ResultSet rs = stmt.executeQuery();
     if (rs.next()) {
       return new User(

@@ -3,6 +3,7 @@ package library.controller;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,21 +14,23 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.stage.Stage;
+import javafx.scene.layout.Pane;
+import javafx.util.Duration;
 import library.dao.BookDAO;
 import library.dao.BorrowRecordDAO;
 import library.model.Book;
 import library.model.BorrowRecord;
-import library.model.User; // Add this import statement
+import library.model.User;
+import library.service.UserService;
 
 // import library.controller.BorrowRecordController; // Removed redundant import
 
@@ -35,26 +38,32 @@ public class BookDetailController {
 
   @FXML
   private Label titleLabel;
-
   @FXML
   private Label authorLabel;
-
   @FXML
-  private Label isbnLabel;
-
+  private Label isbnLabel, idLabel, assertLabel;
   @FXML
   private Label descriptionLabel, category;
-
   @FXML
-  private ImageView bookImageView;
-
+  private ImageView bookImageView, imageRecentBook;
+  @FXML
+  private Label titleRecentBook;
   @FXML
   private ImageView qrCodeImageView; // ImageView để hiển thị mã QR
-
   @FXML
-  private Button returnbook, addbook, delete;
-
+  private Button returnbook, addbook, delete, update;
+  @FXML
+  private Label notBorrowBook;
+  @FXML
+  private Pane updateBook;
+  @FXML
+  private Label modelTitle, modelAuthor, modelIsbn;
+  @FXML
+  private Label password;
+  @FXML
+  private ImageView modelImage;
   private static User user;
+  private static User user1;
   private static Book bookk;
   private BorrowRecord record;
   private BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO();
@@ -70,28 +79,48 @@ public class BookDetailController {
     ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
     MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
     ByteArrayInputStream inputStream = new ByteArrayInputStream(pngOutputStream.toByteArray());
-
     return new Image(inputStream); // Trả về hình ảnh QR dưới dạng Image
   }
 
-  public void setBookDetails(Book book) {
-    titleLabel.setText(book.getTitle());
-    authorLabel.setText(book.getAuthor());
+  public void test(Book book) {
+    modelTitle.setText(book.getTitle());
+    modelAuthor.setText(book.getAuthor());
+    modelIsbn.setText(book.getIsbn());
     // isbnLabel.setText(book.getIsbn());
+    // Hiển thị hình ảnh nếu có
+    if (book.getImageUrl() != null) {
+      Image image = new Image(book.getImageUrl(), true);
+      modelImage.setImage(image);
+    } else {
+      String defaultImagePath = getClass().getResource("/imgs/unnamed.jpg").toExternalForm();
+      modelImage.setImage(new Image(defaultImagePath, true));
+    }
+  }
+
+  public void setBookDetails(Book book) {
+    titleLabel.setText("Title : " + book.getTitle());
+    authorLabel.setText("Author : " + book.getAuthor());
+    if (isbnLabel != null) {
+      isbnLabel.setText("Isbn : " + book.getIsbn());
+    }
+    if (idLabel != null) {
+      idLabel.setText(book.getId() > -1 ? "Id : " + book.getId() : "book not exist in database");
+    }
 
     // Hiển thị mô tả nếu có
     if (book.getDescription() != null) {
-      descriptionLabel.setText(book.getDescription());
+      descriptionLabel.setText("Description : " + book.getDescription());
     } else {
       descriptionLabel.setText("No description available.");
     }
 
     // Hiển thị hình ảnh nếu có
     if (book.getImageUrl() != null) {
-      Image image = new Image(book.getImageUrl());
+      Image image = new Image(book.getImageUrl(), true);
       bookImageView.setImage(image);
     } else {
-      bookImageView.setImage(null);
+      String defaultImagePath = getClass().getResource("/imgs/unnamed.jpg").toExternalForm();
+      bookImageView.setImage(new Image(defaultImagePath, true));
     }
 
     if (book.getQRcode() != null) {
@@ -105,28 +134,7 @@ public class BookDetailController {
       }
     }
 
-    category.setText(book.getCategories());
-  }
-
-  public void showBookDetails(Book book) {
-    if (book != null) {
-      try {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/BookDetail.fxml"));
-        Parent root = loader.load();
-        ((BookDetailController) loader.getController()).setBookDetails(book);
-        Stage stage = new Stage();
-        stage.setScene(new Scene(root));
-        stage.setTitle("Book Details");
-        stage.show();
-      } catch (Exception e) {
-        e.printStackTrace();
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
-        alert.setContentText("Failed to load book details.");
-        alert.showAndWait();
-      }
-    }
+    category.setText("Category : " + book.getCategories());
   }
 
   public Parent asParent(Book book) throws IOException {
@@ -163,7 +171,15 @@ public class BookDetailController {
                 record = new BorrowRecord(0, user, bookk, today, today.plusMonths(2));
                 borrowRecordDAO.addBorrowRecord(record);
               } else {
-                // TODO
+                notBorrowBook.setVisible(true);
+                // Tạo Timeline để ẩn Label sau 5 giây
+                Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
+                  notBorrowBook.setVisible(false); // Ẩn Label sau 5 giây
+                }));
+
+                // Chạy Timeline
+                timeline.setCycleCount(1); // Chỉ chạy một lần
+                timeline.play();
               }
             } catch (Exception ex) {
               Logger.getLogger(BookDetailController.class.getName())
@@ -193,6 +209,17 @@ public class BookDetailController {
             }
           });
     }
+    if (update != null) {
+      update.setOnAction(
+          e -> {
+            try {
+              updateBook.setVisible(true);
+            } catch (Exception ex) {
+              Logger.getLogger(BookDetailController.class.getName())
+                  .log(Level.SEVERE, ex.getMessage(), ex);
+            }
+          });
+    }
   }
 
   public Parent returnBookDetail(Book book, User user) throws IOException {
@@ -208,16 +235,82 @@ public class BookDetailController {
     return bookDetail;
   }
 
-  public Parent infoBook(Book book, User user) throws IOException {
+  public Parent infoBook(Book book, User user, String link) throws IOException {
     BookDetailController.user = user;
     BookDetailController.bookk = book;
     if (book == null) {
       return null;
     }
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/infoBook.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Infobook.fxml"));
     Parent bookDetail = loader.load();
     BookDetailController controller = loader.getController();
     controller.setBookDetails(book);
     return bookDetail;
   }
+
+  public Parent createPane(Book book) throws IOException {
+    if (book == null) {
+      return null;
+    }
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/modelbook.fxml"));
+    Parent bookDetail = loader.load();
+    BookDetailController controller = loader.getController();
+    controller.test(book);
+    return bookDetail;
+  }
+
+  public ImageView getImageRecentBook() {
+    return imageRecentBook;
+  }
+
+  public Label getTitleRecentBook() {
+    return titleRecentBook;
+  }
+
+  public Parent recentBook(Book book) throws IOException {
+    if (book == null) {
+      return null; // Nếu book null, trả về null ngay lập tức.
+    }
+    // Load giao diện FXML của chi tiết sách
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/RecentBook.fxml"));
+    Parent bookDetail = loader.load();
+    // Lấy controller từ FXML
+    BookDetailController controller = loader.getController();
+    // Kiểm tra và thiết lập ảnh
+    Image image;
+    if (book.getImageUrl() != null && !book.getImageUrl().isEmpty()) {
+      image = new Image(book.getImageUrl(), true); // true để tải ảnh không đồng bộ.
+    } else {
+      String defaultImagePath = getClass().getResource("/imgs/unnamed.jpg").toExternalForm();
+      image = new Image(defaultImagePath, true);
+    }
+    controller.getImageRecentBook().setImage(image);
+    controller.getTitleRecentBook().setText(book.getTitle());
+    return bookDetail;
+  }
+
+  public Parent infoBorrow(Book book, User user) throws IOException {
+    user1 = user;
+    if (book == null) {
+      return null;
+    }
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/modelbook.fxml"));
+    Parent bookDetail = loader.load();
+    BookDetailController controller = loader.getController();
+    controller.test(book);
+    return bookDetail;
+  }
+
+  @FXML
+  public void createPassword() throws NoSuchAlgorithmException {
+    password.setText("Password : 123456");
+    password.setVisible(true);
+    String salt = AdminController.getSalt();
+    String pass = UserService.hashPassword("123456", salt);
+    user1.setSalt(salt);
+    user1.setPassword(pass);
+    UserService userService = new UserService();
+    userService.editUser(user1);
+  }
+
 }

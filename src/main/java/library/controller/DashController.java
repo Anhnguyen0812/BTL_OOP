@@ -148,7 +148,7 @@ public class DashController {
   List<Book> booksNew;
   List<Book> booksRecent;
 
-  private BookDAO bookDAO = BookDAO.getBookDAO();
+  protected BookDAO bookDAO = BookDAO.getBookDAO();
   private NotiDAO notiDAO = NotiDAO.geNotiDAO();
   protected final BookController bookController = new BookController();
 
@@ -523,7 +523,7 @@ public class DashController {
     ImageHandler imageHandler = new ImageHandler();
     ImageView imageView = imageHandler.loadImage(user.getId() + ".png"); // replace with your image file name
     if (imageView == null) {
-      imageView = new ImageView(new Image("/imgs/user.png"));
+      imageView = new ImageView(new Image("/imgs/account.png"));
     }
     double minDimension = Math.min(imageView.getImage().getWidth(), imageView.getImage().getHeight());
     javafx.scene.image.Image croppedImage = new javafx.scene.image.WritableImage(

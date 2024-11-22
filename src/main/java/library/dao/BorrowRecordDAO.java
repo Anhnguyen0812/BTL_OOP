@@ -102,7 +102,7 @@ public class BorrowRecordDAO {
         LocalDate borrowDate = rs.getDate("borrow_date").toLocalDate();
         LocalDate returnDate = rs.getDate("return_date") != null ? rs.getDate("return_date").toLocalDate() : null;
 
-        UserService userService = new UserService(UserDAO.getUserDAO());
+        UserService userService = new UserService();
         User user = userService.getUserById(userId);
         Book book = bookDAO.getBookById(bookId);
 
@@ -129,7 +129,7 @@ public class BorrowRecordDAO {
         LocalDate borrowDate = rs.getDate("borrow_date").toLocalDate();
         LocalDate returnDate = rs.getDate("return_date") != null ? rs.getDate("return_date").toLocalDate() : null;
 
-        UserService userService = new UserService(UserDAO.getUserDAO());
+        UserService userService = new UserService();
         User user = userService.getUserById(userId);
         Book book = bookDAO.getBookById(bookId);
 
@@ -155,7 +155,7 @@ public class BorrowRecordDAO {
         LocalDate borrowDate = rs.getDate("borrow_date").toLocalDate();
         LocalDate returnDate = rs.getDate("return_date") != null ? rs.getDate("return_date").toLocalDate() : null;
 
-        UserService userService = new UserService(UserDAO.getUserDAO());
+        UserService userService = new UserService();
         User user = userService.getUserById(userId);
         Book book = bookDAO.getBookById(bookId);
 
@@ -181,7 +181,7 @@ public class BorrowRecordDAO {
         LocalDate borrowDate = rs.getDate("borrow_date").toLocalDate();
         LocalDate returnDate = rs.getDate("return_date") != null ? rs.getDate("return_date").toLocalDate() : null;
 
-        UserService userService = new UserService(UserDAO.getUserDAO());
+        UserService userService = new UserService();
         User user = userService.getUserById(userId);
         Book book = bookDAO.getBookById(bookId);
 
@@ -207,7 +207,7 @@ public class BorrowRecordDAO {
         LocalDate borrowDate = rs.getDate("borrow_date").toLocalDate();
         LocalDate returnDate = rs.getDate("return_date") != null ? rs.getDate("return_date").toLocalDate() : null;
 
-        UserService userService = new UserService(UserDAO.getUserDAO());
+        UserService userService = new UserService();
         User user = userService.getUserById(userId);
         Book book = bookDAO.getBookById(bookId);
 
@@ -235,7 +235,7 @@ public class BorrowRecordDAO {
 
         // Giả sử bạn có lớp UserService và BookService để lấy thông tin người dùng và
         // sách
-        UserService userService = new UserService(UserDAO.getUserDAO());
+        UserService userService = new UserService();
         User user = userService.getUserById(userId); // Phương thức giả định
         Book book = bookDAO.getBookById(bookId); // Phương thức giả định
 
@@ -260,7 +260,7 @@ public class BorrowRecordDAO {
         int bookId = rs.getInt("book_id");
         LocalDate borrowDate = rs.getDate("borrow_date").toLocalDate();
 
-        UserService userService = new UserService(UserDAO.getUserDAO());
+        UserService userService = new UserService();
         User user = userService.getUserById(userId);
         Book book = bookDAO.getBookById(bookId);
 
@@ -308,7 +308,7 @@ public class BorrowRecordDAO {
         int bookId = rs.getInt("book_id");
         LocalDate borrowDate = rs.getDate("borrow_date").toLocalDate();
         LocalDate returnDate = rs.getDate("return_date") != null ? rs.getDate("return_date").toLocalDate() : null;
-        User user = new UserService(UserDAO.getUserDAO()).getUserById(userId);
+        User user = new UserService().getUserById(userId);
         Book book = new BookService(bookDAO).getBookById(bookId);
         return new BorrowRecord(recordId, user, book, borrowDate, returnDate);
       }
