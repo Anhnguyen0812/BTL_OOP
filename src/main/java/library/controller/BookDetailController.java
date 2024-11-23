@@ -58,6 +58,10 @@ public class BookDetailController {
   private Pane updateBook;
   @FXML
   private Label modelTitle, modelAuthor, modelIsbn;
+
+  @FXML private Label iduser, title, username, email, borrowdate, returndate;
+  @FXML private ImageView imageBook;
+  
   @FXML
   private Label password;
   @FXML
@@ -163,30 +167,7 @@ public class BookDetailController {
 
   @FXML
   public void initialize() {
-    if (addbook != null) {
-      addbook.setOnAction(
-          e -> {
-            try {
-              if (bookk.isAvailable()) {
-                record = new BorrowRecord(0, user, bookk, today, today.plusMonths(2));
-                borrowRecordDAO.addBorrowRecord(record);
-              } else {
-                notBorrowBook.setVisible(true);
-                // Tạo Timeline để ẩn Label sau 5 giây
-                Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
-                  notBorrowBook.setVisible(false); // Ẩn Label sau 5 giây
-                }));
-
-                // Chạy Timeline
-                timeline.setCycleCount(1); // Chỉ chạy một lần
-                timeline.play();
-              }
-            } catch (Exception ex) {
-              Logger.getLogger(BookDetailController.class.getName())
-                  .log(Level.SEVERE, ex.getMessage(), ex);
-            }
-          });
-    }
+    
     if (returnbook != null) {
       returnbook.setOnAction(
           e -> {
@@ -289,16 +270,36 @@ public class BookDetailController {
     return bookDetail;
   }
 
-  public Parent infoBorrow(Book book, User user) throws IOException {
-    user1 = user;
+  public Parent infoBorrow(Book book, User user, BorrowRecord record) throws IOException {
     if (book == null) {
       return null;
     }
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/modelbook.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/infoBorrow.fxml"));
     Parent bookDetail = loader.load();
     BookDetailController controller = loader.getController();
-    controller.test(book);
+    controller.setContentInfoBorrow(book, user, record);
     return bookDetail;
+  }
+
+  public void setContentInfoBorrow(Book book, User user, BorrowRecord record) throws IOException {
+    if (book == null) {
+      return;
+    }
+    title.setText(book.getTitle());
+    // Hiển thị hình ảnh nếu có
+    if (book.getImageUrl() != null) {
+      Image image = new Image(book.getImageUrl(), true);
+      imageBook.setImage(image);
+    } else {
+      String defaultImagePath = getClass().getResource("/imgs/unnamed.jpg").toExternalForm();
+      imageBook.setImage(new Image(defaultImagePath, true));
+    }
+    // Hiển thị thông tin người mượn
+    iduser.setText("Id : " + user.getId());
+    username.setText("Username : " + user.getName());
+    email.setText("Email : " + user.getEmail());
+    borrowdate.setText("Borrow date : " + record.getBorrowDate());
+    returndate.setText("Return date : " + record.getReturnDate());
   }
 
   @FXML

@@ -1,6 +1,7 @@
 package library.controller;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Time;
@@ -9,7 +10,6 @@ import java.util.List;
 
 import com.gluonhq.charm.glisten.control.Avatar;
 import com.gluonhq.impl.charm.a.a.a;
-import com.gluonhq.impl.charm.a.b.a.b;
 import com.gluonhq.impl.charm.a.b.b.s;
 import com.gluonhq.impl.charm.a.b.b.u;
 
@@ -58,6 +58,7 @@ import library.model.BorrowRecord;
 import library.model.ConcreteBook;
 import library.model.ImageHandler;
 import library.model.User;
+import library.service.UserService;
 import library.dao.AllDao;
 
 public class DashController {
@@ -119,9 +120,13 @@ public class DashController {
   @FXML
   private MenuButton featuredBookButton;
 
-  protected BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO();
-  protected User user;
-  protected HostServices hostServices;
+  @FXML private Label neww, old, verify;
+  @FXML private TextField newpass, oldpass, verifypass;
+  @FXML private Button changepass;
+  @FXML private Pane boxchange;
+
+  @FXML
+  private Label error, iduser, username, email;
 
   @FXML
   private Button reloadReturnBooksButton;
@@ -147,7 +152,9 @@ public class DashController {
   List<Book> booksTop;
   List<Book> booksNew;
   List<Book> booksRecent;
-
+  protected BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO();
+  protected User user;
+  protected HostServices hostServices;
   protected BookDAO bookDAO = BookDAO.getBookDAO();
   private NotiDAO notiDAO = NotiDAO.geNotiDAO();
   protected final BookController bookController = new BookController();
@@ -240,6 +247,10 @@ public class DashController {
     int bookStatus1 = borrowRecordDAO.countBookBorrowed(user.getId());
     int bookStatus2 = borrowRecordDAO.countBookReturnRequest(user.getId());
 
+    iduser.setText(String.valueOf("Id : " + user.getId()));
+    username.setText("Username : " + user.getName());
+    email.setText("Email : " + user.getEmail());
+
     // Display borrow information in notiList
     notiList.getItems().clear();
     List<String> ListNoti = notiDAO.getNotificationsFromAdminToUser(user.getId());
@@ -314,6 +325,22 @@ public class DashController {
     });
 
     // Set up notiList
+
+    javafx.scene.effect.BoxBlur blur = new javafx.scene.effect.BoxBlur(10, 10, 3);
+    changepass.setOnAction(event -> {
+      boxchange.setVisible(true);
+      if (home.isVisible()) {
+        home.setEffect(blur);
+      } else if (books.isVisible()) {
+        books.setEffect(blur);
+      } else if (issueBooks.isVisible()) {
+        issueBooks.setEffect(blur);
+      } else if (returnBooks.isVisible()) {
+        returnBooks.setEffect(blur);
+      } else if (settings.isVisible()) {
+        settings.setEffect(blur);
+      }
+    });
 
   }
 
@@ -462,6 +489,8 @@ public class DashController {
     returnBooks.setVisible(true);
     returnBooks_Button.styleProperty().set("-fx-background-color: #777777");
     List<BorrowRecord> borrowRecords = borrowRecordDAO.getBorrowRequestByUserId(user.getId());
+    System.out.println(user.getId());
+    if (!borrowRecords.isEmpty())
     setBorrowedBookItems(borrowRecords, 1, true);
   }
 
@@ -475,22 +504,6 @@ public class DashController {
     resetStyle();
     settings.setVisible(true);
     settings_Button.styleProperty().set("-fx-background-color: #777777");
-  }
-
-  public void goToSubUser() {
-    if (subUser.isVisible()) {
-      subUser.setVisible(false);
-    } else {
-      subUser.setVisible(true);
-    }
-  }
-
-  public void goToNoti() {
-    if (noti.isVisible()) {
-      noti.setVisible(false);
-    } else {
-      noti.setVisible(true);
-    }
   }
 
   @FXML
@@ -539,101 +552,17 @@ public class DashController {
   public void reloadReturnBooksAction() throws SQLException {
     if (returnChoice.getValue().equals("Borrowed")) {
       List<BorrowRecord> borrowRecords = borrowRecordDAO.getBorrowRecordsByUserId(user);
+      if (!borrowRecords.isEmpty())
       setBorrowedBookItems(borrowRecords, 1, true);
     } else if (returnChoice.getValue().equals("Returned")) {
       List<BorrowRecord> borrowRecords = borrowRecordDAO.getReturnRecordsByUserId(user);
+      if (!borrowRecords.isEmpty())
       setBorrowedBookItems(borrowRecords, 1, true);
     } else if (returnChoice.getValue().equals("unReturned")) {
       List<BorrowRecord> borrowRecords = borrowRecordDAO.getBorrowRecordsByUserIdWithoutReturnDate(user);
+      if (!borrowRecords.isEmpty())
       setBorrowedBookItems(borrowRecords, 1, true);
     }
-  }
-
-  protected void handleSearchBookLib(String bookTitle, String bookAuthor,
-      TableView<Book> ListBook) {
-    ListBook.getItems().clear();
-    Task<ObservableList<Book>> task = new Task<ObservableList<Book>>() {
-      @Override
-      protected ObservableList<Book> call() throws Exception {
-        ObservableList<Book> foundBooks = FXCollections.observableArrayList();
-        // Tìm kiếm theo tiêu đề
-        if (!bookTitle.isEmpty()) {
-          foundBooks.addAll(bookDAO.getBookByTitle(bookTitle));
-        }
-        // Tìm kiếm theo tác giả
-        if (!bookAuthor.isEmpty()) {
-          foundBooks.addAll(bookDAO.getBookByAuthor(bookAuthor));
-        }
-        Thread.sleep(500); // Giả lập việc tìm kiếm mất thời gianThrea
-        return foundBooks;
-      }
-
-      @Override
-      protected void succeeded() {
-        loading.setVisible(false);
-        super.succeeded();
-        Platform.runLater(
-            () -> {
-              ListBook.getItems().clear(); // Xóa kết quả cũ
-              ListBook.getItems().addAll(getValue()); // Thêm kết quả mới
-            });
-      }
-
-      @Override
-      protected void failed() {
-        loading.setVisible(false);
-        super.failed();
-        // Xử lý ngoại lệ nếu có
-        ListBooks.setItems(
-            FXCollections.observableArrayList()); // Hoặc cập nhật một thông báo lỗi
-      }
-    };
-    // Chạy task trong một luồng riêng
-    new Thread(task).start();
-  }
-
-  protected void handleSearchBookGG(String bookTitle, String bookAuthor,
-      TableView<Book> ListBook) {
-    ListBook.getItems().clear();
-    Task<ObservableList<Book>> task = new Task<ObservableList<Book>>() {
-      @Override
-      protected ObservableList<Book> call() throws Exception {
-        ObservableList<Book> foundBooks = FXCollections.observableArrayList();
-        // Tìm kiếm theo tiêu đề
-        if (!bookTitle.isEmpty()) {
-          foundBooks.addAll(bookController.searchBook(bookTitle));
-        }
-        // Tìm kiếm theo tác giả
-        if (!bookAuthor.isEmpty()) {
-          foundBooks.addAll(bookController.searchBook(bookAuthor));
-        }
-        Thread.sleep(0); // Giả lập việc tìm kiếm mất thời gianThrea
-        return foundBooks;
-      }
-
-      @Override
-      protected void succeeded() {
-        loading.setVisible(false);
-        super.succeeded();
-        Platform.runLater(
-            () -> {
-              ListBook.getItems().clear(); // Xóa kết quả cũ
-              ListBook.getItems().addAll(getValue()); // Thêm kết quả mới
-            });
-      }
-
-      @Override
-      protected void failed() {
-        loading.setVisible(false);
-        super.failed();
-        // Xử lý ngoại lệ nếu có
-        ListBooks.setItems(
-            FXCollections.observableArrayList()); // Hoặc cập nhật một thông báo lỗi
-      }
-    };
-    // Chạy task trong một luồng riêng
-    new Thread(task).start();
-
   }
 
   @FXML
@@ -778,6 +707,26 @@ public class DashController {
     }
   }
 
+  public void gotoChangePass() {
+    if (boxchange.isVisible()) {
+      boxchange.setVisible(false);
+      if (home.isVisible()) {
+        home.setEffect(null);
+      } else if (books.isVisible()) {
+        books.setEffect(null);
+      } else if (issueBooks.isVisible()) {
+        issueBooks.setEffect(null);
+      } else if (returnBooks.isVisible()) {
+        returnBooks.setEffect(null);
+      } else if (settings.isVisible()) {
+        settings.setEffect(null);
+      }
+    } else {
+      boxchange.setVisible(true);
+      boxchange.toFront();
+    }
+  }
+
   @FXML
   public void logOut() {
     try {
@@ -841,6 +790,34 @@ public class DashController {
       e.printStackTrace();
     }
   }
+
+  @FXML
+    private void changePassword() throws SQLException, NoSuchAlgorithmException {
+      String oldPassword = oldpass.getText();
+      oldPassword = UserService.hashPassword(oldPassword, user.getSalt());
+      String newPassword = newpass.getText();
+      String checkPassword = UserService.hashPassword(newPassword, user.getSalt());
+      String verifyPassword = verifypass.getText();
+      if (!oldPassword.equals(user.getPassword())) {
+        old.setVisible(true);
+      } else if (checkPassword.equals(oldPassword)) {
+        neww.setVisible(true);
+        old.setVisible(false);
+      } else if (!newPassword.equals(verifyPassword)) {
+        verify.setVisible(true);
+        neww.setVisible(false);
+      } else {
+          String salt = AdminController.getSalt();
+          String hashedPassword = UserService.hashPassword(newPassword, salt);
+          user.setPassword(hashedPassword);
+          user.setSalt(salt);
+          UserService userService =  new UserService();
+          userService.editUser(user);
+          old.setVisible(false);
+          neww.setVisible(false);
+          verify.setVisible(false);
+      }
+    }
 
   @FXML
   public void gotoDarkMode() {

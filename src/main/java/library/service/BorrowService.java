@@ -14,12 +14,12 @@ public class BorrowService {
   }
 
   public void borrowBook(User user, Book book) {
-    if (book.isAvailable()) {
+    if (book.isAvailable() > 0) {
       // Tạo bản ghi mượn sách
       BorrowRecord record =
           new BorrowRecord(0, user, book, LocalDate.now(), LocalDate.now().plusWeeks(2));
       borrowRecordDAO.addBorrowRecord(record);
-      book.setAvailable(false); // Đánh dấu sách là không còn khả dụng
+      book.setAvailable(book.isAvailable() - 1); // Đánh dấu sách là không còn khả dụng
       // Cập nhật sách trong database
       bookDAO.updateBook(book); // Gọi phương thức cập nhật
     } else {
@@ -31,7 +31,7 @@ public class BorrowService {
     record.setReturnDate(LocalDate.now());
     // Cập nhật trạng thái sách
     Book book = record.getBook();
-    book.setAvailable(true);
+    book.setAvailable(book.isAvailable() + 1); // Đánh dấu sách là khả dụng
     bookDAO.updateBook(book); // Gọi phương thức cập nhật
   }
 }

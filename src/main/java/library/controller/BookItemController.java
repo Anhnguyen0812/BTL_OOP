@@ -3,6 +3,8 @@
  */
 package library.controller;
 
+import java.time.LocalDate;
+
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -11,13 +13,12 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import library.model.Book;
-import library.model.User;
-import java.time.LocalDate;
 import library.dao.BookDAO;
 import library.dao.BorrowRecordDAO;
 import library.dao.NotiDAO;
+import library.model.Book;
 import library.model.BorrowRecord;
+import library.model.User;
 
 public class BookItemController {
     @FXML
@@ -32,8 +33,8 @@ public class BookItemController {
     @FXML
     private Canvas star1, star2, star3, star4, star5;
 
-    User user;
-    Book book;
+    private static User user;
+    private static Book book;
 
     public void initialize() {
     }
@@ -47,8 +48,7 @@ public class BookItemController {
             bookImage.setImage(image);
         }
         this.user = user;
-        this.book = books;
-
+        book = books;
     }
 
     public void setBorrowButtonVisible() {
@@ -56,13 +56,14 @@ public class BookItemController {
         try {
             if (!bookDao.haveBook(book.getIsbn())) {
                 borrowButton.setVisible(false);
+            } else if (book.isAvailable() == 0) {
+                borrowButton.setVisible(false);
             } else {
                 checkBorrowed();
             }
         } catch (Exception e) {
             System.out.println(e);
         }
-
     }
 
     public void checkBorrowed() {

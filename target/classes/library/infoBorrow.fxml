@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="252.0" prefWidth="652.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="library.controller.BookDetailController" >
+   <children>
+      <Label fx:id="title" layoutX="28.0" layoutY="14.0" prefHeight="29.0" prefWidth="125.0" text="Title" />
+      <ImageView fx:id="imageBook" fitHeight="185.0" fitWidth="164.0" layoutX="19.0" layoutY="53.0" pickOnBounds="true" preserveRatio="true" />
+      <Label fx:id="iduser" layoutX="264.0" layoutY="20.0" prefHeight="30.0" prefWidth="200.0" text="id" />
+      <Label fx:id="username" layoutX="264.0" layoutY="65.0" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="200.0" text="username" />
+      <Label fx:id="email" layoutX="264.0" layoutY="110.0" prefHeight="30.0" prefWidth="285.0" text="email" />
+      <Label fx:id="borrowdate" layoutX="264.0" layoutY="155.0" prefHeight="30.0" prefWidth="300.0" text="borrow  date" />
+      <Label fx:id="returndate" layoutX="264.0" layoutY="200.0" prefHeight="30.0" prefWidth="300.0" text="return date" />
+   </children>
+</Pane>

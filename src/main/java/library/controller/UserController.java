@@ -74,7 +74,7 @@ public class UserController {
   @FXML
   private void handleSearchBook() throws IOException, SQLException {
     String query = searchField.getText();
-    ObservableList<Book> filteredBooks = bookController.searchBook(query);
+    ObservableList<Book> filteredBooks = bookController.searchBookByTitleMaxResult(query, 20);
     booksTable.getItems().setAll(filteredBooks); // Cập nhật kết quả tìm kiếm
   }
 

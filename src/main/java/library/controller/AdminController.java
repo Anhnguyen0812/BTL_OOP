@@ -30,6 +30,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.BoxBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -37,21 +38,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
+import javafx.concurrent.Task;
 import library.dao.BookDAO;
 import library.dao.UserDAO;
-import library.model.ArtBook;
 import library.model.Book;
 import library.model.BorrowRecord;
-import library.model.ComputerBook;
 import library.model.ConcreteBook;
-import library.model.HistoryBook;
-import library.model.ScienceBook;
-import library.model.TechnologyBook;
-import library.model.ThesisBook;
 import library.model.User;
 import library.service.UserService;
-
-import javafx.scene.effect.BoxBlur;
 
 public class AdminController extends DashController implements Initializable {
   private final BoxBlur blur = new BoxBlur(10, 10, 3);
@@ -233,8 +227,7 @@ public class AdminController extends DashController implements Initializable {
             loading.setVisible(true);
             detailBook.getChildren().add(loading);
             searchResult.getItems().clear();
-            handleSearchBookGG(searchBook.getText(), searchAuthor.getText(), searchResult);
-
+            handleSearchBookGG(searchBook.getText(), searchResult);
           } catch (Exception e) {
             showAlert("Error", "An error occurred while searching for books.");
           }
@@ -276,7 +269,7 @@ public class AdminController extends DashController implements Initializable {
               CompletableFuture.runAsync(() -> {
                 BookDetailController detailController = new BookDetailController();
                 try {
-                  Parent bookDetailParent = detailController.infoBorrow(record.getBook(), record.getUser());
+                  Parent bookDetailParent = detailController.infoBorrow(record.getBook(), record.getUser(), record);
                   // Cập nhật giao diện trong luồng JavaFX
                   Platform.runLater(() -> {
                     infoBook.getChildren().add(bookDetailParent);
@@ -378,26 +371,15 @@ public class AdminController extends DashController implements Initializable {
               String title = updateTitle.getText() != null ? updateTitle.getText() : bookk.getTitle();
               String author = updateAuthor.getText() != null ? updateAuthor.getText() : bookk.getAuthor();
               String isbn = updateIsbn.getText() != null ? updateIsbn.getText() : bookk.getIsbn();
-              boolean available = bookk.isAvailable();
+              int available = bookk.isAvailable();
               String description = updateDescription.getText() != null ? updateDescription.getText()
                   : bookk.getDescription();
               String imageUrl = updateImageUrl.getText() != null ? updateImageUrl.getText() : bookk.getImageUrl();
               String qrCode = updateQRcode.getText() != null ? updateQRcode.getText() : bookk.getQRcode();
               String updatedCategory = updateCategory.getText() != null ? updateCategory.getText()
                   : bookk.getCategories();
-              Book temp2;
-              temp2 = switch (updatedCategory) {
-                case "Art" -> new ArtBook(id, title, author, isbn, available, description, imageUrl, qrCode);
-                case "TechnologyBook" ->
-                  new TechnologyBook(id, title, author, isbn, available, description, imageUrl, qrCode);
-                case "Science" -> new ScienceBook(id, title, author, isbn, available, description, imageUrl, qrCode);
-                case "Computer" -> new ComputerBook(id, title, author, isbn, available, description, imageUrl, qrCode);
-                case "HistoryBook" ->
-                  new HistoryBook(id, title, author, isbn, available, description, imageUrl, qrCode);
-                case "EBook" -> new ConcreteBook(id, title, author, isbn, available, description, imageUrl, qrCode);
-                case "Thesis" -> new ThesisBook(id, title, author, isbn, available, description, imageUrl, qrCode);
-                default -> new ConcreteBook(id, title, author, isbn, available, description, imageUrl, qrCode);
-              };
+              Book temp2 = new ConcreteBook(id, title, author, isbn, available, description, imageUrl, qrCode);
+              temp2.setCategories(updatedCategory);
               bookDAO.updateBook(temp2);
             } catch (Exception ex) {
               Logger.getLogger(BookDetailController.class.getName())
@@ -503,10 +485,11 @@ public class AdminController extends DashController implements Initializable {
   // Add a button for logout
 
   @FXML
-  private void handleAddBook() throws SQLException {
+  private void handleAddBook() throws SQLException, InterruptedException {
     String title = bookTitleField.getText();
     String authorName = bookAuthorField.getText();
     String isbn = bookISBNField.getText();
+    int available = 1;
     String category = bookCategoryField.getText();
     String description = "";
     // Kiểm tra đầu vào
@@ -515,19 +498,13 @@ public class AdminController extends DashController implements Initializable {
       return;
     }
 
+    Book checkBook = BookDAO.getBookDAO().getBookByISBN(isbn);
     // Thêm sách vào danh sách
-
-    Book temp2;
-    temp2 = switch (category) {
-      case "Art" -> new ArtBook(0, title, authorName, isbn, true, description, null, null);
-      case "TechnologyBook" -> new TechnologyBook(0, title, authorName, isbn, true, description, null, null);
-      case "Science" -> new ScienceBook(0, title, authorName, isbn, true, description, null, null);
-      case "Computer" -> new ComputerBook(0, title, authorName, isbn, true, description, null, null);
-      case "HistoryBook" -> new HistoryBook(0, title, authorName, isbn, true, description, null, null);
-      case "EBook" -> new ConcreteBook(0, title, authorName, isbn, true, description, null, null);
-      case "Thesis" -> new ThesisBook(0, title, authorName, isbn, true, description, null, null);
-      default -> new ConcreteBook(0, title, authorName, isbn, true, description, null, null);
-    };
+    if (checkBook != null) {
+      available += checkBook.isAvailable();
+    }
+    Book temp2 = new ConcreteBook(0, title, authorName, isbn, available, description, null, null);
+    temp2.setCategories(category);
     bookList.add(temp2);
     BookDAO bookDAO = BookDAO.getBookDAO();
     bookDAO.addBook(temp2);
@@ -641,5 +618,37 @@ public class AdminController extends DashController implements Initializable {
     } catch (SQLException e) {
       e.printStackTrace();
     }
+  }
+
+  protected void handleSearchBookGG(String bookTitle, TableView<Book> tableView) {
+    Task<ObservableList<Book>> task =
+        new Task<ObservableList<Book>>() {
+          @Override
+          protected ObservableList<Book> call() throws Exception {
+            ObservableList<Book> foundBooks = FXCollections.observableArrayList();
+            // Tìm kiếm theo tiêu đề
+            if (!bookTitle.isEmpty()) {
+              foundBooks.addAll(bookController.searchBookByTitleMaxResult(bookTitle, 20));
+            }
+            Thread.sleep(500);
+            return foundBooks;
+          }
+          @Override
+          protected void succeeded() {
+            super.succeeded();
+            Platform.runLater(
+                () -> {
+                  tableView.setItems(getValue());
+                  loading.setVisible(false);
+                });
+          }
+          @Override
+          protected void failed() {
+            loading.setVisible(false);
+            super.failed();
+          }
+        };
+    // Chạy task trong một luồng riêng
+    new Thread(task).start();
   }
 }

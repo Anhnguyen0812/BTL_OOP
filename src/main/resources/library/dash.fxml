@@ -501,6 +501,7 @@
             <Pane fx:id="settings" layoutX="170.0" layoutY="80.0" prefHeight="630.0" prefWidth="1100.0" styleClass="PaneIn" visible="false" />
             <Pane fx:id="subUser" layoutX="180.0" layoutY="430.0" prefHeight="270.0" prefWidth="343.0" style="-fx-background-color: EBEBEB; -fx-background-radius: 10; -fx-border-radius: 10;" visible="false">
                <children>
+                  <Button fx:id="changepass" layoutX="10.0" layoutY="175.0" prefHeight="30.0" prefWidth="189.0" text="change password" />
                   <Button fx:id="logOut1" layoutX="122.0" mnemonicParsing="false" onAction="#handleSaveImage" prefHeight="60.0" prefWidth="175.0" styleClass="transparent" text="User name">
                      <font>
                         <Font name="Segoe UI Bold" size="13.0" />
@@ -521,12 +522,12 @@
                         <Font name="Segoe UI Black" size="12.0" />
                      </font>
                   </Button>
-                  <TextFlow layoutX="29.0" layoutY="49.0" prefHeight="20.0" prefWidth="197.0">
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-                     </children>
-                  </TextFlow>
+                   <TextFlow fx:id="changepassword" layoutX="29.0" layoutY="49.0" prefHeight="20.0" prefWidth="197.0" />
                   <TextFlow layoutX="28.0" layoutY="82.0" prefHeight="25.0" prefWidth="197.0" />
+                  <Label fx:id="iduser" layoutX="10.0" layoutY="55.0" prefHeight="30.0" prefWidth="75.0" text="iduser" />
+                  <Label fx:id="username" layoutX="10.0" layoutY="95.0" prefHeight="30.0" prefWidth="200.0" text="username" />
+                  <Label fx:id="email" layoutX="10.0" layoutY="135.0" prefHeight="30.0" prefWidth="250.0" text="email" />
+                  
                </children>
             </Pane>
             <Pane fx:id="noti" layoutX="866.0" layoutY="87.0" prefHeight="362.0" prefWidth="394.0" visible="false">
@@ -543,6 +544,21 @@
                   <Font name="System Bold" size="10.0" />
                </font>
             </Label>
+            <Pane fx:id="boxchange" layoutX="442.0" layoutY="207.0" prefHeight="341.0" prefWidth="499.0" style="-fx-background-color: EBEBEB; -fx-background-radius: 10; -fx-border-radius: 10;" visible="false">
+               <children>
+                  <Label fx:id="old" layoutX="415.0" layoutY="25.0" prefHeight="35.0" prefWidth="80.0" text="wrong!" textFill="RED" visible="false" />
+                  <Label fx:id="neww" layoutX="415.0" layoutY="100.0" prefHeight="35.0" prefWidth="80.0" text="exsited!" textFill="RED" visible="false" />
+                  <Label layoutX="10.0" layoutY="175.0" prefHeight="35.0" prefWidth="142.0" text="Verify password" textFill="#030303" />
+                  <Label layoutX="10.0" layoutY="100.0" prefHeight="35.0" prefWidth="115.0" text="New password" />
+                  <Label layoutX="10.0" layoutY="25.0" prefHeight="35.0" prefWidth="115.0" text="Old password" />
+                  <TextField fx:id="newpass" layoutX="150.0" layoutY="100.0" prefHeight="35.0" prefWidth="240.0" promptText="enter new password" />
+                  <Button fx:id="save" layoutX="358.0" layoutY="273.0" mnemonicParsing="false" onAction="#changePassword" prefHeight="37.0" prefWidth="107.0" text="Save" />
+                  <TextField fx:id="verifypass" layoutX="150.0" layoutY="175.0" prefHeight="35.0" prefWidth="240.0" promptText="enter password again" />
+                  <TextField fx:id="oldpass" layoutX="150.0" layoutY="25.0" prefHeight="35.0" prefWidth="240.0" promptText="enter old password" />
+                  <Button fx:id="cancel" layoutX="467.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="32.0" text="X" textFill="RED" onAction="#gotoChangePass"/>
+                  <Label fx:id="verify" layoutX="415.0" layoutY="175.0" prefHeight="35.0" prefWidth="80.0" text="incorrect!" textFill="RED" visible="false" />
+               </children>
+            </Pane>
          </children>
       </Pane>
    </children>

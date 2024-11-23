@@ -28,7 +28,7 @@ public class BookDAOTest {
 
     @Test
     public void testAddBook() throws SQLException {
-        Book book = new ConcreteBook(0, "Test Book", "Author", "1234567890123", true, "Description", "http://example.com/image.jpg", "QRCODE");
+        Book book = new ConcreteBook(0, "Test Book", "Author", "1234567890123", 1, "Description", "http://example.com/image.jpg", "QRCODE");
         bookDAO.addBook(book);
         assertTrue(bookDAO.isbnExists(book.getIsbn()), "Book should exist in the database after adding");
     }
@@ -41,17 +41,17 @@ public class BookDAOTest {
         assertEquals(isbn, book.getIsbn(), "ISBN should match");
     }
 
-    // @Test
-    // public void testUpdateBook() throws SQLException {
-    //     Book book = new ConcreteBook(1, "Updated Book", "Updated Author", "1234567890123", true, "Updated Description", "http://example.com/updated.jpg", "UPDATED_QRCODE");
-    //     bookDAO.updateBook(book);
-    //     Book updatedBook = bookDAO.getBookById(book.getId());
-    //     assertEquals("Updated Book", updatedBook.getTitle(), "Title should be updated");
-    // }
+    @Test
+    public void testUpdateBook() throws SQLException {
+        Book book = new ConcreteBook(1, "Updated Book", "Updated Author", "1234567890123", 1, "Updated Description", "http://example.com/updated.jpg", "UPDATED_QRCODE");
+        bookDAO.updateBook(book);
+        Book updatedBook = bookDAO.getBookById(book.getId());
+        assertEquals("Updated Book", updatedBook.getTitle(), "Title should be updated");
+    }
 
     @Test
     public void testDeleteBook() throws SQLException {
-        Book book = new ConcreteBook(2, "Book to Delete", "Author", "1234567890123", true, "Description", "http://example.com/image.jpg", "QRCODE");
+        Book book = new ConcreteBook(2, "Book to Delete", "Author", "1234567890123", 1, "Description", "http://example.com/image.jpg", "QRCODE");
         bookDAO.addBook(book);
         int idToDelete = book.getId();
         bookDAO.deleteBook(idToDelete);
@@ -69,7 +69,7 @@ public class BookDAOTest {
         Book book = bookDAO.getBookById(128); // Assuming a book with ID 1 exists
         boolean borrowed = bookDAO.borrowBook(book);
         assertTrue(borrowed, "Book should be available for borrowing");
-        assertFalse(bookDAO.getBookById(book.getId()).isAvailable(), "Book should not be available after borrowing");
+        assertFalse(bookDAO.getBookById(book.getId()).isAvailable() == 1, "Book should not be available after borrowing");
     }
 
     @Test
@@ -78,7 +78,7 @@ public class BookDAOTest {
         bookDAO.borrowBook(book); // Borrow the book first
         boolean returned = bookDAO.returnBook(book);
         assertTrue(returned, "Book should be returned successfully");
-        assertTrue(bookDAO.getBookById(book.getId()).isAvailable(), "Book should be available after returning");
+        assertTrue(bookDAO.getBookById(book.getId()).isAvailable() == 1, "Book should be available after returning");
     }
 
     @Test
