@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+
 import javafx.application.HostServices;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -39,7 +40,7 @@ public class UserController {
 
   private final BookService bookService =
       new BookService(BookDAO.getBookDAO()); // Giả định đã có service xử lý logic mượn sách
-  private BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO(connection.getConnection());
+  private BorrowRecordDAO borrowRecordDAO = BorrowRecordDAO.getBorrowRecordDAO();
   private BookDAO bookDAO = BookDAO.getBookDAO();
   private BookController bookController = new BookController();
   private LocalDate today = LocalDate.now();

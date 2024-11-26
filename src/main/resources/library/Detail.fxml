@@ -112,9 +112,7 @@
                </children>
             </VBox>
          </content>
-      </ScrollPane>
-      <Button layoutX="942.0" layoutY="322.0" mnemonicParsing="false" text="Return" />
-      <Button layoutX="834.0" layoutY="322.0" mnemonicParsing="false" text="Borrow" />    
+      </ScrollPane>    
       <ImageView fx:id="qrCodeImageView" fitHeight="100.0" fitWidth="100.0" layoutX="968.0" layoutY="44.0" pickOnBounds="true" preserveRatio="true" />
       <Label layoutX="481.0" layoutY="2.0" prefHeight="25.0" prefWidth="139.0" text="DETAIL BOOK" textFill="#b54c4c">
          <font>

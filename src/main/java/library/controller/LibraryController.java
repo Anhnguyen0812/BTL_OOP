@@ -12,7 +12,6 @@ import javafx.scene.control.TextField;
 import library.api.GoogleBooksAPI;
 import library.dao.BookDAO;
 import library.dao.BorrowRecordDAO;
-import library.dao.UserDAO;
 import library.model.Book;
 import library.model.User;
 import library.service.BookService;
@@ -48,7 +47,7 @@ public class LibraryController {
   public LibraryController() {
     this.userService = new UserService();
     this.bookService = new BookService(BookDAO.getBookDAO());
-    this.borrowService = new BorrowService(new BorrowRecordDAO(connection.getConnection()), BookDAO.getBookDAO());
+    this.borrowService = new BorrowService(BorrowRecordDAO.getBorrowRecordDAO(), BookDAO.getBookDAO());
     this.googleBooksAPI = new GoogleBooksAPI();
   }
 

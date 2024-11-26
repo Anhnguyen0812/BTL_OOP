@@ -5,6 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,6 +65,7 @@ import library.model.User;
 import library.service.UserService;
 import library.dao.AllDao;
 import library.dao.BookReviewDAO;
+import library.dao.BorrowRecordDAO;
 
 public class DashController {
 
@@ -116,7 +118,7 @@ public class DashController {
 
   @FXML private Label neww, old, verify;
   @FXML private TextField newpass, oldpass, verifypass;
-  @FXML private Button changepass, assessment;
+  @FXML private Button changepass, assessment, returnBook, borrowBook;
   @FXML private Pane boxchange;
 
   @FXML
@@ -155,7 +157,7 @@ public class DashController {
   List<Book> booksTop;
   List<Book> booksNew;
   List<Book> booksRecent;
-  protected BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO();
+  protected BorrowRecordDAO borrowRecordDAO = BorrowRecordDAO.getBorrowRecordDAO();
   protected User user;
   protected HostServices hostServices;
   protected BookDAO bookDAO = BookDAO.getBookDAO();
@@ -382,7 +384,7 @@ public class DashController {
         GridPane.setMargin(bookItem, new Insets(5)); // Add margin of 5px between items
         bookItem.setOnMouseClicked(event -> {
           if (event.getClickCount() == 2) {
-            showBookDetails(book, false);
+            showBookDetails(book,false, false, null);
           }
         });
       } catch (IOException e) {
@@ -433,7 +435,7 @@ public class DashController {
         GridPane.setMargin(bookItem, new Insets(5)); // Add margin of 5px between items
         bookItem.setOnMouseClicked(event -> {
           if (event.getClickCount() == 2) {
-            showBookDetails(record.getBook(), true);
+            showBookDetails(record.getBook(), true, false, record);
           }
         });
 
@@ -665,7 +667,7 @@ public class DashController {
 
           bookItem.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
-              showBookDetails(book, false);
+              showBookDetails(book, false, isGoogle, null);
             }
           });
 
@@ -749,7 +751,7 @@ public class DashController {
     }
   }
 
-  public void showBookDetails(Book book, boolean checkBorrowed) {
+  public void showBookDetails(Book book, boolean checkBorrowed, boolean isGoogle, BorrowRecord record) {
     try {
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Detail.fxml"));
       Pane bookDetailPane = loader.load();
@@ -778,13 +780,25 @@ public class DashController {
       bookDetailPane.setLayoutY(80); // Set Y coordinate
       
       pane.getChildren().add(bookDetailPane);
-      System.out.println(checkBorrowed);
+      // dang duoc muon
       if (checkBorrowed) {
         bookDetailPane.getChildren().add(assessment);
+        bookDetailPane.getChildren().add(returnBook);
         assessment.setLayoutX(720);
         assessment.setLayoutY(322);
         assessment.setVisible(true);
-
+        returnBook.setVisible(true);
+        returnBook.setOnAction(event -> {
+            borrowRecordDAO.addResquestReturnRecord(record);
+            notiDAO = NotiDAO.geNotiDAO();
+            try {
+                notiDAO.addNotificationFromUserToAdmin(1,
+                        "User " + user.getId() + ", Name: " + user.getName() + " return book " + book.getTitle());
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+            returnBook.setVisible(true);
+        });
         addComment.setOnAction(event -> {
           String commentText = comment.getText();
           Canvas[] stars = { star1, star2, star3, star4, star5 };
@@ -808,6 +822,23 @@ public class DashController {
           }
         });
       }
+      else if (!isGoogle) {
+        bookDetailPane.getChildren().add(borrowBook);
+        borrowBook.setVisible(true);
+        borrowBook.setOnAction(borrowEvent -> {
+            BorrowRecord borrowRecord = new BorrowRecord(1, user, book, LocalDate.now(), null);
+            borrowRecordDAO.addResquestBorrowRecord(borrowRecord);
+            borrowBook.setVisible(false);
+            NotiDAO notiDAO = NotiDAO.geNotiDAO();
+            try {
+                notiDAO.addNotificationFromUserToAdmin(1,
+                        "User " + user.getId() + ", Name: " + user.getName() + " request to borrow book "
+                                + book.getTitle());
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        });
+      }
       
       Button closeButton = new Button("X");
       closeButton.setStyle("-fx-background-color: red; -fx-text-fill: white; -fx-font-weight: bold;");
@@ -820,6 +851,8 @@ public class DashController {
         settings.setEffect(null);
         isHomeTop = true;
         assessment.setVisible(false);
+        returnBook.setVisible(false);
+        borrowBook.setVisible(false);
       });
       bookDetailPane.getChildren().add(closeButton);
       closeButton.setLayoutX(1050);

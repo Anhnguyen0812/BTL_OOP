@@ -14,8 +14,6 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -24,7 +22,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.util.Duration;
 import library.dao.BookDAO;
 import library.dao.BorrowRecordDAO;
 import library.model.Book;
@@ -70,7 +67,7 @@ public class BookDetailController {
   private static User user1;
   private static Book bookk;
   private BorrowRecord record;
-  private BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO();
+  private BorrowRecordDAO borrowRecordDAO = BorrowRecordDAO.getBorrowRecordDAO();
   private LocalDate today = LocalDate.now();
   private BookDAO bookDAO = BookDAO.getBookDAO();
 

@@ -30,13 +30,17 @@ public class BorrowRecordDAO {
 
   private Connection connection;
   private BookDAO bookDAO = BookDAO.getBookDAO();
+  private static BorrowRecordDAO instance;
 
-  public BorrowRecordDAO() {
-    this.connection = DBConnection.getInstance().getConnection();
+  private BorrowRecordDAO () {
+    connection = DBConnection.getInstance().getConnection();
   }
 
-  public BorrowRecordDAO(Connection connection) {
-    this.connection = connection;
+  public static BorrowRecordDAO getBorrowRecordDAO() {
+    if (instance == null) {
+      instance = new BorrowRecordDAO();
+    }
+    return instance;
   }
 
   // Thêm bản ghi mượn sách
