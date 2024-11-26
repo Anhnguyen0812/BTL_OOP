@@ -5,6 +5,8 @@
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -16,7 +18,6 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.TextFlow?>
 
 <StackPane prefHeight="616.0" prefWidth="919.0" stylesheets="@../styles/Admin.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
     <AnchorPane fx:id="origin" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="619.0" prefWidth="919.0" stylesheets="@../styles/Admin.css">
@@ -67,11 +68,17 @@
                 <Pane fx:id="manageBooksPane" prefHeight="543.0" prefWidth="738.0" style="-fx-padding: 20px;" visible="false">
                         <Label prefHeight="40.0" prefWidth="335.0" styleClass="section-title" text="Manage Books" />
                         <HBox layoutX="-1.0" layoutY="41.0" prefHeight="49.0" prefWidth="780.0" spacing="10.0">
-                            <TextField fx:id="bookTitleField" promptText="Book Title" />
-                            <TextField fx:id="bookAuthorField" promptText="Author Name" />
-                            <TextField fx:id="bookISBNField" promptText="ISBN" />
-                            <TextField fx:id="bookCategotyField" promptText="Category" />
-                            <Button fx:id="addBookButton" onAction="#handleAddBook" prefHeight="32.0" prefWidth="131.0" text="Add Book" />
+                  <children>
+                     <MenuButton fx:id="bookField" mnemonicParsing="false" prefHeight="33.0" prefWidth="137.0" text="MenuButton">
+                       <items>
+                         <MenuItem mnemonicParsing="false" text="Action 1" />
+                         <MenuItem mnemonicParsing="false" text="Action 2" />
+                       </items>
+                     </MenuButton>
+                     <TextField fx:id="contentsearchbook" prefHeight="40.0" prefWidth="324.0" promptText="input" />
+                     <Button fx:id="searchLib" mnemonicParsing="false" prefHeight="34.0" prefWidth="127.0" text="Search Lib" />
+                     <Button fx:id="addBook" mnemonicParsing="false" prefHeight="38.0" prefWidth="135.0" text="Add Book" onAction="#gotoAddBook" />
+                  </children>
                         </HBox>
                         <TableView fx:id="bookTable" layoutX="-1.0" layoutY="90.0" prefHeight="267.0" prefWidth="770.0">
                             <columns>
@@ -93,15 +100,17 @@
                 <Pane fx:id="manageUsersPane" style="-fx-padding: 20px;" visible="false">
                     <VBox layoutY="-2.0" prefHeight="583.0" prefWidth="771.0" spacing="10.0">
                         <Label prefHeight="47.0" prefWidth="161.0" styleClass="section-title" text="Manage Users" />
-                        <HBox prefHeight="58.0" prefWidth="771.0" spacing="10.0">
-                     <TextFlow fx:id="searchField" prefHeight="26.0" prefWidth="164.0">
-                        <children>
-                          
-                        </children>
-                    </TextFlow>
-                     <TextField fx:id="infoUser" prefHeight="26.0" prefWidth="314.0" promptText="infoUser" />
-                     <Button fx:id="searchUser" mnemonicParsing="false" onAction="#searchUser" prefHeight="26.0" prefWidth="99.0" text="Search" />
-                     <Button fx:id="AU" mnemonicParsing="false" prefHeight="26.0" prefWidth="93.0" text="Add User" />
+                        <HBox prefHeight="47.0" prefWidth="772.0" spacing="10.0">
+                     <MenuButton fx:id="searchField" mnemonicParsing="false" prefHeight="38.0" prefWidth="140.0" text="Username">
+                       <items>
+                         <MenuItem mnemonicParsing="false" text="Email" />
+                         <MenuItem mnemonicParsing="false" text="Iduser" />
+                           <MenuItem mnemonicParsing="false" text="All" />
+                       </items>
+                     </MenuButton>
+                     <TextField fx:id="infoUser" prefHeight="41.0" prefWidth="315.0" promptText="infoUser" />
+                     <Button fx:id="searchUser" mnemonicParsing="false" onAction="#searchUser" prefHeight="35.0" prefWidth="110.0" text="Search" />
+                     <Button fx:id="AU" mnemonicParsing="false" prefHeight="35.0" prefWidth="106.0" text="Add User" />
                         </HBox>
                         <TableView fx:id="userTable" prefHeight="460.0" prefWidth="770.0">
                             <columns>
@@ -202,12 +211,31 @@
       <Pane fx:id="detailUser" layoutX="315.0" layoutY="182.0" prefHeight="285.0" prefWidth="400.0" visible="false">
          <children>
             <Label fx:id="iduser" layoutX="30.0" layoutY="30.0" prefHeight="30.0" prefWidth="250.0" text="id :" />
-            <Button layoutX="342.0" layoutY="-2.0" minWidth="36.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="45.0" text="X" onAction="#xoalammo" />
+            <Button layoutX="342.0" layoutY="-2.0" minWidth="36.0" mnemonicParsing="false" onAction="#xoalammo" prefHeight="30.0" prefWidth="45.0" text="X" />
             <Label fx:id="username" layoutX="30.0" layoutY="80.0" prefHeight="30.0" prefWidth="250.0" text="username :" />
             <Label fx:id="email" layoutX="30.0" layoutY="130.0" prefHeight="30.0" prefWidth="250.0" text="email :" />
             <Label fx:id="newpassword" layoutX="214.0" layoutY="235.0" prefHeight="30.0" prefWidth="155.0" visible="fasle" />
             <Button fx:id="create" layoutX="30.0" layoutY="235.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="30.0" prefWidth="164.0" text="create new Password" />
             <Label fx:id="totalbook" layoutX="30.0" layoutY="180.0" prefHeight="30.0" prefWidth="250.0" text="Total Borrow Book :" />
+         </children>
+      </Pane>
+      <Pane fx:id="paneUB" layoutX="227.0" layoutY="130.0" prefHeight="392.0" prefWidth="526.0" visible="false">
+         <children>
+            <TextField layoutX="228.0" layoutY="213.0" promptText="Description" />
+            <TextField fx:id="bookCategotyField" layoutX="228.0" layoutY="169.0" prefHeight="27.0" prefWidth="201.0" promptText="Category" />
+            <TextField fx:id="bookAuthorField" layoutX="228.0" layoutY="76.0" prefHeight="27.0" prefWidth="201.0" promptText="Author Name" />
+            <TextField fx:id="bookTitleField" layoutX="228.0" layoutY="34.0" prefHeight="27.0" prefWidth="201.0" promptText="Book Title" />
+            <TextField fx:id="bookISBNField" layoutX="228.0" layoutY="124.0" prefHeight="27.0" prefWidth="201.0" promptText="ISBN" />
+            <Button fx:id="addBookButton" layoutX="372.0" layoutY="343.0" onAction="#handleAddBook" prefHeight="35.0" prefWidth="140.0" text="Add Book" />
+            <Button layoutX="499.0" layoutY="1.0" mnemonicParsing="false" text="X" textFill="RED" onAction="#gotoAddBook" />
+            <TextField layoutX="228.0" layoutY="256.0" text="ImageUrl" />
+            <TextField layoutX="228.0" layoutY="295.0" />
+            <Label layoutX="31.0" layoutY="39.0" text="Label" />
+            <Label layoutX="31.0" layoutY="68.0" text="Label" />
+            <Label layoutX="38.0" layoutY="129.0" text="Label" />
+            <Label layoutX="38.0" layoutY="174.0" text="Label" />
+            <Label layoutX="46.0" layoutY="213.0" text="Label" />
+            <Label layoutX="46.0" layoutY="261.0" text="Label" />
          </children>
       </Pane>
 

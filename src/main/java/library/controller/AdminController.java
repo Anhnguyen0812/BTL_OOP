@@ -26,6 +26,7 @@ import javafx.scene.Parent;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -122,7 +123,7 @@ public class AdminController extends DashController implements Initializable {
   protected TableColumn<BorrowRecord, String> Username;
 
   @FXML
-  private Pane paneAU;
+  private Pane paneAU, paneAB;
   @FXML
   private Button AU;
 
@@ -260,25 +261,25 @@ public class AdminController extends DashController implements Initializable {
 
     borrowRecord.setOnMouseClicked(
         event -> {
-          if (event.getClickCount() == 2) { // Kiểm tra nhấp đúp
-            BorrowRecord record = borrowRecord.getSelectionModel().getSelectedItem();
-            if (record != null) {
-              infoBook.getChildren().clear();
-
-              // Sử dụng CompletableFuture để tải dữ liệu trong một luồng nền
-              CompletableFuture.runAsync(() -> {
-                BookDetailController detailController = new BookDetailController();
-                try {
-                  Parent bookDetailParent = detailController.infoBorrow(record.getBook(), record.getUser(), record);
-                  // Cập nhật giao diện trong luồng JavaFX
-                  Platform.runLater(() -> {
-                    infoBook.getChildren().add(bookDetailParent);
+            if (event.getClickCount() == 2) { // Kiểm tra nhấp đúp
+              BorrowRecord record = borrowRecord.getSelectionModel().getSelectedItem();
+              if (record != null) {
+                  infoBorrow.getChildren().clear();
+                  System.out.println(record.getBook().getId());
+                  // Sử dụng CompletableFuture để tải dữ liệu trong một luồng nền
+                  CompletableFuture.runAsync(() -> {
+                      BookDetailController detailController = new BookDetailController();
+                      try {
+                          Parent bookDetailParent = detailController.infoBorrow(record.getBook(), record.getUser(), record);
+                          // Cập nhật giao diện trong luồng JavaFX
+                          Platform.runLater(() -> {
+                            infoBorrow.getChildren().add(bookDetailParent);
+                          });
+                      } catch (IOException e) {
+                          Platform.runLater(() -> showAlert("Error", "Could not load book details."));
+                      }
                   });
-                } catch (IOException e) {
-                  Platform.runLater(() -> showAlert("Error", "Could not load book details."));
-                }
-              });
-            }
+              }
           }
         });
 
@@ -483,6 +484,16 @@ public class AdminController extends DashController implements Initializable {
   }
   // Xử lý sự kiện đăng xuất
   // Add a button for logout
+  @FXML
+  private void gotoAddBook() {
+    if (paneAB.visibleProperty().get()) {
+      paneAB.setVisible(false);
+      manageBooksPane.setEffect(null);
+    } else {
+      paneAB.setVisible(true);
+      manageBooksPane.setEffect(blur);
+    }
+  }
 
   @FXML
   private void handleAddBook() throws SQLException, InterruptedException {
@@ -580,7 +591,6 @@ public class AdminController extends DashController implements Initializable {
     updateB.setStyle("-fx-background-color-:rgb(165, 190, 67);");
     updateB.setVisible(true);
     updateB.getStyleClass().add("pane-background");
-
     // manageBooksPane.setStyle("-fx-background-color-: rgba(157, 146, 146, 0.5);");
     manageBooksPane.setEffect(blur);
   }
@@ -598,21 +608,23 @@ public class AdminController extends DashController implements Initializable {
   @FXML
   private TextField infoUser;
   @FXML
-  private TextFlow searchField;
+  private MenuButton searchField;
 
   @FXML
   private void searchUser() {
     String info = infoUser.getText();
-    String search = searchField.getChildren().toString();
+    String search = searchField.getText();
     try {
       userList.clear();
       if (search.equals("Username")) {
         userList.setAll(UserDAO.getUserByName(info));
       } else if (search.equals("Email")) {
         userList.setAll(UserDAO.getUserByEmail(info));
-      } else {
+      } else if (search.equals("Iduser")) {
         UserDAO userDAO = UserDAO.getUserDAO();
         userList.setAll(userDAO.getUserById(Integer.parseInt(info)));
+      } else {
+        userList.setAll(UserDAO.getAllUsers());
       }
       userTable.setItems(userList);
     } catch (SQLException e) {

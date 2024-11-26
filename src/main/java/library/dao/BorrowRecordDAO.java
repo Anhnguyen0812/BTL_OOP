@@ -238,7 +238,9 @@ public class BorrowRecordDAO {
         UserService userService = new UserService();
         User user = userService.getUserById(userId); // Phương thức giả định
         Book book = bookDAO.getBookById(bookId); // Phương thức giả định
-
+        if (user == null || book == null) {
+          continue;
+        }
         int recordId = rs.getInt("id");
         BorrowRecord record = new BorrowRecord(recordId, user, book, borrowDate, returnDate);
         records.add(record);

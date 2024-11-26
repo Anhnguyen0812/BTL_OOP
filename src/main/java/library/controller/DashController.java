@@ -33,6 +33,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.StackedAreaChart;
 import javafx.scene.control.Button;
@@ -48,6 +50,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import library.dao.BookDAO;
@@ -60,6 +63,7 @@ import library.model.ImageHandler;
 import library.model.User;
 import library.service.UserService;
 import library.dao.AllDao;
+import library.dao.BookReviewDAO;
 
 public class DashController {
 
@@ -73,16 +77,6 @@ public class DashController {
 
   @FXML
   private Pane home, books, issueBooks, returnBooks, settings, noti, subUser, pane;
-  @FXML
-  private TableColumn<Book, Integer> Id;
-  @FXML
-  private TableColumn<Book, String> Title;
-  @FXML
-  private TableColumn<Book, String> Author;
-  @FXML
-  private TableColumn<Book, String> ISBN;
-  @FXML
-  private TableColumn<?, ?> Available;
 
   @FXML
   protected TableColumn<BorrowRecord, Integer> Id_Book;
@@ -122,7 +116,7 @@ public class DashController {
 
   @FXML private Label neww, old, verify;
   @FXML private TextField newpass, oldpass, verifypass;
-  @FXML private Button changepass;
+  @FXML private Button changepass, assessment;
   @FXML private Pane boxchange;
 
   @FXML
@@ -146,6 +140,15 @@ public class DashController {
   @FXML
   private ScrollPane featuredScrollPane;
 
+  @FXML
+  private Canvas star1, star2, star3, star4, star5;
+  @FXML
+  private TextField comment;
+  @FXML
+  private Button addComment, closeCommentPane;
+  @FXML
+  private Pane commentPane;
+
   public static final int MAX_COLUMN_RESULTS = 150;
   public static final int MAX_RESULTS_EACH_TIME = 20;
   private boolean isScrolling = false;
@@ -158,8 +161,9 @@ public class DashController {
   protected BookDAO bookDAO = BookDAO.getBookDAO();
   private NotiDAO notiDAO = NotiDAO.geNotiDAO();
   protected final BookController bookController = new BookController();
+  private BookReviewDAO bookReviewDAO = BookReviewDAO.getBookReviewDao();
 
-  double scrollSpeed = 2; // Tốc độ cuộn (pixels/giây)
+  double scrollSpeed = 1; // Tốc độ cuộn (pixels/giây)
 
   boolean isHomeTop = true;
 
@@ -220,9 +224,9 @@ public class DashController {
     returnChoice.setValue("Borrowed");
 
     // get Lib Info
-    int totalBooks = allDao.getTotalBooks();
-    int totalUsers = allDao.getTotalUsers();
-    int totalBorrowRecords = allDao.getTotalBorrowRecords();
+    int totalBooks = bookDAO.getAllBooks().size();
+    int totalUsers = UserService.getAllUsers().size();
+    int totalBorrowRecords = borrowRecordDAO.getAllBorrowRecords().size();
 
     // Set up PieChart
     ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
@@ -342,6 +346,10 @@ public class DashController {
       }
     });
 
+    closeCommentPane.setOnAction(event -> {
+      commentPane.setVisible(false);
+    });
+
   }
 
   public void setFeaturedBooks(List<Book> booksTop) {
@@ -374,7 +382,7 @@ public class DashController {
         GridPane.setMargin(bookItem, new Insets(5)); // Add margin of 5px between items
         bookItem.setOnMouseClicked(event -> {
           if (event.getClickCount() == 2) {
-            showBookDetails(book);
+            showBookDetails(book, false);
           }
         });
       } catch (IOException e) {
@@ -398,7 +406,6 @@ public class DashController {
     j = k;
     int column = j % 2;
     int row = j / 2 + 1;
-
     for (; j < borrowRecords.size() + 1; j++) {
       try {
 
@@ -426,7 +433,7 @@ public class DashController {
         GridPane.setMargin(bookItem, new Insets(5)); // Add margin of 5px between items
         bookItem.setOnMouseClicked(event -> {
           if (event.getClickCount() == 2) {
-            showBookDetails(record.getBook());
+            showBookDetails(record.getBook(), true);
           }
         });
 
@@ -658,7 +665,7 @@ public class DashController {
 
           bookItem.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
-              showBookDetails(book);
+              showBookDetails(book, false);
             }
           });
 
@@ -742,7 +749,7 @@ public class DashController {
     }
   }
 
-  public void showBookDetails(Book book) {
+  public void showBookDetails(Book book, boolean checkBorrowed) {
     try {
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Detail.fxml"));
       Pane bookDetailPane = loader.load();
@@ -769,8 +776,39 @@ public class DashController {
       }
       bookDetailPane.setLayoutX(170); // Set X coordinate
       bookDetailPane.setLayoutY(80); // Set Y coordinate
+      
       pane.getChildren().add(bookDetailPane);
+      System.out.println(checkBorrowed);
+      if (checkBorrowed) {
+        bookDetailPane.getChildren().add(assessment);
+        assessment.setLayoutX(720);
+        assessment.setLayoutY(322);
+        assessment.setVisible(true);
 
+        addComment.setOnAction(event -> {
+          String commentText = comment.getText();
+          Canvas[] stars = { star1, star2, star3, star4, star5 };
+          int count = 0;
+          for (Canvas star : stars) {
+            GraphicsContext gc = star.getGraphicsContext2D();
+            if (isStarYellow(gc)) {
+              count++;
+            }
+          }
+          try {
+            boolean check = bookReviewDAO.getReviewBookByUser(user.getId(), book.getId());
+            if (check == false) {
+              bookReviewDAO.addReview(book.getId(), user.getId(), commentText, count);
+            } else {
+              bookReviewDAO.updateReview(user.getId(), book.getId(), commentText, count);
+            }
+          } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to handle book review.");
+          }
+        });
+      }
+      
       Button closeButton = new Button("X");
       closeButton.setStyle("-fx-background-color: red; -fx-text-fill: white; -fx-font-weight: bold;");
       closeButton.setOnAction(event -> {
@@ -781,6 +819,7 @@ public class DashController {
         returnBooks.setEffect(null);
         settings.setEffect(null);
         isHomeTop = true;
+        assessment.setVisible(false);
       });
       bookDetailPane.getChildren().add(closeButton);
       closeButton.setLayoutX(1050);
@@ -849,4 +888,52 @@ public class DashController {
       gotoHome();
     });
   }
+
+  @FXML
+  public void gotoAssessment() {
+    if (commentPane.isVisible()) {
+      commentPane.setVisible(false);
+    } else {
+      commentPane.setVisible(true);
+      commentPane.toFront();
+      Canvas[] stars = { star1, star2, star3, star4, star5 };
+          for (Canvas star : stars) {
+              GraphicsContext gc = star.getGraphicsContext2D();
+              gc.clearRect(0, 0, star.getWidth(), star.getHeight());
+              gc.setFill(Color.GRAY);
+              drawStar(gc, 15, 15, 15, Color.GRAY);
+              star.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2) {
+                      if (isStarYellow(gc)) {
+                          drawStar(gc, 15, 15, 15, Color.GRAY); // Chuyển thành màu xám
+                      } else {
+                          drawStar(gc, 15, 15, 15, Color.YELLOW); // Chuyển thành màu vàng
+                      }
+                }
+              });
+          }
+    }
+  }
+
+  private boolean isStarYellow(GraphicsContext gc) {
+    Color color = (Color) gc.getFill();
+    return color.equals(Color.YELLOW);
+}
+
+  private void drawStar(GraphicsContext gc, double x, double y, double radius, Color color) {
+    double innerRadius = radius / 2.5; // Bán kính bên trong ngôi sao
+    double[] xPoints = new double[10];
+    double[] yPoints = new double[10];
+    // Tính tọa độ các đỉnh của ngôi sao
+    for (int k = 0; k < 10; k++) {
+        double angle = Math.toRadians(-90 + k * 36); // Góc mỗi đỉnh (36 độ)
+        double r = (k % 2 == 0) ? radius : innerRadius; // Đỉnh ngoài hoặc trong
+        xPoints[k] = x + r * Math.cos(angle);
+        yPoints[k] = y + r * Math.sin(angle);
+    }
+    // Vẽ ngôi sao
+    gc.setFill(color);
+    gc.fillPolygon(xPoints, yPoints, 10);
+  }
+
 }
