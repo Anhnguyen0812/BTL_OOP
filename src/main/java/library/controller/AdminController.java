@@ -53,7 +53,7 @@ public class AdminController extends DashController implements Initializable {
 
   // Các trường nhập liệu cho quản lý sách
   @FXML
-  private TextField bookTitleField;
+  private TextField bookTitleField, descriptionField, linkImg, quantity;
   @FXML
   private TextField bookAuthorField;
   @FXML
@@ -500,9 +500,10 @@ public class AdminController extends DashController implements Initializable {
     String title = bookTitleField.getText();
     String authorName = bookAuthorField.getText();
     String isbn = bookISBNField.getText();
-    int available = 1;
+    int available = quantity.getText().isEmpty() ? 1 : Integer.parseInt(quantity.getText());
     String category = bookCategoryField.getText();
-    String description = "";
+    String description = descriptionField.getText();
+    String imageUrl = !linkImg.getText().isEmpty() ? linkImg.getText() : null;
     // Kiểm tra đầu vào
     if (title.isEmpty() || authorName.isEmpty()) {
       showAlert("Input Error", "All fields must be filled.");
@@ -514,7 +515,7 @@ public class AdminController extends DashController implements Initializable {
     if (checkBook != null) {
       available += checkBook.isAvailable();
     }
-    Book temp2 = new ConcreteBook(0, title, authorName, isbn, available, description, null, null);
+    Book temp2 = new ConcreteBook(0, title, authorName, isbn, available, description, imageUrl, null);
     temp2.setCategories(category);
     bookList.add(temp2);
     BookDAO bookDAO = BookDAO.getBookDAO();
@@ -524,6 +525,9 @@ public class AdminController extends DashController implements Initializable {
     bookAuthorField.clear();
     bookISBNField.clear();
     bookCategoryField.clear();
+    descriptionField.clear();
+    linkImg.clear();
+    quantity.clear();
   }
 
   public static String getSalt() throws NoSuchAlgorithmException {

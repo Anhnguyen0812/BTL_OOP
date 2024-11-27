@@ -5,13 +5,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import library.api.GoogleBooksAPI;
-import library.dao.BookDAO;
+import library.dao.BookReviewDAO;
 import library.model.Book;
 import library.model.ConcreteBook;
 import library.util.DBConnection;
@@ -22,6 +21,7 @@ public class BookController {
   // private ObservableList<Book> books = FXCollections.observableArrayList();
 
   private final DBConnection connection = DBConnection.getInstance();
+  private final BookReviewDAO bookReviewDAO = BookReviewDAO.getBookReviewDao();
 
   public BookController() {
     this.googleBooksAPI = new GoogleBooksAPI();
@@ -59,7 +59,8 @@ public class BookController {
           : null;
       String bookUrl = volumeInfo.has("infoLink") ? (String) volumeInfo.get("infoLink") : null;
       Double rateAvg = volumeInfo.has("averageRating") ? volumeInfo.getDouble("averageRating") : null;
-      Book temp = new ConcreteBook(0, title, authorName, isbn, 1, description, imageUrl, bookUrl, rateAvg);
+      Book temp = new ConcreteBook(-1, title, authorName, isbn, 1, description, imageUrl, bookUrl, rateAvg);
+      temp.setComment("not information detail");
       books.add(temp);
     }
 

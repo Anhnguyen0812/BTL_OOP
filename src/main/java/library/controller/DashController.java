@@ -189,6 +189,8 @@ public class DashController {
 
   public void initialize() throws SQLException {
 
+    borrowRecordDAO.deleteBorrowRecordbyId(257);
+
     // Set up title for table
     welcome.setText("Welcome " + user.getName() + "!");
     user_Button.setText(user.getName());

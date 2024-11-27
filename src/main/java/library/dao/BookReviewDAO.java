@@ -55,7 +55,7 @@ public class BookReviewDAO {
     }
 
     public Pair<String, Double> getReviewBook(int bookId) throws SQLException {
-        String query = "SELECT review, rate FROM book_review WHERE book_id = ? AND user_id = ?";
+        String query = "SELECT review, rate FROM book_review WHERE book_id = ? ORDER BY rate DESC";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, bookId);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -84,5 +84,18 @@ public class BookReviewDAO {
         preparedStatement.setInt(2, userId);
         ResultSet rs = preparedStatement.executeQuery();
         return rs.next();
+    }
+
+    public String getCommentBook(int bookId) throws SQLException {
+        String query = "SELECT review FROM book_review WHERE book_id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, bookId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            StringBuffer review = new StringBuffer();
+            while (resultSet.next()) {
+                review.append(resultSet.getString("review")).append(',');
+            }
+            return review.toString();
+        }
     }
 }

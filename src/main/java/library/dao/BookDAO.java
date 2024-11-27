@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import library.model.Book;
@@ -16,6 +17,7 @@ import library.util.DBConnection;
 public class BookDAO {
   private final Connection connection;
   private static BookDAO instance;
+  private final BookReviewDAO bookReviewDAO = BookReviewDAO.getBookReviewDao();
 
   private BookDAO() {
     this.connection = DBConnection.getInstance().getConnection();
@@ -81,17 +83,18 @@ public class BookDAO {
 
   public void addBook(Book book) throws SQLException {
 
-    String query = "INSERT INTO books (title, author, isbn, available, description, imageUrl, QRcode, categories) VALUES ("
-        + " ?, ?, ?, ?, ?, ?, ?, ?)";
+    String query = "INSERT INTO books (title, author, isbn, available, description, imageUrl, QRcode, categories, rate_avg) VALUES ("
+        + " ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     PreparedStatement stmt = connection.prepareStatement(query);
     stmt.setString(1, book.getTitle());
     stmt.setString(2, book.getAuthor());
     stmt.setString(3, book.getIsbn());
-    stmt.setBoolean(4, false);
+    stmt.setInt(4, book.isAvailable());
     stmt.setString(5, book.getDescription());
     stmt.setString(6, book.getImageUrl());
     stmt.setString(7, book.getQRcode());
     stmt.setString(8, book.getCategories());
+    stmt.setDouble(9, book.getRateAvg() != null ? book.getRateAvg() : 0.0);
     stmt.executeUpdate();
   }
 
@@ -126,10 +129,14 @@ public class BookDAO {
       String description = rs.getString("description");
       String imageUrl = rs.getString("imageUrl");
       String QRcode = rs.getString("QRcode");
-
       Book temp2;
       temp2 = new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
       temp2.setCategories(category);
+      String comment = bookReviewDAO.getCommentBook(id);
+      if (comment == null || comment.isEmpty()) {
+        comment = "Not yet comment";
+      }
+      temp2.setComment(comment);
       return temp2;
     }
     return null;
@@ -149,10 +156,14 @@ public class BookDAO {
       String description = rs.getString("description");
       String imageUrl = rs.getString("imageUrl");
       String QRcode = rs.getString("QRcode");
-
       Book temp2;
       temp2 = new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
       temp2.setCategories(category);
+      String comment = bookReviewDAO.getCommentBook(id);
+      if (comment == null || comment.isEmpty()) {
+        comment = "Not yet comment";
+      }
+      temp2.setComment(comment);
       return temp2;
     }
     return null;
@@ -173,10 +184,14 @@ public class BookDAO {
       String description = rs.getString("description");
       String imageUrl = rs.getString("imageUrl");
       String QRcode = rs.getString("QRcode");
-
       Book temp2;
       temp2 = new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
       temp2.setCategories(category);
+      String comment = bookReviewDAO.getCommentBook(id);
+      if (comment == null || comment.isEmpty()) {
+        comment = "Not yet comment";
+      }
+      temp2.setComment(comment);
       books.add(temp2);
     }
     return books;
@@ -207,10 +222,14 @@ public class BookDAO {
       String description = rs.getString("description");
       String imageUrl = rs.getString("imageUrl");
       String QRcode = rs.getString("QRcode");
-
       Book temp2;
       temp2 =  new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
       temp2.setCategories(category);
+      String comment = bookReviewDAO.getCommentBook(id);
+      if (comment == null || comment.isEmpty()) {
+        comment = "Not yet comment";
+      }
+      temp2.setComment(comment);
       books.add(temp2);
     }
     return books;
@@ -233,9 +252,13 @@ public class BookDAO {
       String description = rs.getString("description");
       String imageUrl = rs.getString("imageUrl");
       String QRcode = rs.getString("QRcode");
-
       Book temp2 = new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
       temp2.setCategories(category);
+      String comment = bookReviewDAO.getCommentBook(id);
+      if (comment == null || comment.isEmpty()) {
+        comment = "Not yet comment";
+      }
+      temp2.setComment(comment);
       books.add(temp2);
     }
     return books;
@@ -259,6 +282,11 @@ public class BookDAO {
       Double rate_avg = rs.getObject("rate_avg") != null ? rs.getDouble("rate_avg") : null;
       Book temp2 = new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode, rate_avg);
       temp2.setCategories(category);
+      String comment = bookReviewDAO.getCommentBook(id);
+      if (comment == null || comment.isEmpty()) {
+        comment = "Not yet comment";
+      }
+      temp2.setComment(comment);
       books.add(temp2);
     }
     return books;
@@ -279,9 +307,13 @@ public class BookDAO {
       String description = rs.getString("description");
       String imageUrl = rs.getString("imageUrl");
       String QRcode = rs.getString("QRcode");
-
       Book temp2 = new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
       temp2.setCategories(category);
+      String comment = bookReviewDAO.getCommentBook(id);
+      if (comment == null || comment.isEmpty()) {
+        comment = "Not yet comment";
+      }
+      temp2.setComment(comment);
       books.add(temp2);
     }
     return books;
@@ -306,6 +338,11 @@ public class BookDAO {
       Double rate_avg = rs.getObject("rate_avg") != null ? rs.getDouble("rate_avg") : null;
       Book temp2 = new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl, rate_avg);
       temp2.setCategories(categories);
+      String comment = bookReviewDAO.getCommentBook(id);
+      if (comment == null || comment.isEmpty()) {
+        comment = "Not yet comment";
+      }
+      temp2.setComment(comment);
       books.add(temp2);
       if (books.size() == 10) {
         break;
@@ -333,6 +370,11 @@ public class BookDAO {
       Double rate_avg = rs.getObject("rate_avg") != null ? rs.getDouble("rate_avg") : null;
       Book temp2 = new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, bookUrl, rate_avg);
       temp2.setCategories(categories);
+      String comment = bookReviewDAO.getCommentBook(id);
+      if (comment == null || comment.isEmpty()) {
+        comment = "Not yet comment";
+      }
+      temp2.setComment(comment);
       books.add(temp2);
       if (books.size() == 10) {
         break;

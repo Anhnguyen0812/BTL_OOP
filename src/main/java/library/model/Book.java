@@ -11,6 +11,7 @@ public abstract class Book {
   protected String imageUrl; // Thêm thuộc tính URL hình ảnh
   protected String QRcode; // Thêm thuộc tính QRcode
   protected Double rate_avg; // Thêm thuộc tính rate_avg
+  protected String comment; // Thêm thuộc tí
 
   public Book(
       int id,
@@ -157,6 +158,14 @@ public abstract class Book {
 
   public Double getRateAvg() {
     return rate_avg;
+  }
+
+  public void setComment(String comment) {
+    this.comment = comment;
+  }
+
+  public String getComment() {
+    return comment;
   }
 
 }

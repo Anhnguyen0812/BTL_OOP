@@ -595,4 +595,14 @@ public class BorrowRecordDAO {
     }
     return 0;
   }
+
+  public void deleteBorrowRecordbyId(int id) {
+    String query = "DELETE FROM borrow_records WHERE book_id = ?";
+    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+      stmt.setInt(1, id);
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
 }

@@ -16,23 +16,21 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 import javafx.fxml.FXML;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-import library.model.Book;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import library.model.Book;
 
 public class DetailController {
     @FXML
     private ImageView bookImageView, qrCodeImageView;
     @FXML
-    private Label titleLabel, authorLabel, isbnLabel, category, ratingLabel;
+    private Label titleLabel, authorLabel, isbnLabel, category, ratingLabel, comment;
     @FXML
     private Text description;
     @FXML
@@ -126,6 +124,7 @@ public class DetailController {
         isbnLabel.setText(books.getIsbn());
         category.setText(books.getCategories());
         description.setText("Description: " + books.getDescription());
+        comment.setText(books.getComment());
 
         if (books.getImageUrl() != null) {
             Image image = new Image(books.getImageUrl(), true);
