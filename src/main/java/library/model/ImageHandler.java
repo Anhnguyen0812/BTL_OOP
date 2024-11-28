@@ -52,4 +52,14 @@ public class ImageHandler {
             return null;
         }
     }
+
+    public Image loadImage(int id) {
+        File file = new File(USER_LIBRARY_PATH + id + ".png");
+        if (file.exists()) {
+            return new Image(file.toURI().toString());
+        } else {
+            System.out.println("File not found: " + id + ".png");
+            return null;
+        }
+    }
 }

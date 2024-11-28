@@ -13,7 +13,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane fx:id="detailPane" prefHeight="643.0" prefWidth="1100.0" styleClass="detailBookPane" stylesheets="@../styles/Ui.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="library.controller.DetailController">
+<Pane fx:id="detailPane" prefHeight="630.0" prefWidth="1100.0" styleClass="detailBookPane" stylesheets="@../styles/Ui.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="library.controller.DetailController">
    <children>
       <ImageView fx:id="bookImageView" fitHeight="309.0" fitWidth="236.0" layoutX="90.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -94,25 +94,32 @@
             <Font name="Segoe UI" size="14.0" />
          </font>
       </Label>
-      <ScrollPane fx:id="scrollPane" layoutX="25.0" layoutY="361.0" prefHeight="268.0" prefWidth="1055.0" styleClass="ScrollPane">
-         <content>
-            <VBox fx:id="v1" prefHeight="264.0" prefWidth="1051.0">
-               <padding>
-                  <Insets left="10.0" top="10.0" />
-               </padding>
-               <children>
-                  <Text fx:id="description" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
-                     <VBox.margin>
-                        <Insets right="10.0" />
-                     </VBox.margin>
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </Text>
-               </children>
-            </VBox>
-         </content>
-      </ScrollPane>
+      <VBox layoutX="1.0" layoutY="353.0" prefHeight="265.0" prefWidth="1100.0">
+         <children>
+            <ScrollPane fx:id="scrollPane" prefHeight="279.0" prefWidth="1080.0" styleClass="ScrollPane">
+               <content>
+                  <VBox fx:id="v1" prefHeight="255.0" prefWidth="1075.0">
+                     <padding>
+                        <Insets left="10.0" top="10.0" />
+                     </padding>
+                     <children>
+                        <Text fx:id="description" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+                           <VBox.margin>
+                              <Insets right="10.0" />
+                           </VBox.margin>
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </VBox>
+               </content>
+               <VBox.margin>
+                  <Insets left="10.0" right="10.0" top="5.0" />
+               </VBox.margin>
+            </ScrollPane>
+         </children>
+      </VBox>
       <Button layoutX="942.0" layoutY="322.0" mnemonicParsing="false" text="Return" />
       <Button layoutX="834.0" layoutY="322.0" mnemonicParsing="false" text="Borrow" />
       <ImageView fx:id="qrCodeImageView" fitHeight="100.0" fitWidth="100.0" layoutX="968.0" layoutY="44.0" pickOnBounds="true" preserveRatio="true" />

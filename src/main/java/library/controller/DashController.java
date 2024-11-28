@@ -3,15 +3,9 @@ package library.controller;
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
-import java.sql.Time;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.gluonhq.charm.glisten.control.Avatar;
-import com.gluonhq.impl.charm.a.a.a;
-import com.gluonhq.impl.charm.a.b.a.b;
-import com.gluonhq.impl.charm.a.b.b.s;
-import com.gluonhq.impl.charm.a.b.b.u;
 
 import javafx.scene.control.Label;
 import javafx.scene.Node;
@@ -24,7 +18,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.HostServices;
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -42,7 +35,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -55,7 +47,6 @@ import library.dao.BorrowRecordDAO;
 import library.dao.NotiDAO;
 import library.model.Book;
 import library.model.BorrowRecord;
-import library.model.ConcreteBook;
 import library.model.ImageHandler;
 import library.model.User;
 import library.dao.AllDao;
@@ -126,6 +117,7 @@ public class DashController {
   @FXML
   private Button reloadReturnBooksButton;
 
+  @SuppressWarnings("rawtypes")
   @FXML
   StackedAreaChart chart1;
 
@@ -142,7 +134,7 @@ public class DashController {
   private ScrollPane featuredScrollPane;
 
   public static final int MAX_COLUMN_RESULTS = 150;
-  public static final int MAX_RESULTS_EACH_TIME = 20;
+  public static final int MAX_RESULTS_EACH_TIME = 40;
   private boolean isScrolling = false;
   List<Book> booksTop;
   List<Book> booksNew;
@@ -174,6 +166,7 @@ public class DashController {
     alert.showAndWait();
   }
 
+  @SuppressWarnings("unused")
   public void initialize() throws SQLException {
 
     // Set up title for table
@@ -184,11 +177,13 @@ public class DashController {
     // Set up date
     // Update date label with current date and time
     java.util.Date now = new java.util.Date();
+    @SuppressWarnings("deprecation")
     java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("EEEE, dd MMMM yyyy -  HH:mm",
         new java.util.Locale("vi", "VN"));
     date.setText(sdf.format(now));
 
     // Schedule a task to update the date label every second
+    @SuppressWarnings("unused")
     javafx.animation.Timeline dateUpdateTimeline = new javafx.animation.Timeline(
         new javafx.animation.KeyFrame(
             javafx.util.Duration.seconds(15),
@@ -289,6 +284,7 @@ public class DashController {
     timer.start();
 
     // Sử dụng Timeline để kiểm soát thời gian cuộn và dừng
+    @SuppressWarnings("unused")
     Timeline timeline = new Timeline(
         new KeyFrame(Duration.seconds(0.2), event -> isScrolling = false), // Dừng cuộn sau 0.5 giây
         new KeyFrame(Duration.seconds(3.2), event -> isScrolling = true) // Bắt đầu cuộn sau 3.5 giây (0.5s cuộn + 3s
@@ -327,7 +323,7 @@ public class DashController {
         AnchorPane bookItem = loader.load();
         BookItemController controller = loader.getController();
         i++;
-        controller.setBookData(book, i, user);
+        controller.setItemData(book, i, user);
         controller.hideButton();
 
         if (book.getRateAvg() == null) {
@@ -364,6 +360,7 @@ public class DashController {
 
   int j = 0;
 
+  @SuppressWarnings("unused")
   private void setBorrowedBookItems(List<BorrowRecord> borrowRecords, int k, boolean needClear) {
     if (needClear)
       searchReturnBooks.getChildren().clear();
@@ -380,7 +377,11 @@ public class DashController {
         BookItemController controller = loader.getController();
 
         BorrowRecord record = borrowRecords.get(j - 1);
-        controller.setBookData(record.getBook(), j, user);
+        if (record.getBook() == null) {
+          System.out.println("Book in record " + record.getId() + " is deleted");
+          continue;
+        }
+        controller.setItemData(record.getBook(), j, user);
 
         if (record.getBook().getRateAvg() == null) {
           controller.displayBookRate(0, false);
@@ -420,6 +421,7 @@ public class DashController {
     }
   }
 
+  @SuppressWarnings("unused")
   private void saveSearchResults(List<Book> books) {
     for (Book book : books) {
       try {
@@ -449,6 +451,7 @@ public class DashController {
     home_Button.styleProperty().set("-fx-background-color: #777777");
   }
 
+  @SuppressWarnings("unused")
   public void gotoBooks() {
     resetStyle();
     books.setVisible(true);
@@ -639,6 +642,7 @@ public class DashController {
   @FXML
   public void SearchLibrary() {
     String bookTitle = title.getText();
+
     Task<Void> task = new Task<Void>() {
       @Override
       protected Void call() throws Exception {
@@ -646,6 +650,7 @@ public class DashController {
 
         if (bookTitle.isEmpty()) {
           books = bookDAO.getAllBooks();
+
         } else if (searchChoice.getValue().equals("Title")) {
           books = bookDAO.getBookByTitle(bookTitle);
         } else if (searchChoice.getValue().equals("Author")) {
@@ -684,6 +689,7 @@ public class DashController {
 
   int i = 1;
 
+  @SuppressWarnings("unused")
   private void setBookItem(List<Book> books, int j, boolean needCheck, boolean needClear, boolean isGoogle) {
     // if (isGoogle)
     // saveSearchResults(books);
@@ -705,7 +711,7 @@ public class DashController {
           FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/BookItem.fxml"));
           AnchorPane bookItem = loader.load();
           BookItemController controller = loader.getController();
-          controller.setBookData(book, i, user);
+          controller.setItemData(book, i, user);
           if (book.getRateAvg() == null) {
             controller.displayBookRate(0, false);
           } else {
@@ -793,6 +799,7 @@ public class DashController {
     }
   }
 
+  @SuppressWarnings("unused")
   public void showBookDetails(Book book) {
     try {
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Detail.fxml"));
@@ -842,6 +849,7 @@ public class DashController {
     }
   }
 
+  @SuppressWarnings("unused")
   @FXML
   public void gotoDarkMode() {
     // Set up dark mode

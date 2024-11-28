@@ -74,4 +74,14 @@ public class GoogleBooksAPI {
     }
   }
 
+  public String getBookByISBN(String isbn) throws IOException {
+    String url = "https://www.googleapis.com/books/v1/volumes?q=isbn:" + isbn + "&key=" + API_KEY;
+
+    Request request = new Request.Builder().url(url).build();
+
+    try (Response response = client.newCall(request).execute()) {
+      return response.body().string();
+    }
+  }
+
 }

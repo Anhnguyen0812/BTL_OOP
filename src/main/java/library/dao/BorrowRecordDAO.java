@@ -589,4 +589,27 @@ public class BorrowRecordDAO {
     }
     return 0;
   }
+
+  // public get list book to due date
+  public ObservableList<BorrowRecord> getBookToDueDate() {
+    ObservableList<BorrowRecord> records = FXCollections.observableArrayList();
+    // String query = "SELECT * FROM borrow_records WHERE return_date >= ?";
+    String query = "SELECT * FROM borrow_records WHERE borrow_date + INTERVAL '1 MONTH' >= ?";
+    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+      stmt.setDate(1, java.sql.Date.valueOf(LocalDate.now().minusDays(3)));
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        records.add(
+            new BorrowRecord(
+                rs.getInt("id"),
+                new UserService().getUserById(rs.getInt("user_id")),
+                bookDAO.getBookById(rs.getInt("book_id")),
+                rs.getDate("borrow_date").toLocalDate(),
+                rs.getDate("return_date").toLocalDate()));
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return records;
+  }
 }

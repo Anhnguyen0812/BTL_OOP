@@ -160,14 +160,14 @@ public class AdminController extends DashController implements Initializable {
   private Pane home;
   @FXML
   private AnchorPane origin;
-  private static final Logger LOGGER = Logger.getLogger(AdminController.class.getName());
+
   @FXML
   private ImageView logofb, logoytb;
   @FXML
   private Button delete, updateBook, update;
   @FXML
   private PieChart pieChart;
-  private final BookController bookController = new BookController();
+
   private final ObservableList<Book> bookList = FXCollections.observableArrayList();
   private ObservableList<User> userList = FXCollections.observableArrayList();
   private Book bookk;
@@ -184,6 +184,7 @@ public class AdminController extends DashController implements Initializable {
   }
 
   // Phương thức khởi tạo, thiết lập các cột cho bảng sách và người dùng
+  @SuppressWarnings("unused")
   @Override
   public void initialize(URL location, ResourceBundle resources) {
     // origin.getStyleClass().add("pane-background");

@@ -18,10 +18,11 @@ import library.dao.BookDAO;
 import library.dao.BorrowRecordDAO;
 import library.dao.NotiDAO;
 import library.model.BorrowRecord;
+import library.model.ImageHandler;
 
 public class BookItemController {
     @FXML
-    private Label title, author, isbn, ratingLabel;
+    private Label title, author, isbn, ratingLabel, caterLabel;
 
     @FXML
     private ImageView bookImage;
@@ -38,17 +39,37 @@ public class BookItemController {
     public void initialize() {
     }
 
-    public void setBookData(Book books, int i, User user) {
-        title.setText(i + ". " + books.getTitle());
-        author.setText("by   " + books.getAuthor());
-        isbn.setText("isbn  " + books.getIsbn());
-        if (books.getImageUrl() != null) {
-            Image image = new Image(books.getImageUrl(), true);
-            bookImage.setImage(image);
+    public <T> void setItemData(T item, int i, User user) {
+        if (item instanceof Book) {
+            Book book = (Book) item;
+            title.setText(i + ". " + book.getTitle());
+            author.setText("by   " + book.getAuthor());
+            caterLabel.setText("Category:  " + book.getCategories());
+            isbn.setText("isbn  " + book.getIsbn());
+            if (book.getImageUrl() != null) {
+                Image image = new Image(book.getImageUrl(), true);
+                bookImage.setImage(image);
+            }
+            this.user = user;
+            this.book = book;
         }
-        this.user = user;
-        this.book = books;
+        // Handle other item types if needed
+        if (item instanceof User) {
+            user = (User) item;
+            this.user = user;
+            title.setText(user.getName());
+            author.setText("ID: " + user.getId());
+            isbn.setText("Email: " + user.getEmail());
+            caterLabel.setText("Role: " + user.getRole());
 
+            ImageHandler imageHandler = new ImageHandler();
+            if (imageHandler.loadImage(user.getId()) != null) {
+                bookImage.setImage(imageHandler.loadImage(user.getId()));
+            } else {
+                bookImage.setImage(new Image("/imgs/account.png"));
+            }
+
+        }
     }
 
     public void setBorrowButtonVisible() {

@@ -14,7 +14,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import library.AppLaunch;
 import library.dao.UserDAO;
 import library.model.User;
 import library.service.UserService;
@@ -42,6 +41,7 @@ public class LoginController {
 
   private HostServices hostServices;
 
+  @SuppressWarnings("unused")
   @FXML
   public void initialize() {
     Passhide.textProperty().bindBidirectional(Pass.textProperty());
@@ -84,6 +84,7 @@ public class LoginController {
     }
   }
 
+  @SuppressWarnings("static-access")
   private User getUserbyname(String username) throws SQLException {
     UserDAO userdao = UserDAO.getUserDAO();
     return userdao.getUserByName(username);
@@ -96,12 +97,12 @@ public class LoginController {
     if (check == 1) {
       try {
         user = getUserbyname(Username.getText());
-        AdminController adminController = new AdminController(user, hostServices);
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Admin.fxml"));
+        Dash_AdminController adminController = new Dash_AdminController(user, hostServices);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/dash_admin.fxml"));
         loader.setController(adminController);
         Parent root = loader.load();
         Stage stage = (Stage) loginButton.getScene().getWindow();
-        stage.setScene(new Scene(root, 960, 720));
+        stage.setScene(new Scene(root));
         stage.setTitle("Library Management System");
         stage.centerOnScreen();
         stage.show();
@@ -149,4 +150,5 @@ public class LoginController {
   public User getUser() {
     return user;
   }
+
 }

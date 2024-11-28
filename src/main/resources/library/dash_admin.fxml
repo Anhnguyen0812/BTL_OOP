@@ -1,0 +1,816 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" stylesheets="@../styles/Ui.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Pane fx:id="pane" prefHeight="720.0" prefWidth="1280.0" styleClass="Pane">
+         <children>
+            <HBox layoutX="1063.0" layoutY="14.0" prefHeight="50.0" prefWidth="125.0" styleClass="hboxTitle" stylesheets="@../styles/Ui.css">
+               <children>
+                  <Button fx:id="darkModeButton" mnemonicParsing="false" onAction="#gotoDarkMode" prefHeight="34.0" prefWidth="9.0" styleClass="transparent">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../imgs/night-mode.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <HBox.margin>
+                        <Insets left="20.0" top="8.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="noti_Button" mnemonicParsing="false" onAction="#gotoNoti" prefHeight="21.0" prefWidth="24.0" styleClass="transparent">
+                     <graphic>
+                        <ImageView fitHeight="34.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../imgs/noti.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <HBox.margin>
+                        <Insets left="10.0" right="20.0" top="8.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+            <HBox layoutX="238.0" layoutY="14.0" prefHeight="50.0" prefWidth="809.0" styleClass="hboxTitle" stylesheets="@../styles/Ui.css">
+               <children>
+                  <Label fx:id="welcome" prefHeight="33.0" prefWidth="302.0" text="Hello Admin">
+                     <font>
+                        <Font name="Fira Code Bold" size="19.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="50.0" top="8.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Line startY="30.0" strokeWidth="2.0">
+                     <HBox.margin>
+                        <Insets right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </Line>
+                  <Label fx:id="date" prefHeight="32.0" prefWidth="378.0" text="Thứ bảy 11 Oct 2024 ">
+                     <font>
+                        <Font name="Calibri Bold" size="20.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets top="8.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
+            <VBox prefHeight="720.0" prefWidth="160.0" styleClass="VboxDash">
+               <children>
+                  <ImageView fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../imgs/appIcon.png" />
+                     </image>
+                     <VBox.margin>
+                        <Insets left="40.0" top="10.0" />
+                     </VBox.margin>
+                  </ImageView>
+                  <Label alignment="CENTER" prefHeight="24.0" prefWidth="161.0" text="Library Manage">
+                     <font>
+                        <Font name="Comic Sans MS Bold" size="17.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="20.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Line endX="-2.0" endY="-8.0" startX="79.0" startY="-8.0" strokeWidth="2.0">
+                     <VBox.margin>
+                        <Insets bottom="20.0" left="40.0" />
+                     </VBox.margin>
+                  </Line>
+                  <Button fx:id="home_Button" alignment="BASELINE_LEFT" graphicTextGap="10.0" mnemonicParsing="false" onAction="#gotoHome" prefHeight="37.0" prefWidth="210.0" stylesheets="@../styles/fullpackstyling.css" text="Home">
+                     <graphic>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../imgs/home.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font name="Segoe UI Bold" size="13.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                     <padding>
+                        <Insets left="25.0" />
+                     </padding>
+                  </Button>
+                  <Button fx:id="books_Button" alignment="BASELINE_LEFT" graphicTextGap="10.0" mnemonicParsing="false" onAction="#gotoBooks" prefHeight="37.0" prefWidth="210.0" stylesheets="@../styles/fullpackstyling.css" text="Books Manage">
+                     <graphic>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../imgs/books.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font name="Segoe UI Bold" size="13.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                     <padding>
+                        <Insets left="25.0" />
+                     </padding>
+                  </Button>
+                  <Button fx:id="returnBooks_Button" alignment="BASELINE_LEFT" graphicTextGap="10.0" mnemonicParsing="false" onAction="#gotoReturnBooks" prefHeight="37.0" prefWidth="210.0" stylesheets="@../styles/fullpackstyling.css" text="Users Manage">
+                     <graphic>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../imgs/return_book.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font name="Segoe UI Bold" size="13.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                     <padding>
+                        <Insets left="25.0" />
+                     </padding>
+                  </Button>
+                  <Button fx:id="issueBooks_Button" alignment="BASELINE_LEFT" graphicTextGap="10.0" mnemonicParsing="false" onAction="#gotoIssueBooks" prefHeight="37.0" prefWidth="210.0" stylesheets="@../styles/fullpackstyling.css" text="Issue Books">
+                     <graphic>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../imgs/issue.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font name="Segoe UI Bold" size="13.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                     <padding>
+                        <Insets left="25.0" />
+                     </padding>
+                  </Button>
+                  <Button fx:id="settings_Button" alignment="BASELINE_LEFT" graphicTextGap="10.0" mnemonicParsing="false" onAction="#gotoSettings" prefHeight="37.0" prefWidth="210.0" stylesheets="@../styles/fullpackstyling.css" text="Settings">
+                     <graphic>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../imgs/icons8_settings_32px.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font name="Segoe UI Bold" size="13.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                     <padding>
+                        <Insets left="25.0" />
+                     </padding>
+                  </Button>
+                  <Pane prefHeight="321.0" prefWidth="160.0">
+                     <children>
+                        <Circle fx:id="shpActive" fill="WHITE" layoutX="46.0" layoutY="42.0" radius="7.0" stroke="#1cd95c" strokeType="INSIDE" />
+                        <Circle fill="WHITE" layoutX="46.0" layoutY="73.0" radius="7.0" stroke="#d9c81c" strokeType="INSIDE" />
+                        <Circle fill="WHITE" layoutX="46.0" layoutY="104.0" radius="7.0" stroke="#da1c1c" strokeType="INSIDE" />
+                        <Label fx:id="lblActive" layoutX="61.0" layoutY="34.0" text="10 Active" textFill="#4a4747">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="lblOffline" layoutX="63.0" layoutY="65.0" text="2 Offline" textFill="#4a4747">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="lblExp" layoutX="61.0" layoutY="96.0" text="8 Expired" textFill="#4a4747">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="posotion" alignment="CENTER" layoutX="6.0" layoutY="207.0" prefHeight="30.0" prefWidth="149.0" text="Admin">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </Label>
+                        <Line endX="-2.0" endY="-8.0" layoutX="42.0" layoutY="29.0" startX="79.0" startY="-8.0" strokeWidth="2.0" />
+                        <Button fx:id="user_Button" layoutX="18.0" layoutY="258.0" mnemonicParsing="false" onAction="#gotoSubUser" prefHeight="49.0" prefWidth="125.0" styleClass="transparent" text="User name">
+                           <font>
+                              <Font name="Segoe UI Bold" size="13.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fx:id="avatar" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="avatarImage">
+                                 <image>
+                                    <Image url="@../imgs/account.png" />
+                                 </image></ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </Pane>
+               </children>
+            </VBox>
+            <Label fx:id="notiNewLabel" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" layoutX="1159.0" layoutY="20.0" prefHeight="15.0" prefWidth="15.0" styleClass="notiLabel" text="9" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="10.0" />
+               </font>
+            </Label>
+            <Pane fx:id="home" layoutX="170.0" layoutY="80.0" prefHeight="630.0" prefWidth="1100.0" styleClass="PaneIn" stylesheets="@../styles/Ui.css">
+               <children>
+                  <VBox prefHeight="630.0" prefWidth="1100.0">
+                     <children>
+                        <Label prefHeight="34.0" prefWidth="1065.0" text="Dashboard">
+                           <font>
+                              <Font name="Comic Sans MS Bold" size="25.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets left="35.0" />
+                           </VBox.margin>
+                        </Label>
+                        <HBox prefHeight="156.0" prefWidth="1100.0" styleClass="hboxHomePane">
+                           <children>
+                              <Pane prefHeight="190.0" prefWidth="200.0" styleClass="homeInfoPane">
+                                 <children>
+                                    <Label alignment="CENTER" prefHeight="51.0" prefWidth="111.0" text="Total Users">
+                                       <font>
+                                          <Font name="Segoe UI Bold" size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="39.0" layoutY="49.0" text="20">
+                                       <font>
+                                          <Font name="Segoe UI" size="31.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="60.0" right="20.0" top="10.0" />
+                                 </HBox.margin>
+                              </Pane>
+                              <Pane prefHeight="179.0" prefWidth="200.0" styleClass="homeInfoPane">
+                                 <children>
+                                    <Label alignment="CENTER" prefHeight="50.0" prefWidth="119.0" text="Total books">
+                                       <font>
+                                          <Font name="Segoe UI Bold" size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="34.0" layoutY="49.0" text="100">
+                                       <font>
+                                          <Font name="Segoe UI" size="31.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="20.0" top="10.0" />
+                                 </HBox.margin>
+                              </Pane>
+                              <Pane prefHeight="144.0" prefWidth="200.0" styleClass="homeInfoPane">
+                                 <children>
+                                    <Label alignment="CENTER" prefHeight="51.0" prefWidth="149.0" text="Remaining books">
+                                       <font>
+                                          <Font name="Segoe UI Bold" size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="41.0" layoutY="49.0" text="30">
+                                       <font>
+                                          <Font name="Segoe UI" size="31.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="20.0" top="10.0" />
+                                 </HBox.margin>
+                              </Pane>
+                              <Pane prefHeight="159.0" prefWidth="200.0" styleClass="homeInfoPane">
+                                 <children>
+                                    <Label alignment="CENTER" prefHeight="50.0" prefWidth="160.0" text="Request pending">
+                                       <font>
+                                          <Font name="Segoe UI Bold" size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="54.0" layoutY="38.0" prefHeight="38.0" prefWidth="53.0" text="30">
+                                       <font>
+                                          <Font name="Segoe UI" size="31.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="54.0" layoutY="76.0" prefHeight="38.0" prefWidth="53.0" text="30">
+                                       <font>
+                                          <Font name="Segoe UI" size="31.0" />
+                                       </font>
+                                    </Label>
+                                    <Label alignment="CENTER" layoutX="7.0" layoutY="40.0" prefHeight="33.0" prefWidth="42.0" text="Borrow">
+                                       <font>
+                                          <Font name="Segoe UI Bold" size="11.0" />
+                                       </font>
+                                    </Label>
+                                    <Label alignment="CENTER" layoutX="7.0" layoutY="78.0" prefHeight="33.0" prefWidth="43.0" text="Return">
+                                       <font>
+                                          <Font name="Segoe UI Bold" size="11.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="20.0" top="10.0" />
+                                 </HBox.margin>
+                              </Pane>
+                           </children>
+                        </HBox>
+                        <Pane prefHeight="449.0" prefWidth="1100.0">
+                           <children>
+                              <Pane layoutX="64.0" layoutY="69.0" prefHeight="306.0" prefWidth="435.0" styleClass="homeInfoPane">
+                                 <children>
+                                    <BarChart fx:id="barChart" layoutX="-6.0" layoutY="-1.0" prefHeight="314.0" prefWidth="447.0">
+                                      <xAxis>
+                                        <CategoryAxis side="BOTTOM" />
+                                      </xAxis>
+                                      <yAxis>
+                                        <NumberAxis side="LEFT" />
+                                      </yAxis>
+                                    </BarChart>
+                                 </children>
+                              </Pane>
+                              <Label layoutX="40.0" layoutY="-1.0" prefHeight="36.0" prefWidth="218.0" text="Chart">
+                                 <font>
+                                    <Font name="Comic Sans MS Bold" size="25.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="525.0" layoutY="-1.0" prefHeight="36.0" prefWidth="135.0" text="Warring">
+                                 <font>
+                                    <Font name="Comic Sans MS Bold" size="25.0" />
+                                 </font>
+                              </Label>
+                              <Pane layoutX="601.0" layoutY="70.0" prefHeight="306.0" prefWidth="435.0" styleClass="homeInfoPane">
+                                 <children>
+                                    <Label alignment="CENTER" layoutX="-1.0" layoutY="25.0" prefHeight="23.0" prefWidth="435.0" text="Borrow Requests Pending">
+                                       <font>
+                                          <Font name="Comic Sans MS Bold" size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <Label alignment="CENTER" layoutX="1.0" layoutY="213.0" prefHeight="23.0" prefWidth="429.0" text="Late returns">
+                                       <font>
+                                          <Font name="Comic Sans MS Bold" size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <Label alignment="CENTER" layoutX="-2.0" layoutY="120.0" prefHeight="23.0" prefWidth="435.0" text="Return Requests Pending">
+                                       <font>
+                                          <Font name="Comic Sans MS Bold" size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="202.0" layoutY="64.0" text="20">
+                                       <font>
+                                          <Font name="Segoe UI Bold" size="26.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="202.0" layoutY="164.0" text="20">
+                                       <font>
+                                          <Font name="Segoe UI Bold" size="26.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="204.0" layoutY="255.0" text="20">
+                                       <font>
+                                          <Font name="Segoe UI Bold" size="26.0" />
+                                       </font>
+                                    </Label>
+                                 </children></Pane>
+                           </children></Pane>
+                     </children>
+                  </VBox>
+               </children>
+            </Pane>
+            <Pane fx:id="books" layoutX="170.0" layoutY="80.0" prefHeight="630.0" prefWidth="1100.0" styleClass="PaneIn">
+               <children>
+                  <HBox layoutX="3.0" prefHeight="60.0" prefWidth="1100.0">
+                     <children>
+                        <Label prefHeight="35.0" prefWidth="195.0" text="Search">
+                           <font>
+                              <Font name="Comic Sans MS Bold" size="24.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="20.0" top="10.0" />
+                           </HBox.margin>
+                        </Label>
+                        <TextField fx:id="title" prefHeight="19.0" prefWidth="238.0" promptText="Search" styleClass="Search">
+                           <HBox.margin>
+                              <Insets left="10.0" right="20.0" top="15.0" />
+                           </HBox.margin>
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </TextField>
+                        <Label text="Search by">
+                           <HBox.margin>
+                              <Insets right="10.0" top="20.0" />
+                           </HBox.margin>
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <ChoiceBox fx:id="searchChoice" prefHeight="26.0" prefWidth="77.0" styleClass="multiChoice">
+                           <HBox.margin>
+                              <Insets top="18.0" />
+                           </HBox.margin>
+                        </ChoiceBox>
+                        <ChoiceBox fx:id="CategoriesChoice" prefHeight="26.0" prefWidth="135.0" styleClass="multiChoice">
+                           <HBox.margin>
+                              <Insets left="20.0" top="18.0" />
+                           </HBox.margin>
+                        </ChoiceBox>
+                        <Button fx:id="searchLib" mnemonicParsing="false" onAction="#SearchLibrary" prefHeight="30.0" prefWidth="82.0" styleClass="SearchButton" text="Search Lib">
+                           <HBox.margin>
+                              <Insets left="50.0" right="20.0" top="15.0" />
+                           </HBox.margin>
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="searchGG" mnemonicParsing="false" onAction="#searchGoogle" prefHeight="30.0" prefWidth="111.0" styleClass="SearchButton" text="Search Google">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets top="15.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <ScrollPane layoutX="1.0" layoutY="58.0" prefHeight="386.0" prefWidth="1100.0" styleClass="ScrollPane">
+                     <content>
+                        <GridPane fx:id="searchView" prefHeight="22.0" prefWidth="32.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           </columnConstraints>
+                           <padding>
+                              <Insets bottom="5.0" left="10.0" top="20.0" />
+                           </padding>
+                        </GridPane>
+                     </content></ScrollPane>
+                  <Button fx:id="addBookButton" layoutX="793.0" layoutY="456.0" mnemonicParsing="false" onAction="#gotoAddBook" styleClass="Search" text="Add Book">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="editBookButton" layoutX="794.0" layoutY="512.0" mnemonicParsing="false" onAction="#gotoEditBook" styleClass="Search" text="Edit Book">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="deleteBookButton" layoutX="939.0" layoutY="456.0" mnemonicParsing="false" onAction="#gotoDeleteBook" styleClass="Search" text="DeleteBook">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="qrCodeButton" layoutX="939.0" layoutY="512.0" mnemonicParsing="false" onAction="#gotoQRCode" styleClass="Search" text="QR Code">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Button>
+                  <Label fx:id="totalBooksLabel" layoutX="608.0" layoutY="463.0" text="Total Books: 250">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="borrowedLabel" layoutX="608.0" layoutY="500.0" text="Borrowed: 50">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Label>
+                  <Pane layoutX="27.0" layoutY="450.0" prefHeight="174.0" prefWidth="447.0" styleClass="itemAnchor">
+                     <children>
+                        <ImageView fx:id="imageManageBook" fitHeight="164.0" fitWidth="125.0" layoutX="12.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true" styleClass="imageBook">
+                           <image>
+                              <Image url="@../imgs/noBook.png" />
+                           </image>
+                        </ImageView>
+                        <Label fx:id="titleManage" layoutX="155.0" layoutY="4.0" prefHeight="32.0" prefWidth="284.0" text="Title">
+                           <font>
+                              <Font name="Segoe UI Bold" size="15.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="authorManage" layoutX="155.0" layoutY="30.0" prefHeight="32.0" prefWidth="218.0" text="Author">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="isbnManage" layoutX="155.0" layoutY="57.0" prefHeight="32.0" prefWidth="218.0" text="Isbn">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="categoryManage" layoutX="155.0" layoutY="85.0" prefHeight="32.0" prefWidth="218.0" text="Category">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="availbleManage" layoutX="155.0" layoutY="114.0" prefHeight="32.0" prefWidth="218.0" text="Availble">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="borrowedManage" layoutX="155.0" layoutY="146.0" text="Label">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </Pane>
+               </children>
+            </Pane>
+            <Pane fx:id="manageUsers" layoutX="170.0" layoutY="80.0" prefHeight="630.0" prefWidth="1100.0" styleClass="PaneIn">
+               <children>
+                  <VBox layoutY="9.0" prefHeight="427.0" prefWidth="1100.0">
+                     <children>
+                        <HBox prefHeight="40.0" prefWidth="1100.0">
+                           <children>
+                              <Label prefHeight="41.0" prefWidth="291.0" text="Users Manage">
+                                 <font>
+                                    <Font name="Comic Sans MS" size="29.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="50.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Label text="Search Users">
+                                 <HBox.margin>
+                                    <Insets right="10.0" top="15.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font name="Segoe UI Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="userManageTextField" prefHeight="32.0" prefWidth="228.0" promptText="search" styleClass="Search">
+                                 <HBox.margin>
+                                    <Insets top="8.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <Label prefHeight="23.0" prefWidth="66.0" text="Search by">
+                                 <HBox.margin>
+                                    <Insets left="100.0" right="20.0" top="15.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Label>
+                              <ChoiceBox fx:id="searchUserBox" prefHeight="29.0" prefWidth="102.0" styleClass="multiChoice">
+                                 <HBox.margin>
+                                    <Insets top="15.0" />
+                                 </HBox.margin>
+                              </ChoiceBox>
+                              <Button fx:id="searchUserButton" mnemonicParsing="false" onAction="#searchUserManage" prefHeight="45.0" prefWidth="56.0" styleClass="transparent" text="🔍">
+                                 <HBox.margin>
+                                    <Insets left="20.0" top="5.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font name="Corbel" size="23.0" />
+                                 </font>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <ScrollPane prefHeight="376.0" prefWidth="1100.0" styleClass="ScrollPane">
+                           <content>
+                              <GridPane fx:id="searchUser" prefHeight="22.0" prefWidth="32.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                 </columnConstraints>
+                                 <padding>
+                                    <Insets bottom="5.0" left="10.0" right="5.0" top="15.0" />
+                                 </padding>
+                              </GridPane>
+                           </content>
+                        </ScrollPane>
+                     </children>
+                  </VBox>
+                  <Button fx:id="addUserButton" layoutX="671.0" layoutY="499.0" mnemonicParsing="false" styleClass="multiChoice" text="Add User">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="editUserButton" layoutX="810.0" layoutY="499.0" mnemonicParsing="false" styleClass="multiChoice" text="Edit User">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="deleteUserButton" layoutX="939.0" layoutY="499.0" mnemonicParsing="false" styleClass="multiChoice" text="DeleteUser">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Button>
+                  <Label fx:id="totalUser" layoutX="532.0" layoutY="506.0" text="Total Users: 50">
+                     <font>
+                        <Font name="Segoe UI Bold" size="15.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="activeuser" layoutX="532.0" layoutY="540.0" text="Active: 45">
+                     <font>
+                        <Font name="Segoe UI Bold" size="15.0" />
+                     </font>
+                  </Label>
+                  <Pane layoutX="39.0" layoutY="442.0" prefHeight="174.0" prefWidth="447.0" styleClass="itemAnchor">
+                     <children>
+                        <ImageView fx:id="imageManageUser" fitHeight="80.0" fitWidth="77.0" layoutX="38.0" layoutY="49.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../imgs/account.png" />
+                           </image>
+                        </ImageView>
+                        <Label fx:id="nameUser" layoutX="155.0" layoutY="8.0" prefHeight="32.0" prefWidth="284.0" text="Name">
+                           <font>
+                              <Font name="Segoe UI Bold" size="15.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="emailUser" layoutX="155.0" layoutY="49.0" prefHeight="32.0" prefWidth="218.0" text="email">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="borrowBookUser" layoutX="155.0" layoutY="87.0" prefHeight="32.0" prefWidth="218.0" text="Number of Borrowed Books">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="notReturnedUser" layoutX="155.0" layoutY="132.0" prefHeight="32.0" prefWidth="218.0" text="Number of books not returned">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <ImageView fx:id="qrUser" fitHeight="60.0" fitWidth="60.0" layoutX="373.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true" />
+                     </children>
+                  </Pane>
+               </children>
+            </Pane>
+            <Pane fx:id="issueBooks" layoutX="170.0" layoutY="80.0" prefHeight="630.0" prefWidth="1100.0" styleClass="PaneIn" visible="false">
+               <children>
+                  <VBox prefHeight="630.0" prefWidth="1100.0">
+                     <children>
+                        <TabPane prefHeight="674.0" prefWidth="1100.0" tabClosingPolicy="UNAVAILABLE">
+                          <tabs>
+                            <Tab text="Request">
+                                 <content>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <ScrollPane layoutX="14.0" layoutY="60.0" prefHeight="473.0" prefWidth="1073.0">
+                                             <content>
+                                                <TableView prefHeight="471.0" prefWidth="1070.0">
+                                                   <columns>
+                                                      <TableColumn prefWidth="50.0" text="stt" />
+                                                      <TableColumn prefWidth="211.0" text="Book" />
+                                                      <TableColumn prefWidth="119.0" text="Isbn" />
+                                                      <TableColumn prefWidth="143.0" text="User" />
+                                                      <TableColumn prefWidth="132.0" text="date" />
+                                                      <TableColumn prefWidth="133.0" text="status" />
+                                                      <TableColumn prefWidth="67.0" text="sl" />
+                                                      <TableColumn prefWidth="200.0" text="ghi chú" />
+                                                   </columns>
+                                                </TableView>
+                                             </content>
+                                          </ScrollPane>
+                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                             <children>
+                                                <HBox prefHeight="60.0" prefWidth="1014.0">
+                                                   <children>
+                                                      <Label prefHeight="36.0" prefWidth="266.0" text="Issue Books">
+                                                         <font>
+                                                            <Font name="Comic Sans MS Bold" size="25.0" />
+                                                         </font>
+                                                         <HBox.margin>
+                                                            <Insets left="60.0" top="10.0" />
+                                                         </HBox.margin>
+                                                      </Label>
+                                                      <MenuButton mnemonicParsing="false" text="borrow-return">
+                                                        <items>
+                                                          <MenuItem mnemonicParsing="false" text="Action 1" />
+                                                          <MenuItem mnemonicParsing="false" text="Action 2" />
+                                                        </items>
+                                                         <HBox.margin>
+                                                            <Insets top="20.0" />
+                                                         </HBox.margin>
+                                                      </MenuButton>
+                                                      <Label text="Search">
+                                                         <HBox.margin>
+                                                            <Insets left="20.0" top="15.0" />
+                                                         </HBox.margin>
+                                                         <font>
+                                                            <Font name="Segoe UI" size="18.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField prefHeight="34.0" prefWidth="226.0" styleClass="Search">
+                                                         <HBox.margin>
+                                                            <Insets left="20.0" top="10.0" />
+                                                         </HBox.margin>
+                                                      </TextField>
+                                                      <ChoiceBox prefHeight="25.0" prefWidth="110.0" styleClass="multiChoice">
+                                                         <HBox.margin>
+                                                            <Insets left="20.0" top="12.0" />
+                                                         </HBox.margin>
+                                                      </ChoiceBox>
+                                                      <Button mnemonicParsing="false" styleClass="SearchButton" text="Button">
+                                                         <HBox.margin>
+                                                            <Insets left="20.0" top="15.0" />
+                                                         </HBox.margin>
+                                                      </Button>
+                                                   </children>
+                                                </HBox>
+                                                <ScrollPane layoutX="14.0" layoutY="60.0" prefHeight="473.0" prefWidth="1073.0">
+                                                   <content>
+                                                      <TableView fx:id="borrowRequestTable" prefHeight="471.0" prefWidth="1070.0" styleClass="tableView">
+                                                         <columns>
+                                                            <TableColumn fx:id="idIssueBorrow" prefWidth="47.0" resizable="false" styleClass="itemColumn" text="id" />
+                                                            <TableColumn fx:id="titleIssueBorrow" prefWidth="212.0" resizable="false" styleClass="itemColumn" text="Book Title" />
+                                                            <TableColumn fx:id="isbnIssueBorrow" minWidth="0.0" prefWidth="138.0" resizable="false" styleClass="itemColumn" text="Isbn" />
+                                                            <TableColumn fx:id="userIssueBorrow" prefWidth="151.0" resizable="false" styleClass="itemColumn" text="User" />
+                                                            <TableColumn fx:id="availbleIssueBorrow" prefWidth="81.0" resizable="false" styleClass="itemColumn" text="Availble" />
+                                                            <TableColumn fx:id="borrowDateIssueBorrow" prefWidth="139.0" resizable="false" styleClass="itemColumn" text="Borrow Date" />
+                                                            <TableColumn fx:id="returnDateIssueBorrow" prefWidth="141.0" resizable="false" styleClass="itemColumn" text="Return Date" />
+                                                            <TableColumn fx:id="actionBorrow" prefWidth="140.0" resizable="false" styleClass="itemColumn" text="Action" />
+                                                         </columns>
+                                                      </TableView>
+                                                   </content>
+                                                </ScrollPane>
+                                             </children>
+                                          </AnchorPane>
+                                       </children>
+                                    </AnchorPane>
+                                 </content>
+                            </Tab>
+                              <Tab fx:id="directlyTab" text="Directly" />
+                          </tabs>
+                        </TabPane>
+                     </children>
+                  </VBox>
+               </children>
+            </Pane>
+            <Pane fx:id="settings" layoutX="170.0" layoutY="80.0" prefHeight="630.0" prefWidth="1100.0" styleClass="PaneIn" visible="false" />
+            <Pane fx:id="subUser" layoutX="180.0" layoutY="430.0" prefHeight="270.0" prefWidth="343.0" style="-fx-background-color: EBEBEB; -fx-background-radius: 10; -fx-border-radius: 10;" visible="false">
+               <children>
+                  <Button fx:id="logOut1" layoutX="122.0" mnemonicParsing="false" onAction="#handleSaveImage" prefHeight="60.0" prefWidth="175.0" styleClass="transparent" text="User name">
+                     <font>
+                        <Font name="Segoe UI Bold" size="13.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fx:id="avatar1" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="avatarImage" />
+                     </graphic>
+                  </Button>
+                  <Button fx:id="logOut" layoutX="131.0" layoutY="228.0" mnemonicParsing="false" onAction="#logOut" styleClass="transparent" text="logOut">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../imgs/sign-out-option.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font name="Segoe UI Black" size="12.0" />
+                     </font>
+                  </Button>
+                  <TextFlow layoutX="29.0" layoutY="49.0" prefHeight="20.0" prefWidth="197.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+                     </children>
+                  </TextFlow>
+                  <TextFlow layoutX="28.0" layoutY="82.0" prefHeight="25.0" prefWidth="197.0" />
+               </children>
+            </Pane>
+            <Pane fx:id="noti" layoutX="866.0" layoutY="87.0" prefHeight="362.0" prefWidth="394.0" visible="false">
+               <children>
+                  <ScrollPane prefHeight="362.0" prefWidth="394.0">
+                     <content>
+                        <ListView fx:id="notiList" prefHeight="358.0" prefWidth="390.0" styleClass="listViewNoti" />
+                     </content>
+                  </ScrollPane>
+               </children>
+            </Pane>
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

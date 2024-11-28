@@ -418,7 +418,7 @@
                      </content></ScrollPane>
                </children>
             </Pane>
-            <Pane fx:id="returnBooks" layoutX="170.0" layoutY="80.0" prefHeight="630.0" prefWidth="1100.0" styleClass="PaneIn">
+            <Pane fx:id="returnBooks" layoutX="170.0" layoutY="80.0" prefHeight="630.0" prefWidth="1100.0" styleClass="PaneIn" visible="false">
                <children>
                   <VBox layoutY="9.0" prefHeight="622.0" prefWidth="1100.0">
                      <children>

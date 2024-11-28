@@ -87,11 +87,37 @@ public class UserDAO {
           rs.getInt("id"),
           rs.getString("name"),
           rs.getString("email"),
-          rs.getString("password"),
-          rs.getString("role"),
-          rs.getString("salt"));
+          rs.getString("role"));
     }
     return null;
+  }
+
+  public ObservableList<User> getListUserByName(String username) throws SQLException {
+    ObservableList<User> users = FXCollections.observableArrayList();
+    String query = "SELECT * FROM users WHERE name LIKE ?";
+    PreparedStatement stmt = connection.prepareStatement(query);
+    stmt.setString(1, "%" + username + "%");
+    ResultSet rs = stmt.executeQuery();
+    while (rs.next()) {
+      users.add(
+          new User(
+              rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("role")));
+    }
+    return users;
+  }
+
+  public ObservableList<User> getListUserByEmail(String email) throws SQLException {
+    ObservableList<User> users = FXCollections.observableArrayList();
+    String query = "SELECT * FROM users WHERE email LIKE ?";
+    PreparedStatement stmt = connection.prepareStatement(query);
+    stmt.setString(1, "%" + email + "%");
+    ResultSet rs = stmt.executeQuery();
+    while (rs.next()) {
+      users.add(
+          new User(
+              rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("role")));
+    }
+    return users;
   }
 
   public static User getUserByEmail(String userEmail) throws SQLException {
@@ -110,4 +136,5 @@ public class UserDAO {
     }
     return null;
   }
+
 }

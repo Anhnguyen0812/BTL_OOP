@@ -54,6 +54,12 @@ public class BookController {
     return parseBooks(response);
   }
 
+  public Book searchBookByISBN(String isbn) throws IOException, SQLException {
+    String response = googleBooksAPI.getBookByISBN(isbn);
+    ObservableList<Book> books = parseBooksNoCheck(response);
+    return books.size() > 0 ? books.get(0) : null;
+  }
+
   private ObservableList<Book> parseBooksNoCheck(String jsonData) throws SQLException {
     ObservableList<Book> books = FXCollections.observableArrayList();
     JSONObject jsonObject = new JSONObject(jsonData);
@@ -132,6 +138,25 @@ public class BookController {
     }
 
     return books;
+  }
+
+  public Book getBookByISBN(String isbn) throws SQLException {
+    String query = "SELECT * FROM books WHERE isbn = '" + isbn + "'";
+    Statement stmt = connection.getConnection().createStatement();
+    ResultSet rs = stmt.executeQuery(query);
+    if (rs.next()) {
+      return new ConcreteBook(
+          rs.getInt("id"),
+          rs.getString("title"),
+          rs.getString("author"),
+          rs.getString("isbn"),
+          rs.getBoolean("available"),
+          rs.getString("description"),
+          rs.getString("imageUrl"),
+          rs.getString("QRcode"),
+          rs.getDouble("rate_avg"));
+    }
+    return null;
   }
 
   public ObservableList<Book> getAllBooks() throws SQLException {

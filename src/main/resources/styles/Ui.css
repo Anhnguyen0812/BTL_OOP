@@ -151,10 +151,22 @@
     -fx-border-radius: 10;
 }
 
-.homeInfoPane {
-    -fx-background-color: #c7d0e3;
+.itemAnchor:pressed {
+    -fx-background-color: #aeaeae;
     -fx-background-radius: 10;
     -fx-border-radius: 10;
+}
+
+.itemAnchor:active {
+    -fx-background-color: #8b8b8b;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.homeInfoPane {
+    -fx-background-color: #c7d0e3;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
 
 }
 
@@ -223,7 +235,7 @@
 .transparent:hover {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
-    -fx-opacity: 0.7;
+    -fx-opacity: 0.8;
     -fx-translate-y: -2px;
 }
 
@@ -231,6 +243,8 @@
     -fx-background-color: #bdbdbd;
     -fx-background-radius: 10;
     -fx-border-radius: 10;
+    -fx-border-color: #4a4a4a;
+    -fx-border-width: 2;
 
 }
 
@@ -258,6 +272,27 @@
     -fx-background-color: #e96122;
     -fx-background-radius: 8;
     -fx-border-radius: 8;
+}
+
+.imageBook {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0.5, 0, 0);
+}
+
+.tableView {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-font-size: 14px;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1px;
+
+}
+
+.itemColumn {
+    -fx-alignment: left;
+    -fx-font-size: 13px;
+    -fx-border-color: #acacac;
+    -fx-border-width: 1px;
 }
 
 

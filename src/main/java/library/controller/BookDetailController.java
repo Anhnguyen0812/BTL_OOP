@@ -161,6 +161,7 @@ public class BookDetailController {
     return bookDetail;
   }
 
+  @SuppressWarnings("unused")
   @FXML
   public void initialize() {
     if (addbook != null) {

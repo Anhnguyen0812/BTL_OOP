@@ -22,6 +22,7 @@ public class AppLaunch extends Application {
         scene = new Scene(loadFXML("Login", hostServices));
         stage.setScene(scene);
         stage.getIcons().add(new Image("/imgs/appIcon1.png"));
+        stage.setResizable(false);
         stage.setTitle("Library Management System");
         stage.show();
 

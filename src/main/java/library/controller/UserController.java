@@ -31,14 +31,16 @@ public class UserController {
   protected HostServices hostServices;
 
   private Stage stage;
-  @FXML private TableView<Book> booksTable;
+  @FXML
+  private TableView<Book> booksTable;
 
-  @FXML private TextField searchField;
+  @FXML
+  private TextField searchField;
 
   private final DBConnection connection = DBConnection.getInstance();
 
-  private final BookService bookService =
-      new BookService(BookDAO.getBookDAO()); // Giả định đã có service xử lý logic mượn sách
+  private final BookService bookService = new BookService(BookDAO.getBookDAO()); // Giả định đã có service xử lý logic
+                                                                                 // mượn sách
   private BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO(connection.getConnection());
   private BookDAO bookDAO = BookDAO.getBookDAO();
   private BookController bookController = new BookController();
@@ -49,6 +51,7 @@ public class UserController {
     this.hostServices = hostServices;
   }
 
+  @SuppressWarnings("unchecked")
   @FXML
   public void initialize() {
     // Khởi tạo cột cho bảng sách
@@ -86,8 +89,7 @@ public class UserController {
   private void handleBorrowBook() throws SQLException {
     Book selectedBook = booksTable.getSelectionModel().getSelectedItem();
     if (selectedBook != null) {
-      BorrowRecord borrowRecord =
-          new BorrowRecord(0, user, selectedBook, today, today.plusMonths(2));
+      BorrowRecord borrowRecord = new BorrowRecord(0, user, selectedBook, today, today.plusMonths(2));
       borrowRecordDAO.addBorrowRecord(borrowRecord);
       bookDAO.borrowBook(selectedBook);
     } else {
