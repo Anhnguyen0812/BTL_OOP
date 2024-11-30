@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<Pane fx:id="detailPane" prefHeight="643.0" prefWidth="1100.0" styleClass="detailBookPane" stylesheets="@../styles/Ui.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="library.controller.DetailController">
+   <children>
+      <ImageView fx:id="bookImageView" fitHeight="330.0" fitWidth="244.0" layoutX="69.0" layoutY="27.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../imgs/noBook.png" />
+         </image>
+      </ImageView>
+      <Label fx:id="titleLabel" layoutX="350.0" layoutY="40.0" prefHeight="45.0" prefWidth="506.0" text="TITLE">
+         <font>
+            <Font name="Segoe UI Bold" size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="authorLabel" layoutX="350.0" layoutY="82.0" prefHeight="45.0" prefWidth="506.0" text="author">
+         <font>
+            <Font name="Segoe UI" size="15.0" />
+         </font>
+      </Label>
+      <HBox layoutX="350.0" layoutY="126.0" prefHeight="28.0" prefWidth="365.0">
+         <children>
+            <Label fx:id="ratingLabel" prefHeight="26.0" prefWidth="58.0" text="4.9" wrapText="true">
+               <font>
+                  <Font name="Segoe UI" size="15.0" />
+               </font>
+            </Label>
+            <Canvas fx:id="star1" height="15.0" width="15.0">
+               <HBox.margin>
+                  <Insets top="5.0" />
+               </HBox.margin>
+            </Canvas>
+            <Canvas fx:id="star2" height="15.0" width="15.0">
+               <HBox.margin>
+                  <Insets left="3.0" top="5.0" />
+               </HBox.margin>
+            </Canvas>
+            <Canvas fx:id="star3" height="15.0" width="15.0">
+               <HBox.margin>
+                  <Insets left="5.0" top="5.0" />
+               </HBox.margin>
+            </Canvas>
+            <Canvas fx:id="star4" height="15.0" width="15.0">
+               <HBox.margin>
+                  <Insets left="5.0" top="5.0" />
+               </HBox.margin>
+            </Canvas>
+            <Canvas fx:id="star5" height="15.0" width="15.0">
+               <HBox.margin>
+                  <Insets left="5.0" top="5.0" />
+               </HBox.margin>
+            </Canvas>
+         </children>
+      </HBox>
+      <Label layoutX="350.0" layoutY="160.0" prefHeight="40.0" prefWidth="112.0" text="FIRST PUBLISH">
+         <font>
+            <Font name="Segoe UI" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="350.0" layoutY="200.0" prefHeight="40.0" prefWidth="112.0" text="ISBN">
+         <font>
+            <Font name="Segoe UI" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="350.0" layoutY="240.0" prefHeight="40.0" prefWidth="112.0" text="CATEGORIES">
+         <font>
+            <Font name="Segoe UI" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="493.0" layoutY="160.0" prefHeight="40.0" prefWidth="321.0" text="FIRST PUBLISH">
+         <font>
+            <Font name="Segoe UI" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="isbnLabel" layoutX="493.0" layoutY="200.0" prefHeight="40.0" prefWidth="322.0" text="FIRST PUBLISH">
+         <font>
+            <Font name="Segoe UI" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="category" layoutX="493.0" layoutY="240.0" prefHeight="40.0" prefWidth="325.0" text="FIRST PUBLISH">
+         <font>
+            <Font name="Segoe UI" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="350.0" layoutY="280.0" prefHeight="40.0" prefWidth="100.0" text="COMMENT" />
+      <Label fx:id="comment" layoutX="493.0" layoutY="280.0" prefHeight="40.0" prefWidth="376.0" text="Label" />
+      <ScrollPane fx:id="scrollPane" layoutX="25.0" layoutY="371.0" prefHeight="258.0" prefWidth="1055.0" styleClass="ScrollPane">
+         <content>
+            <VBox fx:id="v1" prefHeight="264.0" prefWidth="1051.0">
+               <padding>
+                  <Insets left="10.0" top="10.0" />
+               </padding>
+               <children>
+                  <Text fx:id="description" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+                     <VBox.margin>
+                        <Insets right="10.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Text>
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>    
+      <ImageView fx:id="qrCodeImageView" fitHeight="100.0" fitWidth="100.0" layoutX="968.0" layoutY="44.0" pickOnBounds="true" preserveRatio="true" />
+      <Label layoutX="481.0" layoutY="2.0" prefHeight="25.0" prefWidth="139.0" text="DETAIL BOOK" textFill="#b54c4c">
+         <font>
+            <Font name="Comic Sans MS" size="18.0" />
+         </font>
+      </Label>
+   </children>
+</Pane>

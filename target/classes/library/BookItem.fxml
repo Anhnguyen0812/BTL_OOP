@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="144.0" prefWidth="517.0" styleClass="itemAnchor" stylesheets="@../styles/Ui.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="library.controller.BookItemController">
+   <children>
+      <ImageView fx:id="bookImage" fitHeight="134.0" fitWidth="100.0" layoutX="14.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" styleClass="imageBook">
+         <image>
+            <Image url="@../imgs/noBook.png" />
+         </image></ImageView>
+      <VBox layoutX="126.0" layoutY="9.0" prefHeight="133.0" prefWidth="383.0">
+         <children>
+            <Label fx:id="title" prefHeight="14.0" prefWidth="376.0" text="Title">
+               <VBox.margin>
+                  <Insets bottom="5.0" top="5.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="Segoe UI Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="author" prefHeight="18.0" prefWidth="308.0" text="Author">
+               <VBox.margin>
+                  <Insets bottom="5.0" top="5.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="Segoe UI" size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="caterLabel" prefHeight="18.0" prefWidth="308.0" text="Cater">
+               <font>
+                  <Font name="Segoe UI" size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="isbn" prefHeight="18.0" prefWidth="188.0" text="Isbn">
+               <VBox.margin>
+                  <Insets top="5.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="Segoe UI" size="14.0" />
+               </font>
+            </Label>
+            <HBox prefHeight="28.0" prefWidth="383.0">
+               <children>
+                  <Label fx:id="ratingLabel" prefHeight="26.0" prefWidth="58.0" text="4.9" wrapText="true">
+                     <font>
+                        <Font name="Segoe UI" size="15.0" />
+                     </font>
+                  </Label>
+                  <Canvas fx:id="star1" height="15.0" width="15.0">
+                     <HBox.margin>
+                        <Insets top="5.0" />
+                     </HBox.margin>
+                  </Canvas>
+                  <Canvas fx:id="star2" height="15.0" width="15.0">
+                     <HBox.margin>
+                        <Insets left="3.0" top="5.0" />
+                     </HBox.margin>
+                  </Canvas>
+                  <Canvas fx:id="star3" height="15.0" width="15.0">
+                     <HBox.margin>
+                        <Insets left="5.0" top="5.0" />
+                     </HBox.margin>
+                  </Canvas>
+                  <Canvas fx:id="star4" height="15.0" width="15.0">
+                     <HBox.margin>
+                        <Insets left="5.0" top="5.0" />
+                     </HBox.margin>
+                  </Canvas>
+                  <Canvas fx:id="star5" height="15.0" width="15.0">
+                     <HBox.margin>
+                        <Insets left="5.0" top="5.0" />
+                     </HBox.margin>
+                  </Canvas>
+               </children>
+               <VBox.margin>
+                  <Insets top="5.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+      </VBox>
+      <Button fx:id="borrowButton" layoutX="444.0" layoutY="65.0" mnemonicParsing="false" onAction="#borrowAction" text="Borrow" />
+      <Label fx:id="info" layoutX="380.0" layoutY="100.0" prefHeight="28.0" prefWidth="120.0" text="info" textFill="RED" visible="false" />
+   </children>
+</AnchorPane>

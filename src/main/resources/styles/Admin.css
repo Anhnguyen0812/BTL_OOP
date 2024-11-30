@@ -1,0 +1,33 @@
+.table-view {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #d1d1d1;
+}
+
+.detail-pane {
+    -fx-background-color: #f5f5f5;
+    -fx-border-color: #d1d1d1;
+}
+
+.section-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.nav-label {
+    -fx-font-size: 16px;
+    -fx-padding: 10px;
+    -fx-background-color: #E8E8E8;
+    -fx-text-fill: #333333;
+    -fx-border-color: #d1d1d1;
+}
+
+.search-button, .add-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+}
+
+.input-field, .search-field {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #d1d1d1;
+}

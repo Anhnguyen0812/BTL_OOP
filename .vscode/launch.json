@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        
+
+        {
+            "type": "java",
+            "name": "AppLaunch",
+            "request": "launch",
+            "mainClass": "library.AppLaunch",
+            "projectName": "librarymanager",
+            "vmArgs": "--module-path \"/Users/hoangyen/javafx-sdk-23-2/lib\" --add-modules javafx.controls,javafx.fxml"
+        },
+        {
+            "type": "java",
+            "name": "Launch AppLauch",
+            "request": "launch",
+            "mainClass": "library.AppLauch",
+            "projectName": "library",
+            "vmArgs": "--module-path \"/Users/hoangyen/javafx-sdk-23-2/lib\" --add-modules javafx.controls,javafx.fxml"
+        }
+    ]
+}

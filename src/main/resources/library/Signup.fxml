@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="500.0" style="-fx-background-color: A6AEBF; -fx-border-color: tranparent;" stylesheets="@../styles/Ui.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="library.controller.SignupController">
+   <children>
+      <GridPane layoutX="59.0" layoutY="110.0" prefHeight="144.0" prefWidth="133.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Email:" wrappingWidth="62.93670654296875" GridPane.rowIndex="1">
+               <font>
+                  <Font name="Segoe UI Bold" size="14.0" />
+               </font></Text>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password:" wrappingWidth="66.93671417236328" GridPane.rowIndex="2">
+               <font>
+                  <Font name="Segoe UI Bold" size="14.0" />
+               </font></Text>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Confirm Password:" GridPane.rowIndex="3">
+               <font>
+                  <Font name="Segoe UI Bold" size="14.0" />
+               </font></Text>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Username:" wrappingWidth="104.5367431640625">
+               <font>
+                  <Font name="Segoe UI Bold" size="14.0" />
+               </font></Text>
+         </children>
+      </GridPane>
+      <GridPane layoutX="188.0" layoutY="110.0" prefHeight="144.0" prefWidth="256.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <TextField fx:id="Email" prefHeight="9.0" prefWidth="245.0" promptText="Email" style="-fx-background-radius: 10; -fx-border-radius: 10;" GridPane.rowIndex="1">
+               <font>
+                  <Font size="14.0" />
+               </font></TextField>
+            <TextField fx:id="Username" prefHeight="7.0" prefWidth="241.0" promptText="Username" style="-fx-background-radius: 10; -fx-border-radius: 10;">
+               <font>
+                  <Font size="14.0" />
+               </font></TextField>
+            <PasswordField fx:id="Passhide" prefHeight="0.0" prefWidth="241.0" promptText="Password" style="-fx-background-radius: 10; -fx-border-radius: 10;" GridPane.rowIndex="2">
+               <font>
+                  <Font size="13.0" />
+               </font></PasswordField>
+            <PasswordField fx:id="CPasshide" promptText="Confirm Password" style="-fx-background-radius: 10; -fx-border-radius: 10;" GridPane.rowIndex="3">
+               <font>
+                  <Font size="13.0" />
+               </font></PasswordField>
+            <TextField fx:id="Pass" prefHeight="14.0" prefWidth="242.0" promptText="Password" style="-fx-background-radius: 10; -fx-border-radius: 10;" GridPane.rowIndex="2">
+               <font>
+                  <Font size="14.0" />
+               </font></TextField>
+            <TextField fx:id="CPass" prefHeight="2.0" prefWidth="247.0" promptText="Confirm Password" style="-fx-background-radius: 10; -fx-border-radius: 10;" GridPane.rowIndex="3">
+               <font>
+                  <Font size="14.0" />
+               </font></TextField>
+         </children>
+      </GridPane>
+      <Button fx:id="hideButton" layoutX="411.0" layoutY="222.0" mnemonicParsing="false" onAction="#togglePass" prefHeight="30.0" prefWidth="30.0" styleClass="hide">
+         <font>
+            <Font size="13.0" />
+         </font>
+         <graphic>
+            <ImageView fx:id="imgHide1" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../imgs/hidden.png" />
+               </image>
+            </ImageView>
+         </graphic></Button>
+      <Button fx:id="hideButton1" layoutX="411.0" layoutY="186.0" mnemonicParsing="false" onAction="#togglePass" prefHeight="30.0" prefWidth="30.0" styleClass="hide">
+         <font>
+            <Font size="13.0" />
+         </font>
+         <graphic>
+            <ImageView fx:id="imgHide2" fitHeight="16.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../imgs/hidden.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Button fx:id="signupButton" layoutX="274.0" layoutY="288.0" mnemonicParsing="false" onAction="#MoveToSignup" prefHeight="32.0" prefWidth="82.0" styleClass="LoginButton" text="Sign up">
+         <font>
+            <Font name="Segoe UI Bold" size="15.0" />
+         </font></Button>
+      <Text layoutX="209.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sign up" wrappingWidth="133.0">
+         <font>
+            <Font name="Comic Sans MS" size="38.0" />
+         </font>
+      </Text>
+      <ImageView fitHeight="60.0" fitWidth="60.0" layoutX="83.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true" />
+      <Text fx:id="announce" layoutX="289.0" layoutY="267.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="140.460205078125" />
+      <ImageView fitHeight="80.0" fitWidth="80.0" layoutX="59.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../imgs/appIcon.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="loginButton" layoutX="387.0" layoutY="288.0" mnemonicParsing="false" onAction="#MoveToLogin" prefHeight="32.0" prefWidth="82.0" styleClass="LoginButton" text="Login">
+         <font>
+            <Font name="Segoe UI Bold" size="15.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

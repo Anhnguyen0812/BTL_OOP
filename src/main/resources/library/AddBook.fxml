@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="630.0" prefWidth="1100.0" styleClass="PaneIn" stylesheets="@../styles/Ui.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="library.controller.AddBookController">
+   <children>
+      <TabPane prefHeight="630.0" prefWidth="1100.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="manualy">
+               <content>
+                  <Pane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <Button fx:id="AddButton" layoutX="1000.0" layoutY="520.0" mnemonicParsing="false" onAction="#gotoAddBook1" text="ADD" />
+                        <Text layoutX="110.0" layoutY="128.0" strokeType="OUTSIDE" strokeWidth="0.0" text="img url">
+                           <font>
+                              <Font name="Segoe UI Bold" size="15.0" />
+                           </font>
+                        </Text>
+                        <TextField fx:id="imgUrl" layoutX="219.0" layoutY="108.0" />
+                        <Text layoutX="110.0" layoutY="209.0" strokeType="OUTSIDE" strokeWidth="0.0" text="title">
+                           <font>
+                              <Font name="Segoe UI Bold" size="15.0" />
+                           </font>
+                        </Text>
+                        <TextField fx:id="title" layoutX="219.0" layoutY="189.0" />
+                        <Text layoutX="110.0" layoutY="281.0" strokeType="OUTSIDE" strokeWidth="0.0" text="author">
+                           <font>
+                              <Font name="Segoe UI Bold" size="15.0" />
+                           </font>
+                        </Text>
+                        <TextField fx:id="author" layoutX="219.0" layoutY="260.0" />
+                        <Text layoutX="110.0" layoutY="360.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Isbn">
+                           <font>
+                              <Font name="Segoe UI Bold" size="15.0" />
+                           </font>
+                        </Text>
+                        <TextField fx:id="isbn" layoutX="219.0" layoutY="340.0" />
+                        <Text layoutX="110.0" layoutY="435.0" strokeType="OUTSIDE" strokeWidth="0.0" text="description">
+                           <font>
+                              <Font name="Segoe UI Bold" size="15.0" />
+                           </font>
+                        </Text>
+                        <TextField fx:id="description" layoutX="219.0" layoutY="415.0" />
+                        <Text layoutX="617.0" layoutY="128.0" strokeType="OUTSIDE" strokeWidth="0.0" text="link QRCode">
+                           <font>
+                              <Font name="Segoe UI Bold" size="15.0" />
+                           </font>
+                        </Text>
+                        <TextField fx:id="linkQrCode" layoutX="722.0" layoutY="107.0" />
+                        <Text layoutX="617.0" layoutY="208.0" strokeType="OUTSIDE" strokeWidth="0.0" text="categories">
+                           <font>
+                              <Font name="Segoe UI Bold" size="15.0" />
+                           </font>
+                        </Text>
+                        <TextField fx:id="category" layoutX="722.0" layoutY="187.0" />
+                        <Text layoutX="617.0" layoutY="282.0" strokeType="OUTSIDE" strokeWidth="0.0" text="rate AVG">
+                           <font>
+                              <Font name="Segoe UI Bold" size="15.0" />
+                           </font>
+                        </Text>
+                        <TextField fx:id="rateAvg" layoutX="724.0" layoutY="261.0" />
+                        <Text layoutX="617.0" layoutY="361.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Availble">
+                           <font>
+                              <Font name="Segoe UI Bold" size="15.0" />
+                           </font>
+                        </Text>
+                        <TextField fx:id="availble" layoutX="724.0" layoutY="340.0" />
+                     </children>
+                  </Pane>
+               </content>
+            </Tab>
+          <Tab text="scan isbn">
+               <content>
+                  <Pane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="101.0" layoutY="67.0" text="ISBN">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <TextField layoutX="172.0" layoutY="64.0" prefHeight="32.0" prefWidth="208.0" styleClass="Search" />
+                        <Label layoutX="511.0" layoutY="68.0" text="OR">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Pane fx:id="root" layoutX="636.0" layoutY="18.0" prefHeight="171.0" prefWidth="304.0" styleClass="itemAnchor" />
+                        <Button fx:id="Scan" layoutX="997.0" layoutY="68.0" mnemonicParsing="false" onAction="#gotoScanBook" text="Scan">
+                           <font>
+                              <Font name="Segoe UI Bold" size="13.0" />
+                           </font></Button>
+                        <Label fx:id="isbnFind" layoutX="459.0" layoutY="178.0" text="Isbn: 01923497124">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="findIsbn" layoutX="407.0" layoutY="68.0" mnemonicParsing="false" onAction="#gotoFindBook" text="Find">
+                           <font>
+                              <Font name="Segoe UI Bold" size="13.0" />
+                           </font></Button>
+                        <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="511.0" layoutY="483.0" pickOnBounds="true" preserveRatio="true" />
+                        <Button fx:id="cancelScanButton" layoutX="916.0" layoutY="17.0" mnemonicParsing="false" onAction="#gotoCancelScan" prefHeight="6.0" prefWidth="8.0" text="X" textAlignment="CENTER">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Button>
+                        <Pane layoutX="106.0" layoutY="258.0" prefHeight="325.0" prefWidth="910.0" style="-fx-background-color: #DDDDDD; -fx-background-radius: 10;">
+                           <children>
+                              <Button layoutX="840.0" layoutY="274.0" mnemonicParsing="false" onAction="#gotoAddBook2" prefHeight="37.0" prefWidth="56.0" text="ADD" />
+                           </children>
+                        </Pane>
+                        <ImageView fx:id="imageBook" fitHeight="181.0" fitWidth="137.0" layoutX="183.0" layoutY="315.0" pickOnBounds="true" preserveRatio="true" styleClass="imageBook">
+                           <image>
+                              <Image url="@../imgs/noBook.png" />
+                           </image>
+                        </ImageView>
+                        <Label fx:id="title2" layoutX="377.0" layoutY="278.0" prefHeight="27.0" prefWidth="594.0" text="title">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="author2" layoutX="377.0" layoutY="312.0" prefHeight="21.0" prefWidth="520.0" text="author">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="isbn2" layoutX="377.0" layoutY="344.0" prefHeight="21.0" prefWidth="237.0" text="isbn">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="description2" layoutX="377.0" layoutY="383.0" prefHeight="21.0" prefWidth="555.0" text="description">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="377.0" layoutY="521.0" prefHeight="21.0" prefWidth="63.0" text="QRCode">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="category2" layoutX="377.0" layoutY="423.0" prefHeight="21.0" prefWidth="538.0" text="categories">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="377.0" layoutY="459.0" text="Availble">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="availbleScan" layoutX="469.0" layoutY="454.0" prefHeight="32.0" prefWidth="73.0" />
+                     </children>
+                  </Pane>
+               </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</Pane>

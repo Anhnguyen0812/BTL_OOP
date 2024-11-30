@@ -1,0 +1,273 @@
+.hideButton {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+
+}
+
+.LoginButton {
+    -fx-background-color: #2de2d0;
+    -fx-text-fill: #000000;
+    -fx-background-radius: 10;
+
+}
+
+.LoginButton:hover {
+    -fx-background-color: #04a091;
+    -fx-text-fill: #ffffffc8;
+    -fx-background-radius: 10;
+}
+
+.LoginButton:pressed {
+    -fx-background-color: #2de2d0;
+    -fx-text-fill: #000000c8;
+    -fx-background-radius: 10;
+}
+
+.hide {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: #08a279;
+}
+
+.SearchButton {
+    -fx-background-color: #1aecd7;
+    -fx-text-fill: #000000;
+    -fx-background-radius: 10;
+}
+
+.SearchButton:hover {
+    -fx-background-color: #049284;
+    -fx-text-fill: #ffffffc8;
+    -fx-background-radius: 10;
+}
+
+.SearchButton:pressed {
+    -fx-background-color: #1aecd7;
+    -fx-text-fill: #000000c8;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.Pane {
+    -fx-background-color: #DFDFDF;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+
+
+}
+
+.Search {
+    -fx-background-color: transparent;
+    -fx-text-fill: #030202;
+    -fx-font-size: 16px;
+    -font-family: "Calibri";
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #016e63;
+    -fx-border-width: 2;
+}
+
+.ScrollPanelist {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #016e63;
+    -fx-border-width: 5;
+
+}
+
+.hyperlink {
+    -fx-text-fill: #ff0000;
+    -fx-font-size: 12;
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+}
+
+.text-field {
+    -fx-font-size: 14px;
+    -fx-padding: 5px;
+    -fx-border-color: #cccccc;
+}
+
+
+
+.logout-button {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-alignment: center-right;
+}
+
+.title-label {
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 28px;
+}
+
+.section-title {
+    -fx-font-size: 18px;
+    -fx-text-fill: #34495e;
+}
+
+.action-button {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.borrow-button {
+    -fx-background-color: #2ecc71;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.logout-button {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.itemAnchor {
+    -fx-background-color: #d5d5d5;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.itemAnchor:hover {
+    -fx-background-color: #c1c1c1;
+    -fx-translate-y: -2px;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.homeInfoPane {
+    -fx-background-color: #c7d0e3;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+
+}
+
+.homeInfoPane:hover {
+    -fx-background-color: #a1afb8;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.progressHome {
+    -fx-progress-color: #8a2be2;
+    -fx-indicator-position: center;
+
+}
+
+.a {
+    -fx-background-color: #a1afb8;
+}
+
+.hboxTitle {
+    -fx-background-color: #b4bbca;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+}
+
+.ScrollPane {
+    -fx-background-color: transparent;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: transparent
+}
+
+.ScrollPane:pressed {
+    -fx-background-color: transparent;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: transparent
+}
+
+.detailBookPane {
+    -fx-background-color: #8fa6b9;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.detailPane {
+    -fx-background-color: #a5c4dd;
+    -fx-border-color: #a5c4dd;
+}
+
+.VboxDash {
+    -fx-background-color: #A6AEBF;
+    -fx-background-radius: 0px 20px 20px 0px;
+}
+
+.PaneIn {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 20px;
+}
+
+.transparent {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.transparent:hover {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-opacity: 0.7;
+    -fx-translate-y: -2px;
+}
+
+.multiChoice {
+    -fx-background-color: #bdbdbd;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+
+}
+
+.multiChoice:hover {
+    -fx-background-color: #838383;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.multiChoice:pressed {
+    -fx-background-color: #bdbdbd;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.listViewNoti {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-font-size: 15px;
+
+}
+
+.notiLabel {
+    -fx-background-color: #e96122;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+}
+
+
+.circular-image {
+    -fx-fit-width: 100px;
+    /* Adjust the size as needed */
+    -fx-fit-height: 100px;
+    /* Adjust the size as needed */
+    -fx-background-radius: 50%;
+    /* This won't clip the image but is useful for other styling */
+    -fx-border-radius: 50%;
+    /* This won't clip the image but is useful for other styling */
+}
