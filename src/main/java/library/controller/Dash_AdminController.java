@@ -1,11 +1,14 @@
 package library.controller;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import org.hibernate.mapping.Table;
@@ -14,7 +17,9 @@ import org.springframework.cglib.core.Local;
 import com.gluonhq.charm.glisten.control.Avatar;
 import com.gluonhq.impl.charm.a.a.a;
 import com.gluonhq.impl.charm.a.b.a.b;
+import com.gluonhq.impl.charm.a.b.b.m;
 import com.gluonhq.impl.charm.a.b.b.s;
+import com.gluonhq.impl.charm.a.b.b.t;
 import com.gluonhq.impl.charm.a.b.b.u;
 
 import javafx.scene.control.Label;
@@ -76,10 +81,16 @@ public class Dash_AdminController {
   // private Insets title;
 
   @FXML
-  private TextField title, userManageTextField;
+  private TextField title, userManageTextField, imgUrlField, titleField, authorField, isbnField, categoryField,
+      descriptionField, rate_avgField, availbleField, QRCodeUrlField, usernameField, mailField, roleField,
+      passwordField, confirmField, nameUserAddField, mailUserAddField, roleUserAddField, passwordAddField,
+      confirmpassAddField;
 
   @FXML
-  private Pane home, books, issueBooks, manageUsers, settings, noti, subUser, pane;
+  private Pane home, books, issueBooks, manageUsers, settings, noti, subUser, pane, editBookPane, editUserPane,
+      addUserPane;
+  @FXML
+  private Button acceptAddUserButton, cancelAddUserButton;
   @FXML
   private TableColumn<BorrowRecord, Integer> idIssueBorrow, availbleIssueBorrow;
   @FXML
@@ -92,7 +103,8 @@ public class Dash_AdminController {
   @FXML
   private Button searchLib, searchGG, home_Button, books_Button, returnBooks_Button, issueBooks_Button, settings_Button;
   @FXML
-  private Button addBookButton, editBookButton, deleteBookButton, qrCodeButton;
+  private Button addBookButton, editBookButton, deleteBookButton, qrCodeButton, applyEditBook, cancelEditBook,
+      applyEditUserButton, cancelEditUser, cancelAddUser;
 
   @FXML
   private Label totalBooksLabel, borrowedLabel;
@@ -255,7 +267,8 @@ public class Dash_AdminController {
     // titleIssueBorrow = new TableColumn<>("Title");
     titleIssueBorrow.setCellValueFactory(param -> {
       if (param.getValue().getBook() != null)
-        return new ReadOnlyObjectWrapper<>(param.getValue().getBook().getTitle());
+        return new ReadOnlyObjectWrapper<>(
+            "(id:" + param.getValue().getBook().getId() + ")-" + param.getValue().getBook().getTitle());
       else
         return new ReadOnlyObjectWrapper<>(param.getValue().getBook().getTitle());
     });
@@ -270,12 +283,18 @@ public class Dash_AdminController {
     // availbleIssueBorrow = new TableColumn<>("Available");
     availbleIssueBorrow.setCellValueFactory(param -> {
       if (param.getValue().getBook() != null)
-        return new ReadOnlyObjectWrapper<>(1);
+        return new ReadOnlyObjectWrapper<>(param.getValue().getBook().getAvailable());
       else
         return new ReadOnlyObjectWrapper<>(0);
     });
     // userIssueBorrow = new TableColumn<>("User");
-    userIssueBorrow.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue().getUser().getName()));
+    userIssueBorrow.setCellValueFactory(param -> {
+      if (param.getValue().getUser() != null)
+        return new ReadOnlyObjectWrapper<>(
+            "(id:" + param.getValue().getUser().getId() + ")-" + param.getValue().getUser().getName());
+      else
+        return new ReadOnlyObjectWrapper<>("");
+    });
     // borrowDateIssueBorrow = new TableColumn<>("Borrow Date");
     borrowDateIssueBorrow.setCellValueFactory(new PropertyValueFactory<>("borrowDate"));
     ///returnDateIssueBorrow = new TableColumn<>("return_date");
@@ -292,12 +311,18 @@ public class Dash_AdminController {
           BorrowRecord request = getTableView().getItems().get(getIndex());
           System.out.println("Accepted: " + request.getId());
           getTableView().getItems().remove(request); // Xóa yêu cầu khỏi danh sách
+
+          // set the request to status 1
+
         });
 
         rejectButton.setOnAction(event -> {
           BorrowRecord request = getTableView().getItems().get(getIndex());
           System.out.println("Rejected: " + request.getId());
           getTableView().getItems().remove(request); // Xóa yêu cầu khỏi danh sách
+
+          // set the request to status null
+
         });
 
       }
@@ -328,6 +353,12 @@ public class Dash_AdminController {
       showAlert("Error", "Failed to load Manage Issue Books pane.");
     }
     directlyTab.setContent(manageIssueBooksPane);
+
+    // set up books
+    SearchLibrary();
+
+    // set up users
+    searchUserManage();
 
   }
 
@@ -671,7 +702,7 @@ public class Dash_AdminController {
           AnchorPane bookItem = loader.load();
           BookItemController controller = loader.getController();
           controller.setItemData(book, i, user);
-          manageBookEdit = book;
+
           controller.hideButton();
 
           if (book.getRateAvg() == null) {
@@ -693,6 +724,7 @@ public class Dash_AdminController {
           bookItem.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {
               showBook(book);
+              manageBookEdit = book;
             }
             if (event.getClickCount() == 2) {
               showBookDetails(book);
@@ -729,7 +761,10 @@ public class Dash_AdminController {
   }
 
   public void showBook(Book book) {
-    imageManageBook.setImage(new Image(book.getImageUrl(), true));
+    if (book.getImageUrl() != null)
+      imageManageBook.setImage(new Image(book.getImageUrl(), true));
+    else
+      imageManageBook.setImage(new Image("/imgs/noBook.png", true));
     titleManage.setText("(id: " + book.getId() + ")" + book.getTitle());
     authorManage.setText("by  " + book.getAuthor());
     isbnManage.setText("isbn  " + book.getIsbn());
@@ -865,13 +900,86 @@ public class Dash_AdminController {
 
   @FXML
   public void gotoEditBook() {
+    if (manageBookEdit != null) {
+      editBookPane.setVisible(true);
+      editBookPane.setStyle("-fx-background-color: rgba(92, 161, 171, 0.3);");
 
+      imgUrlField.setText(manageBookEdit.getImageUrl());
+      titleField.setText(manageBookEdit.getTitle());
+      authorField.setText(manageBookEdit.getAuthor());
+      isbnField.setText(manageBookEdit.getIsbn());
+      categoryField.setText(manageBookEdit.getCategories());
+      descriptionField.setText(manageBookEdit.getDescription());
+      rate_avgField.setText(manageBookEdit.getRateAvg() != null ? String.valueOf(manageBookEdit.getRateAvg()) : "");
+      availbleField.setText(String.valueOf(manageBookEdit.getAvailable()));
+      QRCodeUrlField.setText(manageBookEdit.getQRcode());
+
+      javafx.scene.effect.BoxBlur blur = new javafx.scene.effect.BoxBlur(10, 10,
+          3);
+      if (home.isVisible()) {
+        home.setEffect(blur);
+      } else if (books.isVisible()) {
+        books.setEffect(blur);
+      } else if (issueBooks.isVisible()) {
+        issueBooks.setEffect(blur);
+      } else if (manageUsers.isVisible()) {
+        manageUsers.setEffect(blur);
+      } else if (settings.isVisible()) {
+        settings.setEffect(blur);
+      }
+
+      applyEditBook.setOnAction(event -> {
+
+        manageBookEdit
+            .setImageUrl(imgUrlField.getText() == null ? manageBookEdit.getImageUrl() : imgUrlField.getText());
+        manageBookEdit.setTitle(titleField.getText() == null ? manageBookEdit.getTitle() : titleField.getText());
+        manageBookEdit.setAuthor(authorField.getText() == null ? manageBookEdit.getAuthor() : authorField.getText());
+        manageBookEdit.setIsbn(isbnField.getText() == null ? manageBookEdit.getIsbn() : isbnField.getText());
+        manageBookEdit.setCategories(
+            categoryField.getText() == null ? manageBookEdit.getCategories() : categoryField.getText());
+        manageBookEdit.setDescription(
+            descriptionField.getText() == null ? manageBookEdit.getDescription() : descriptionField.getText());
+        manageBookEdit.setRateAvg(rate_avgField.getText() == null ? manageBookEdit.getRateAvg()
+            : Double.parseDouble(rate_avgField.getText()));
+        manageBookEdit.setAvailable(availbleField.getText() == null ? manageBookEdit.getAvailable()
+            : Integer.parseInt(availbleField.getText()));
+        manageBookEdit
+            .setQRcode(QRCodeUrlField.getText() == null ? manageBookEdit.getQRcode() : QRCodeUrlField.getText());
+        manageBookEdit.setQRcode(QRCodeUrlField.getText());
+
+        bookDAO.updateBook(manageBookEdit);
+        showAlert("Success", "Book updated successfully.");
+        SearchLibrary(); // Refresh the book list
+
+        editBookPane.setVisible(false);
+        home.setEffect(null);
+        books.setEffect(null);
+        issueBooks.setEffect(null);
+        manageUsers.setEffect(null);
+        settings.setEffect(null);
+      });
+
+      cancelEditBook.setOnAction(event -> {
+        editBookPane.setVisible(false);
+        home.setEffect(null);
+        books.setEffect(null);
+        issueBooks.setEffect(null);
+        manageUsers.setEffect(null);
+        settings.setEffect(null);
+      });
+    } else {
+      showAlert("Error", "No book selected to edit.");
+    }
   }
 
   @FXML
   public void gotoDeleteBook() {
     if (manageBookEdit != null) {
       try {
+        if (borrowRecordDAO.isBookBorrowed(manageBookEdit.getId())) {
+          showAlert("Error", "Cannot delete book as it is currently borrowed.");
+          return;
+        }
         bookDAO.deleteBook(manageBookEdit.getId());
         showAlert("Success", "Book deleted successfully.");
         SearchLibrary(); // Refresh the book list
@@ -886,6 +994,117 @@ public class Dash_AdminController {
   @FXML
   public void gotoQRCode() {
 
+  }
+
+  @FXML
+  public void gotoEditUser() {
+    if (manageUserEdit != null) {
+      editUserPane.setVisible(true);
+      editUserPane.setStyle("-fx-background-color: rgba(92, 161, 171, 0.3);");
+
+      usernameField.setText(manageUserEdit.getName());
+      mailField.setText(manageUserEdit.getEmail());
+      roleField.setText(manageUserEdit.getRole());
+
+      javafx.scene.effect.BoxBlur blur = new javafx.scene.effect.BoxBlur(10, 10, 3);
+
+      manageUsers.setEffect(blur);
+
+      applyEditUserButton.setOnAction(event -> {
+        manageUserEdit.setName(usernameField.getText());
+        manageUserEdit.setEmail(mailField.getText());
+        manageUserEdit.setRole(roleField.getText());
+        manageUserEdit.setPassword(passwordField.getText());
+
+        UserDAO userDAO = UserDAO.getUserDAO();
+        try {
+          userDAO.updateUser(manageUserEdit);
+          showAlert("Success", "User updated successfully.");
+          searchUserManage();
+        } catch (SQLException e) {
+          showAlert("Error", "Failed to update user: " + manageUserEdit.getName());
+        }
+      });
+
+      cancelEditUser.setOnAction(event -> {
+        editUserPane.setVisible(false);
+        home.setEffect(null);
+        books.setEffect(null);
+        issueBooks.setEffect(null);
+        manageUsers.setEffect(null);
+        settings.setEffect(null);
+      });
+    } else {
+      showAlert("Error", "No user selected to edit.");
+    }
+  }
+
+  public static String getSalt() throws NoSuchAlgorithmException {
+    // Tạo ra salt ngẫu nhiên với SecureRandom
+    SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+    byte[] salt = new byte[16];
+    sr.nextBytes(salt);
+    // Mã hóa salt thành chuỗi base64 để dễ lưu trữ
+    return Base64.getEncoder().encodeToString(salt);
+  }
+
+  @FXML
+  public void gotoAddUser() throws SQLException {
+    addUserPane.setVisible(true);
+    addUserPane.setStyle("-fx-background-color: rgba(92, 161, 171, 0.3);");
+
+    javafx.scene.effect.BoxBlur blur = new javafx.scene.effect.BoxBlur(10, 10, 3);
+    manageUsers.setEffect(blur);
+
+    acceptAddUserButton.setOnAction(event -> {
+      try {
+        if (confirmpassAddField.getText().equals(passwordAddField.getText())
+            && !nameUserAddField.getText().isEmpty()
+            && !mailUserAddField.getText().isEmpty()
+            && UserDAO.getUserByName(nameUserAddField.getText()) == null) {
+
+          User newUser = new User(nameUserAddField.getText(), mailUserAddField.getText(), roleUserAddField.getText(),
+              passwordAddField.getText(), getSalt());
+
+          UserDAO userDAO = UserDAO.getUserDAO();
+          userDAO.addUser(newUser);
+          showAlert("Success", "User added successfully.");
+          searchUserManage();
+          addUserPane.setVisible(false);
+          manageUsers.setEffect(null);
+
+        } else {
+          showAlert("Error", "Passwords do not match or name is empty or user already exists.");
+        }
+      } catch (SQLException | NoSuchAlgorithmException e) {
+        showAlert("Error", "Failed to add user: " + e.getMessage());
+      }
+    });
+
+    cancelAddUserButton.setOnAction(event -> {
+      addUserPane.setVisible(false);
+      manageUsers.setEffect(null);
+    });
+  }
+
+  @FXML
+  public void gotoDeleteUser() {
+    if (manageUserEdit != null) {
+      if (borrowRecordDAO.isUserBorrowed(manageUserEdit.getId())) {
+        showAlert("Error", "Cannot delete user as they have borrowed books.");
+        return;
+      }
+      UserDAO userDAO = UserDAO.getUserDAO();
+      try {
+        userDAO.deleteUser(manageUserEdit);
+        showAlert("Success", "User deleted successfully.");
+        searchUserManage();
+      } catch (SQLException e) {
+        showAlert("Error", "Failed to delete user: " + manageUserEdit.getName());
+      }
+    } else {
+      showAlert("Error", "No user selected to delete.");
+    }
   }
 
   @FXML

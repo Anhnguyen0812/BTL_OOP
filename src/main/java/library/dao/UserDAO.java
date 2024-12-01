@@ -53,6 +53,16 @@ public class UserDAO {
     stmt.executeUpdate();
   }
 
+  public void updateUser(User user) throws SQLException {
+    String query = "UPDATE users SET name = ?, email = ?, role = ? WHERE id = ?";
+    PreparedStatement stmt = connection.prepareStatement(query);
+    stmt.setString(1, user.getName());
+    stmt.setString(2, user.getEmail());
+    stmt.setString(3, user.getRole());
+    stmt.setInt(4, user.getId());
+    stmt.executeUpdate();
+  }
+
   public User getUserById(int id) throws SQLException {
     String query = "SELECT * FROM users WHERE id = ?";
     PreparedStatement stmt = connection.prepareStatement(query);
@@ -135,6 +145,13 @@ public class UserDAO {
           rs.getString("salt"));
     }
     return null;
+  }
+
+  public void deleteUser(User user) throws SQLException {
+    String query = "DELETE FROM users WHERE id = ?";
+    PreparedStatement stmt = connection.prepareStatement(query);
+    stmt.setInt(1, user.getId());
+    stmt.executeUpdate();
   }
 
 }

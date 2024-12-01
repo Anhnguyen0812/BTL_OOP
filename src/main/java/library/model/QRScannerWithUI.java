@@ -58,7 +58,6 @@ public class QRScannerWithUI {
         root.getChildren().add(imageView);
         imageView.fitWidthProperty().bind(root.widthProperty());
         imageView.fitHeightProperty().bind(root.heightProperty());
-        imageView.setPreserveRatio(true);
 
         // Mở camera và bắt đầu quét
         startCamera();

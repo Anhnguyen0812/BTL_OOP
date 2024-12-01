@@ -117,21 +117,6 @@ public class BookController {
 
         books.add(temp);
         temp.setCategories(categories);
-
-        Book temp2;
-        temp2 = switch (categories) {
-          case "Art" -> new ArtBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-          case "TechnologyBook" -> new TechnologyBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-          case "Science" -> new ScienceBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-          case "Computer" -> new ComputerBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-          case "HistoryBook" -> new HistoryBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-          case "EBook" -> new ConcreteBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-          case "Thesis" -> new ThesisBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-          default -> new ConcreteBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-        };
-
-        BookDAO bookDAO = BookDAO.getBookDAO();
-        // bookDAO.addBook(temp2);
       }
     } else {
       System.out.println("No books found in JSON data.");
@@ -150,7 +135,7 @@ public class BookController {
           rs.getString("title"),
           rs.getString("author"),
           rs.getString("isbn"),
-          rs.getBoolean("available"),
+          rs.getInt("available"),
           rs.getString("description"),
           rs.getString("imageUrl"),
           rs.getString("QRcode"),
@@ -171,7 +156,7 @@ public class BookController {
               rs.getString("title"),
               rs.getString("author"),
               rs.getString("isbn"),
-              rs.getBoolean("available"),
+              rs.getInt("available"),
               rs.getString("description"),
               rs.getString("imageUrl"),
               rs.getString("QRcode"),

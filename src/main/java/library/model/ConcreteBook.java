@@ -9,7 +9,7 @@ public class ConcreteBook extends Book {
       String description,
       String imageUrl,
       String isbn,
-      boolean available) {
+      int available) {
     super(id, title, author, isbn, available, description, imageUrl);
   }
 
@@ -18,7 +18,7 @@ public class ConcreteBook extends Book {
       String title,
       String author,
       String isbn,
-      boolean available) {
+      int available) {
     super(id, title, author, isbn, available);
   }
 
@@ -37,7 +37,7 @@ public class ConcreteBook extends Book {
       String title,
       String author,
       String isbn,
-      boolean available,
+      int available,
       String description,
       String imageUrl,
       String QRcode) {
@@ -49,7 +49,7 @@ public class ConcreteBook extends Book {
       String title,
       String author,
       String isbn,
-      boolean available,
+      int available,
       String description,
       String imageUrl,
       String QRcode,

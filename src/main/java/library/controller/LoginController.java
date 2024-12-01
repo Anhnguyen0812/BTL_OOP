@@ -3,6 +3,9 @@ package library.controller;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+
+import javafx.util.Duration;
+import javafx.animation.RotateTransition;
 import javafx.application.HostServices;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +16,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import library.dao.UserDAO;
 import library.model.User;
@@ -36,6 +42,8 @@ public class LoginController {
   private Button hide;
   @FXML
   private ImageView imgHide;
+  @FXML
+  private Pane pane;
 
   private User user;
 
@@ -97,15 +105,16 @@ public class LoginController {
     if (check == 1) {
       try {
         user = getUserbyname(Username.getText());
-        Dash_AdminController adminController = new Dash_AdminController(user, hostServices);
+        Dash_AdminController dash_adminController = new Dash_AdminController(user, hostServices);
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/dash_admin.fxml"));
-        loader.setController(adminController);
+        loader.setController(dash_adminController);
         Parent root = loader.load();
         Stage stage = (Stage) loginButton.getScene().getWindow();
         stage.setScene(new Scene(root));
         stage.setTitle("Library Management System");
         stage.centerOnScreen();
         stage.show();
+
       } catch (IOException e) {
         e.printStackTrace();
       }

@@ -306,7 +306,7 @@ public class BookDetailController {
   public void createPassword() throws NoSuchAlgorithmException {
     password.setText("Password : 123456");
     password.setVisible(true);
-    String salt = AdminController.getSalt();
+    String salt = Dash_AdminController.getSalt();
     String pass = UserService.hashPassword("123456", salt);
     user1.setSalt(salt);
     user1.setPassword(pass);

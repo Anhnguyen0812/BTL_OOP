@@ -289,8 +289,8 @@
 }
 
 .itemColumn {
-    -fx-alignment: left;
-    -fx-font-size: 13px;
+    -fx-font-size: 14px;
+    -fx-font-family: "Segoe UI";
     -fx-border-color: #acacac;
     -fx-border-width: 1px;
 }

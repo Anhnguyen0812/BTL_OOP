@@ -1,11 +1,13 @@
 package library.model;
 
+import com.gluonhq.impl.charm.a.a.a;
+
 public abstract class Book {
   protected int id;
   protected String title;
   protected String author;
   protected String isbn;
-  protected boolean available;
+  protected int available;
   protected String description; // Thêm thuộc tính mô tả
   protected String categories; // Thêm thuộc tính danh mục
   protected String imageUrl; // Thêm thuộc tính URL hình ảnh
@@ -17,12 +19,12 @@ public abstract class Book {
       String title,
       String author,
       String isbn,
-      boolean available,
+      int available,
       String genre,
       String imgaeUrl) {
   }
 
-  public Book(int id, String title, String author, String isbn, boolean available) {
+  public Book(int id, String title, String author, String isbn, int available) {
     this.id = id;
     this.title = title;
     this.author = author;
@@ -50,7 +52,7 @@ public abstract class Book {
       String title,
       String author,
       String isbn,
-      boolean available,
+      int available,
       String description,
       String imageUrl,
       String QRcode) {
@@ -69,7 +71,7 @@ public abstract class Book {
       String title,
       String author,
       String isbn,
-      boolean available,
+      int available,
       String description,
       String imageUrl,
       String QRcode,
@@ -90,7 +92,7 @@ public abstract class Book {
       String title,
       String author,
       String isbn,
-      boolean available,
+      int available,
       String description,
       String imageUrl,
       String QRcode,
@@ -136,7 +138,7 @@ public abstract class Book {
   }
 
   public boolean isAvailable() {
-    return available;
+    return available > 0;
   }
 
   public String getCategories() {
@@ -147,12 +149,40 @@ public abstract class Book {
     this.categories = categories;
   }
 
-  public void setAvailable(boolean available) {
+  public void setAvailable(int available) {
     this.available = available;
+  }
+
+  public int getAvailable() {
+    return available;
   }
 
   public void setRateAvg(Double rate_avg) {
     this.rate_avg = rate_avg;
+  }
+
+  public void setImageUrl(String imageUrl) {
+    this.imageUrl = imageUrl;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public void setAuthor(String author) {
+    this.author = author;
+  }
+
+  public void setIsbn(String isbn) {
+    this.isbn = isbn;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public void setQRcode(String qRcode) {
+    QRcode = qRcode;
   }
 
   public Double getRateAvg() {

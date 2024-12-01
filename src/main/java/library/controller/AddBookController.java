@@ -115,7 +115,7 @@ public class AddBookController {
                     imgUrl.getText(), availbleScan.getText());
 
         if (book1 != null)
-            bookDAO.addBook(book1);
+            bookDAO.addBookNoDuplicateIsbn(book1);
         else
             System.out.println("Book is null");
     }
@@ -124,10 +124,10 @@ public class AddBookController {
     public void gotoAddBook2() throws Exception {
 
         if (book2 != null)
-            bookDAO.addBook(book2);
+            bookDAO.addBookNoDuplicateIsbn(book2);
         else
             System.out.println("Book is null");
-        scanner.stopCamera();
+        // scanner.stopCamera();
     }
 
     @FXML

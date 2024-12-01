@@ -311,6 +311,9 @@ public class DashController {
 
     // Set up notiList
 
+    // set up book
+    SearchLibrary();
+
   }
 
   public void setFeaturedBooks(List<Book> booksTop) {

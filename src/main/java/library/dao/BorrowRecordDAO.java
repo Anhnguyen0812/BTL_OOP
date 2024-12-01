@@ -90,6 +90,50 @@ public class BorrowRecordDAO {
     }
   }
 
+  // accept request muon sach
+  public void acceptRequestBorrowRecord(BorrowRecord record) {
+    String query = "UPDATE borrow_records SET status = 1 WHERE id = ?";
+    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+      stmt.setInt(1, record.getId());
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  // accept request tra sach
+  public void acceptRequestReturnRecord(BorrowRecord record) {
+    String query = "UPDATE borrow_records SET status = 3 WHERE id = ?";
+    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+      stmt.setInt(1, record.getId());
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  // decline request muon sach
+  public void declineRequestBorrowRecord(BorrowRecord record) {
+    String query = "DELETE FROM borrow_records WHERE id = ?";
+    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+      stmt.setInt(1, record.getId());
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  // decline request tra sach
+  public void declineRequestReturnRecord(BorrowRecord record) {
+    String query = "UPDATE borrow_records SET status = 1 WHERE id = ?";
+    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+      stmt.setInt(1, record.getId());
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
   // get list book with status = 0
   public ObservableList<BorrowRecord> getBorrowRequest() {
     ObservableList<BorrowRecord> records = FXCollections.observableArrayList();
@@ -611,5 +655,31 @@ public class BorrowRecordDAO {
       e.printStackTrace();
     }
     return records;
+  }
+
+  public boolean isBookBorrowed(int id) {
+    // TODO Auto-generated method stub
+    String query = "SELECT * FROM borrow_records WHERE book_id = ?";
+    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+      stmt.setInt(1, id);
+      ResultSet rs = stmt.executeQuery();
+      return rs.next();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
+  public boolean isUserBorrowed(int id) {
+    // TODO Auto-generated method stub
+    String query = "SELECT * FROM borrow_records WHERE user_id = ?";
+    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+      stmt.setInt(1, id);
+      ResultSet rs = stmt.executeQuery();
+      return rs.next();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return false;
   }
 }
