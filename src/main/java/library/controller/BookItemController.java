@@ -87,7 +87,7 @@ public class BookItemController {
     }
 
     public void checkBorrowed() {
-        BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO();
+        BorrowRecordDAO borrowRecordDAO = BorrowRecordDAO.getBorrowRecordDAO();
         if (borrowRecordDAO.isBorrowed(user, book)) {
             borrowButton.setVisible(false);
         } else {
@@ -105,7 +105,7 @@ public class BookItemController {
     }
 
     public void returnAction(BorrowRecord record) {
-        BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO();
+        BorrowRecordDAO borrowRecordDAO = BorrowRecordDAO.getBorrowRecordDAO();
         borrowRecordDAO.returnBook(record);
         NotiDAO notiDAO = NotiDAO.geNotiDAO();
         try {
@@ -178,7 +178,7 @@ public class BookItemController {
 
     @FXML
     public void borrowAction() {
-        BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO();
+        BorrowRecordDAO borrowRecordDAO = BorrowRecordDAO.getBorrowRecordDAO();
         BorrowRecord borrowRecord = new BorrowRecord(1, user, book, LocalDate.now(), null);
         borrowRecordDAO.addResquestBorrowRecord(borrowRecord);
         borrowButton.setVisible(false);

@@ -66,7 +66,7 @@ public class UserService {
     }
   }
 
-  public List<User> getAllUsers() {
+  public static List<User> getAllUsers() {
     try {
       return UserDAO.getAllUsers();
     } catch (SQLException e) {

@@ -92,7 +92,7 @@ public class Dash_AdminController {
   @FXML
   private Button acceptAddUserButton, cancelAddUserButton;
   @FXML
-  private TableColumn<BorrowRecord, Integer> idIssueBorrow, availbleIssueBorrow;
+  private TableColumn<BorrowRecord, Integer> idIssueBorrow, availbleIssueBorrow, statusIssueBorrow;
   @FXML
   private TableColumn<BorrowRecord, String> titleIssueBorrow, isbnIssueBorrow, userIssueBorrow;
   @FXML
@@ -132,7 +132,7 @@ public class Dash_AdminController {
   @FXML
   private ImageView avatar, avatar1, imageManageBook, imageManageUser, qrUser;
 
-  protected BorrowRecordDAO borrowRecordDAO = new BorrowRecordDAO();
+  protected BorrowRecordDAO borrowRecordDAO = BorrowRecordDAO.getBorrowRecordDAO();
   protected User user;
   protected HostServices hostServices;
 
@@ -300,6 +300,8 @@ public class Dash_AdminController {
     ///returnDateIssueBorrow = new TableColumn<>("return_date");
     returnDateIssueBorrow.setCellValueFactory(new PropertyValueFactory<>("returnDate"));
 
+    // cot chua trang thai
+    statusIssueBorrow.setCellValueFactory(new PropertyValueFactory<>("status"));
     // Cột chứa nút xác nhận
     // actionBorrow = new TableColumn<>("Actions");
     actionBorrow.setCellFactory(param -> new TableCell<>() {
@@ -311,18 +313,20 @@ public class Dash_AdminController {
           BorrowRecord request = getTableView().getItems().get(getIndex());
           System.out.println("Accepted: " + request.getId());
           getTableView().getItems().remove(request); // Xóa yêu cầu khỏi danh sách
-
+          borrowRecordDAO.increaseStatus(request);
           // set the request to status 1
-
+          // show alert
+          showAlert(getAccessibleHelp(), "Request" + request.getId() + " Accepted");
         });
 
         rejectButton.setOnAction(event -> {
           BorrowRecord request = getTableView().getItems().get(getIndex());
           System.out.println("Rejected: " + request.getId());
           getTableView().getItems().remove(request); // Xóa yêu cầu khỏi danh sách
-
+          borrowRecordDAO.deleteBorrowRecord(request);
           // set the request to status null
-
+          // show alert
+          showAlert(getAccessibleHelp(), "Request" + request.getId() + " Rejected");
         });
 
       }
@@ -341,7 +345,7 @@ public class Dash_AdminController {
     });
     borrowRequestTable.getColumns().addAll(idIssueBorrow, titleIssueBorrow, isbnIssueBorrow, userIssueBorrow,
         availbleIssueBorrow, borrowDateIssueBorrow,
-        returnDateIssueBorrow, actionBorrow);
+        returnDateIssueBorrow, statusIssueBorrow, actionBorrow);
 
     // setup directlyTab
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/ManageIssueBooks.fxml"));
@@ -386,7 +390,6 @@ public class Dash_AdminController {
         AnchorPane userItem = loader.load();
         BookItemController controller = loader.getController();
         controller.setItemData(user, i, user);
-        manageUserEdit = user;
 
         if (column == 3) {
           column = 1;
@@ -399,6 +402,7 @@ public class Dash_AdminController {
         userItem.setOnMouseClicked(event -> {
           if (event.getClickCount() == 1) {
             showUser(user);
+            manageUserEdit = user;
           }
           if (event.getClickCount() == 2) {
             // showUserDetails(user);
@@ -473,7 +477,7 @@ public class Dash_AdminController {
     issueBooks.setVisible(true);
     issueBooks_Button.styleProperty().set("-fx-background-color: #777777");
 
-    ObservableList<BorrowRecord> data = borrowRecordDAO.getAllBorrowRecords();
+    ObservableList<BorrowRecord> data = borrowRecordDAO.getAllRecordPending();
     borrowRequestTable.setItems(data);
 
   }
@@ -1063,8 +1067,8 @@ public class Dash_AdminController {
             && !mailUserAddField.getText().isEmpty()
             && UserDAO.getUserByName(nameUserAddField.getText()) == null) {
 
-          User newUser = new User(nameUserAddField.getText(), mailUserAddField.getText(), roleUserAddField.getText(),
-              passwordAddField.getText(), getSalt());
+          User newUser = new User(nameUserAddField.getText(), mailUserAddField.getText(), passwordAddField.getText(),
+              "User", getSalt());
 
           UserDAO userDAO = UserDAO.getUserDAO();
           userDAO.addUser(newUser);

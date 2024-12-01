@@ -12,14 +12,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import library.api.GoogleBooksAPI;
 import library.dao.BookDAO;
-import library.model.ArtBook;
 import library.model.Book;
-import library.model.ComputerBook;
 import library.model.ConcreteBook;
-import library.model.HistoryBook;
-import library.model.ScienceBook;
-import library.model.TechnologyBook;
-import library.model.ThesisBook;
 import library.util.DBConnection;
 
 public class BookController {
