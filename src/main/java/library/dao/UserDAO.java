@@ -150,14 +150,14 @@ public class UserDAO {
     return null;
   }
 
-  public void deleteUser(int id) throws SQLException {
+  public void deleteUser(User user) throws SQLException {
     String query = "DELETE FROM users WHERE id = ?";
     PreparedStatement stmt = connection.prepareStatement(query);
-    stmt.setInt(1, id);
+    stmt.setInt(1, user.getId());
     stmt.executeUpdate();
   }
 
-  public void EditUser(User user) throws SQLException {
+  public void editUser(User user) throws SQLException {
     String query = "UPDATE users SET name = ?, email = ?, password = ?, role = ? WHERE id = ?";
     PreparedStatement stmt = connection.prepareStatement(query);
     stmt.setString(1, user.getName());

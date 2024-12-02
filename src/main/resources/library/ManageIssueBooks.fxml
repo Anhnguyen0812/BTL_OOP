@@ -11,31 +11,12 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="630.0" prefWidth="1100.0" styleClass="PaneIn" stylesheets="@../styles/Ui.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="library.controller.ManageIssueBooksController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="606.0" prefWidth="1100.0" styleClass="PaneIn" stylesheets="@../styles/Ui.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="library.controller.ManageIssueBooksController">
    <children>
-      <Label layoutX="55.0" layoutY="80.0" text="Search User">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font></Label>
-      <TextField fx:id="userSearch" layoutX="137.0" layoutY="76.0" />
-      <ChoiceBox fx:id="userChoice" layoutX="333.0" layoutY="76.0" prefHeight="25.0" prefWidth="67.0" />
-      <Button fx:id="userSearchButton" layoutX="435.0" layoutY="76.0" mnemonicParsing="false" onAction="#gotoFindUser" prefHeight="25.0" prefWidth="41.0" text="Find" />
-      <Label layoutX="80.0" layoutY="146.0" prefHeight="17.0" prefWidth="21.0" text="OR" />
-      <Button layoutX="380.0" layoutY="142.0" mnemonicParsing="false" onAction="#gotoScanUser" text="Scan" />
-      <Pane fx:id="userPaneView" layoutX="148.0" layoutY="126.0" prefHeight="108.0" prefWidth="192.0" styleClass="itemAnchor" />
-      <Label layoutX="625.0" layoutY="81.0" text="Search Book">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font></Label>
-      <TextField fx:id="bookSearch" layoutX="711.0" layoutY="77.0" />
-      <ChoiceBox fx:id="bookChoice" layoutX="907.0" layoutY="77.0" prefHeight="25.0" prefWidth="67.0" />
-      <Button fx:id="bookSearchButton" layoutX="1009.0" layoutY="77.0" mnemonicParsing="false" onAction="#gotoFindBook" text="Find" />
-      <Label layoutX="664.0" layoutY="146.0" prefHeight="17.0" prefWidth="25.0" text="OR" />
-      <Button layoutX="974.0" layoutY="142.0" mnemonicParsing="false" onAction="#gotoScanBook" text="Scan" />
-      <Pane fx:id="bookPaneView" layoutX="722.0" layoutY="127.0" prefHeight="108.0" prefWidth="192.0" styleClass="itemAnchor" />
-      <ScrollPane layoutX="510.0" layoutY="277.0" prefHeight="286.0" prefWidth="574.0" styleClass="ScrollPane">
+      <ScrollPane layoutX="510.0" layoutY="258.0" prefHeight="286.0" prefWidth="574.0" styleClass="ScrollPane">
          <content>
             <GridPane fx:id="bookGridPane" prefHeight="30.0" prefWidth="126.0">
               <rowConstraints>
@@ -47,14 +28,14 @@
             </GridPane>
          </content>
       </ScrollPane>
-      <Button fx:id="applyButton" layoutX="913.0" layoutY="563.0" mnemonicParsing="false" onAction="#gotoApply" prefHeight="39.0" prefWidth="96.0" text="Apply" />
-      <Label layoutX="55.0" layoutY="14.0" text="Issue Book">
+      <Button fx:id="applyButton" layoutX="957.0" layoutY="544.0" mnemonicParsing="false" onAction="#gotoApply" prefHeight="39.0" prefWidth="96.0" text="Apply" />
+      <Label layoutX="44.0" layoutY="2.0" text="Issue Book">
          <font>
             <Font name="Comic Sans MS Bold" size="23.0" />
          </font>
       </Label>
-      <ChoiceBox fx:id="choiceAction" layoutX="258.0" layoutY="18.0" prefHeight="25.0" prefWidth="96.0" />
-      <Pane fx:id="userDetail" layoutX="44.0" layoutY="345.0" prefHeight="165.0" prefWidth="428.0" styleClass="itemAnchor">
+      <ChoiceBox fx:id="choiceAction" layoutX="210.0" layoutY="6.0" prefHeight="25.0" prefWidth="96.0" />
+      <Pane fx:id="userDetail" layoutX="44.0" layoutY="319.0" prefHeight="165.0" prefWidth="428.0" styleClass="itemAnchor">
          <children>
             <ImageView fx:id="imageUser" fitHeight="80.0" fitWidth="77.0" layoutX="38.0" layoutY="49.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -79,15 +60,42 @@
             </Label>
          </children>
       </Pane>
-      <Label layoutX="55.0" layoutY="307.0" text="USER">
+      <Label layoutX="234.0" layoutY="271.0" text="USER">
          <font>
             <Font name="Comic Sans MS Bold" size="18.0" />
          </font>
       </Label>
-      <Label layoutX="550.0" layoutY="252.0" text="BOOKS">
+      <Label layoutX="765.0" layoutY="233.0" text="BOOKS">
          <font>
             <Font name="Comic Sans MS Bold" size="18.0" />
          </font>
       </Label>
+      <Pane layoutX="37.0" layoutY="35.0" prefHeight="198.0" prefWidth="1027.0" styleClass="itemAnchor">
+         <children>
+            <Label layoutX="33.0" layoutY="28.0" text="Search User">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="userSearch" layoutX="127.0" layoutY="23.0" />
+            <ChoiceBox fx:id="userChoice" layoutX="314.0" layoutY="26.0" prefHeight="25.0" prefWidth="67.0" />
+            <Button fx:id="userSearchButton" layoutX="411.0" layoutY="26.0" mnemonicParsing="false" onAction="#gotoFindUser" prefHeight="25.0" prefWidth="41.0" text="Find" />
+            <Label layoutX="61.0" layoutY="112.0" prefHeight="17.0" prefWidth="21.0" text="OR" />
+            <Button layoutX="340.0" layoutY="108.0" mnemonicParsing="false" onAction="#gotoScanUser" text="Scan" />
+            <Pane fx:id="userPaneView" layoutX="115.0" layoutY="67.0" prefHeight="108.0" prefWidth="192.0" style="-fx-background-color: fff;" />
+            <Label layoutX="578.0" layoutY="28.0" text="Search Book">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="bookSearch" layoutX="685.0" layoutY="22.0" />
+            <ChoiceBox fx:id="bookChoice" layoutX="875.0" layoutY="25.0" prefHeight="25.0" prefWidth="67.0" />
+            <Button fx:id="bookSearchButton" layoutX="958.0" layoutY="25.0" mnemonicParsing="false" onAction="#gotoFindBook" text="Find" />
+            <Label layoutX="634.0" layoutY="112.0" prefHeight="17.0" prefWidth="25.0" text="OR" />
+            <Button layoutX="888.0" layoutY="108.0" mnemonicParsing="false" onAction="#gotoScanBook" text="Scan" />
+            <Pane fx:id="bookPaneView" layoutX="673.0" layoutY="70.0" prefHeight="108.0" prefWidth="192.0" style="-fx-background-color: fff;" />
+            <Line endX="-100.0" endY="134.0" layoutX="613.0" layoutY="43.0" startX="-100.0" startY="-23.0" />
+         </children>
+      </Pane>
    </children>
 </Pane>

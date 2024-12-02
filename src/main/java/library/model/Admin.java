@@ -72,15 +72,15 @@ public class Admin extends User {
     borrowRecordDAO.rejectRequestReturn(borrowRecord);
   }
 
-  public void addUsers(User user) throws SQLException, NoSuchAlgorithmException {
+  public void addUser(User user) throws SQLException, NoSuchAlgorithmException {
     userDAO.addUser(user);
   }
 
-  public void deleteUsers(User user) throws SQLException {
-    userDAO.deleteUser(user.getId());
+  public void deleteUser(User user) throws SQLException {
+    userDAO.deleteUser(user);
   }
 
-  public void EditUsers(User user) throws SQLException {
-    userDAO.EditUser(user);
+  public void editUser(User user) throws SQLException {
+    userDAO.editUser(user);
   }
 }

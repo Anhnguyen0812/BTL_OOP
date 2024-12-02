@@ -1,8 +1,12 @@
 package library.service;
 
 import java.time.LocalDate;
-import library.dao.*;
-import library.model.*;
+
+import library.dao.BookDAO;
+import library.dao.BorrowRecordDAO;
+import library.model.Book;
+import library.model.BorrowRecord;
+import library.model.User;
 
 public class BorrowService {
   private BorrowRecordDAO borrowRecordDAO;

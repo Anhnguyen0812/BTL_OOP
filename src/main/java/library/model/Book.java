@@ -168,4 +168,36 @@ public abstract class Book {
     return comment;
   }
 
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public void setAuthor(String author) {
+    this.author = author;
+  }
+
+  public void setIsbn(String isbn) {
+    this.isbn = isbn;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public void setImageUrl(String imageUrl) {
+    this.imageUrl = imageUrl;
+  }
+
+  public void setQRcode(String QRcode) {
+    this.QRcode = QRcode;
+  }
+
+  public void setRate_avg(Double rate_avg) {
+    this.rate_avg = rate_avg;
+  }
+
 }

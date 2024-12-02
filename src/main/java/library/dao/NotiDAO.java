@@ -9,7 +9,7 @@ import java.util.List;
 
 import library.util.DBConnection;
 
-public class NotiDAO implements DAO {
+public class NotiDAO {
     private final Connection connection;
     private static NotiDAO instance;
 

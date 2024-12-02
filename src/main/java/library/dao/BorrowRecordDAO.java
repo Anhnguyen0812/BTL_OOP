@@ -227,6 +227,7 @@ public class BorrowRecordDAO implements DAO {
       while (rs.next()) {
         int userId = rs.getInt("user_id");
         int bookId = rs.getInt("book_id");
+        int status = rs.getInt("status");
         LocalDate borrowDate = rs.getDate("borrow_date").toLocalDate();
         LocalDate returnDate = rs.getDate("return_date") != null ? rs.getDate("return_date").toLocalDate() : null;
         UserService userService = new UserService();
@@ -237,7 +238,7 @@ public class BorrowRecordDAO implements DAO {
           deleteBorrowRecordbyId(recordId);
           continue;
         }
-        BorrowRecord record = new BorrowRecord(recordId, user, book, borrowDate, returnDate);
+        BorrowRecord record = new BorrowRecord(recordId, user, book, borrowDate, returnDate, status);
         records.add(record);
       }
     } catch (SQLException e) {
@@ -449,6 +450,30 @@ public class BorrowRecordDAO implements DAO {
     try (PreparedStatement stmt = connection.prepareStatement(query)) {
       stmt.setInt(1, user.getId());
       stmt.setInt(2, book.getId());
+      ResultSet rs = stmt.executeQuery();
+      return rs.next();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
+  public boolean isBorrowedByBookId(int id) {
+    String query = "SELECT * FROM borrow_records WHERE book_id = ?";
+    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+      stmt.setInt(1, id);
+      ResultSet rs = stmt.executeQuery();
+      return rs.next();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
+  public boolean isUserBorrowed(int id) {
+    String query = "SELECT * FROM borrow_records WHERE user_id = ?";
+    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+      stmt.setInt(1, id);
       ResultSet rs = stmt.executeQuery();
       return rs.next();
     } catch (SQLException e) {

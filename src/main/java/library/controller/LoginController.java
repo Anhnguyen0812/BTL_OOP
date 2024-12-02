@@ -14,10 +14,13 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import library.dao.UserDAO;
 import library.model.User;
 import library.service.UserService;
+import library.ui.UIFactory;
+import library.ui.UIInterface;
 
 public class LoginController {
 
@@ -37,6 +40,8 @@ public class LoginController {
   private Button hide;
   @FXML
   private ImageView imgHide;
+  @FXML
+  private Pane pane;
 
   private User user;
 
@@ -52,7 +57,7 @@ public class LoginController {
     loginButton.setOnAction(event -> {
       try {
         MoveToAccount();
-      } catch (SQLException | NoSuchAlgorithmException e) {
+      } catch (SQLException | NoSuchAlgorithmException | IOException e) {
         e.printStackTrace();
       }
     });
@@ -92,44 +97,40 @@ public class LoginController {
   }
 
   @FXML
-  public void MoveToAccount() throws SQLException, NoSuchAlgorithmException {
+  public void MoveToAccount() throws SQLException, NoSuchAlgorithmException, IOException {
     System.out.println("Username: " + Username.getText() + ", Password: " + Pass.getText());
     int check = UserService.checkLogin(Username.getText(), Pass.getText(), "admin");
-    // System.out.println(getClass().getResource("/library/dash_admin.fxml"));
+
     if (check == 1) {
-      try {
         user = getUserbyname(Username.getText());
-        Dash_AdminController adminController = new Dash_AdminController(user, hostServices);
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/dash_admin.fxml"));
-        loader.setController(adminController);
-        Parent root = loader.load();
-        Stage stage = (Stage) loginButton.getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.setTitle("Library Management System");
-        stage.centerOnScreen();
-        stage.show();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+        UIInterface admin = UIFactory.getInterface("ADMIN", user, hostServices);
+
+        if (admin != null) {
+            Parent root = admin.getDashboard();
+            Stage stage = (Stage) loginButton.getScene().getWindow();
+            stage.setScene(new Scene(root, 960, 720));
+            stage.setTitle("Library Management System");
+            stage.centerOnScreen();
+            stage.show();
+        } else {
+            System.out.println("Failed to load Admin interface.");
+        }
     } else if (check == 2) {
-      try {
         user = getUserbyname(Username.getText());
-        DashController dashController = new DashController(user, hostServices);
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/dash.fxml"));
-        loader.setController(dashController);
-        Parent root = loader.load();
-        Stage stage = (Stage) loginButton.getScene().getWindow();
+        UIInterface userInterface = UIFactory.getInterface("USER", user, hostServices);
 
-        stage.setScene(new Scene(root));
-        stage.setTitle("Library Management System");
-        stage.centerOnScreen();
-        stage.show();
-
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+        if (userInterface != null) {
+            Parent root = userInterface.getDashboard();
+            Stage stage = (Stage) loginButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Library Management System");
+            stage.centerOnScreen();
+            stage.show();
+        } else {
+            System.out.println("Failed to load User interface.");
+        }
     } else {
-      System.out.println("Login failed");
+        System.out.println("Login failed. Invalid credentials.");
     }
   }
 

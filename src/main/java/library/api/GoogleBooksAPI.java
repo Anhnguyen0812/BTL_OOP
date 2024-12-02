@@ -1,11 +1,13 @@
 package library.api;
 
 import java.io.IOException;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 public class GoogleBooksAPI {
   private final OkHttpClient client = new OkHttpClient();
@@ -67,6 +69,16 @@ public class GoogleBooksAPI {
   public String searchBookMaxResultWithStartIndex(String query, int startIndex, int maxResult) throws IOException {
     String url = "https://www.googleapis.com/books/v1/volumes?q=" + query + "&startIndex=" + startIndex
         + "&maxResults=" + maxResult + "&key=" + API_KEY;
+    Request request = new Request.Builder().url(url).build();
+
+    try (Response response = client.newCall(request).execute()) {
+      return response.body().string();
+    }
+  }
+
+  public String getBookByISBN(String isbn) throws IOException {
+    String url = "https://www.googleapis.com/books/v1/volumes?q=isbn:" + isbn + "&key=" + API_KEY;
+
     Request request = new Request.Builder().url(url).build();
 
     try (Response response = client.newCall(request).execute()) {

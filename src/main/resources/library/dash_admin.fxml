@@ -30,7 +30,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" stylesheets="@../styles/Ui.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" stylesheets="@../styles/Ui.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Pane fx:id="pane" prefHeight="720.0" prefWidth="1280.0" styleClass="Pane">
          <children>
@@ -612,17 +612,17 @@
                         </ScrollPane>
                      </children>
                   </VBox>
-                  <Button fx:id="addUserButton" layoutX="671.0" layoutY="499.0" mnemonicParsing="false" styleClass="multiChoice" text="Add User">
+                  <Button fx:id="addUserButton" layoutX="671.0" layoutY="499.0" mnemonicParsing="false" onAction="#gotoAddUser" styleClass="multiChoice" text="Add User">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Button>
-                  <Button fx:id="editUserButton" layoutX="810.0" layoutY="499.0" mnemonicParsing="false" styleClass="multiChoice" text="Edit User">
+                  <Button fx:id="editUserButton" layoutX="810.0" layoutY="499.0" mnemonicParsing="false" onAction="#gotoEditUser" styleClass="multiChoice" text="Edit User">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Button>
-                  <Button fx:id="deleteUserButton" layoutX="939.0" layoutY="499.0" mnemonicParsing="false" styleClass="multiChoice" text="DeleteUser">
+                  <Button fx:id="deleteUserButton" layoutX="939.0" layoutY="499.0" mnemonicParsing="false" onAction="#gotoDeleteUser" styleClass="multiChoice" text="DeleteUser">
                      <font>
                         <Font size="16.0" />
                      </font>
@@ -669,7 +669,7 @@
                   </Pane>
                </children>
             </Pane>
-            <Pane fx:id="issueBooks" layoutX="170.0" layoutY="80.0" prefHeight="630.0" prefWidth="1100.0" styleClass="PaneIn" visible="false">
+            <Pane fx:id="issueBooks" layoutX="170.0" layoutY="80.0" prefHeight="630.0" prefWidth="1100.0" styleClass="PaneIn">
                <children>
                   <VBox prefHeight="630.0" prefWidth="1100.0">
                      <children>
@@ -742,13 +742,14 @@
                                                       <TableView fx:id="borrowRequestTable" prefHeight="471.0" prefWidth="1070.0" styleClass="tableView">
                                                          <columns>
                                                             <TableColumn fx:id="idIssueBorrow" prefWidth="47.0" resizable="false" styleClass="itemColumn" text="id" />
-                                                            <TableColumn fx:id="titleIssueBorrow" prefWidth="212.0" resizable="false" styleClass="itemColumn" text="Book Title" />
-                                                            <TableColumn fx:id="isbnIssueBorrow" minWidth="0.0" prefWidth="138.0" resizable="false" styleClass="itemColumn" text="Isbn" />
+                                                            <TableColumn fx:id="titleIssueBorrow" prefWidth="197.0" resizable="false" styleClass="itemColumn" text="Book Title" />
+                                                            <TableColumn fx:id="isbnIssueBorrow" minWidth="0.0" prefWidth="125.0" resizable="false" styleClass="itemColumn" text="Isbn" />
                                                             <TableColumn fx:id="userIssueBorrow" prefWidth="151.0" resizable="false" styleClass="itemColumn" text="User" />
-                                                            <TableColumn fx:id="availbleIssueBorrow" prefWidth="81.0" resizable="false" styleClass="itemColumn" text="Availble" />
-                                                            <TableColumn fx:id="borrowDateIssueBorrow" prefWidth="139.0" resizable="false" styleClass="itemColumn" text="Borrow Date" />
-                                                            <TableColumn fx:id="returnDateIssueBorrow" prefWidth="141.0" resizable="false" styleClass="itemColumn" text="Return Date" />
-                                                            <TableColumn fx:id="actionBorrow" prefWidth="140.0" resizable="false" styleClass="itemColumn" text="Action" />
+                                                            <TableColumn fx:id="availbleIssueBorrow" prefWidth="61.0" resizable="false" styleClass="itemColumn" text="Availble" />
+                                                            <TableColumn fx:id="borrowDateIssueBorrow" prefWidth="114.0" resizable="false" styleClass="itemColumn" text="Borrow Date" />
+                                                            <TableColumn fx:id="returnDateIssueBorrow" prefWidth="132.0" resizable="false" styleClass="itemColumn" text="Return Date" />
+                                                            <TableColumn fx:id="statusIssueBorrow" prefWidth="60.0" resizable="false" styleClass="itemColumn" text="Status" />
+                                                            <TableColumn fx:id="actionBorrow" maxWidth="212.0" prefWidth="157.0" resizable="false" styleClass="itemColumn" text="Action" />
                                                          </columns>
                                                       </TableView>
                                                    </content>
@@ -804,6 +805,157 @@
                         <ListView fx:id="notiList" prefHeight="358.0" prefWidth="390.0" styleClass="listViewNoti" />
                      </content>
                   </ScrollPane>
+               </children>
+            </Pane>
+            <Pane fx:id="editBookPane" layoutX="170.0" layoutY="80.0" prefHeight="630.0" prefWidth="1100.0" styleClass="PaneIn" visible="false">
+               <children>
+                  <Label layoutX="132.0" layoutY="55.0" prefHeight="38.0" prefWidth="101.0" text="Image URL">
+                     <font>
+                        <Font name="Segoe UI" size="15.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="imgUrlField" layoutX="233.0" layoutY="57.0" prefHeight="25.0" prefWidth="413.0" styleClass="Search" />
+                  <Label layoutX="132.0" layoutY="107.0" prefHeight="38.0" prefWidth="101.0" text="Title">
+                     <font>
+                        <Font name="Segoe UI" size="15.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="titleField" layoutX="233.0" layoutY="109.0" prefHeight="25.0" prefWidth="413.0" styleClass="Search" />
+                  <Label layoutX="132.0" layoutY="168.0" prefHeight="38.0" prefWidth="101.0" text="Author">
+                     <font>
+                        <Font name="Segoe UI" size="15.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="authorField" layoutX="233.0" layoutY="170.0" prefHeight="25.0" prefWidth="413.0" styleClass="Search" />
+                  <Label layoutX="132.0" layoutY="223.0" prefHeight="38.0" prefWidth="101.0" text="ISBN">
+                     <font>
+                        <Font name="Segoe UI" size="15.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="isbnField" layoutX="233.0" layoutY="225.0" prefHeight="25.0" prefWidth="413.0" styleClass="Search" />
+                  <Label layoutX="132.0" layoutY="277.0" prefHeight="38.0" prefWidth="101.0" text="Description">
+                     <font>
+                        <Font name="Segoe UI" size="15.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="descriptionField" layoutX="233.0" layoutY="279.0" prefHeight="25.0" prefWidth="413.0" styleClass="Search" />
+                  <Label layoutX="132.0" layoutY="332.0" prefHeight="38.0" prefWidth="101.0" text="QRCode URL">
+                     <font>
+                        <Font name="Segoe UI" size="15.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="QRCodeUrlField" layoutX="233.0" layoutY="334.0" prefHeight="25.0" prefWidth="413.0" styleClass="Search" />
+                  <Label layoutX="132.0" layoutY="386.0" prefHeight="38.0" prefWidth="101.0" text="Category">
+                     <font>
+                        <Font name="Segoe UI" size="15.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="categoryField" layoutX="233.0" layoutY="388.0" prefHeight="25.0" prefWidth="413.0" styleClass="Search" />
+                  <Label layoutX="132.0" layoutY="439.0" prefHeight="38.0" prefWidth="101.0" text="Rate AVG">
+                     <font>
+                        <Font name="Segoe UI" size="15.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="rate_avgField" layoutX="233.0" layoutY="441.0" prefHeight="25.0" prefWidth="413.0" styleClass="Search" />
+                  <Label layoutX="132.0" layoutY="492.0" prefHeight="38.0" prefWidth="101.0" text="Available">
+                     <font>
+                        <Font name="Segoe UI" size="15.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="availbleField" layoutX="233.0" layoutY="494.0" prefHeight="25.0" prefWidth="413.0" styleClass="Search" />
+                  <Button fx:id="applyEditBook" layoutX="950.0" layoutY="540.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="83.0" styleClass="action-button" text="Apply">
+                     <font>
+                        <Font name="Segoe UI Bold" size="15.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="cancelEditBook" layoutX="1070.0" layoutY="6.0" mnemonicParsing="false" text="X" textFill="RED" />
+               </children>
+            </Pane>
+            <Pane fx:id="editUserPane" layoutX="170.0" layoutY="80.0" prefHeight="630.0" prefWidth="1100.0" styleClass="PaneIn" visible="false">
+               <children>
+                  <Label layoutX="183.0" layoutY="122.0" prefHeight="38.0" prefWidth="101.0" text="User Name">
+                     <font>
+                        <Font name="Segoe UI" size="15.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="usernameField" layoutX="284.0" layoutY="124.0" prefHeight="25.0" prefWidth="413.0" styleClass="Search" />
+                  <Label layoutX="183.0" layoutY="174.0" prefHeight="38.0" prefWidth="101.0" text="Mail">
+                     <font>
+                        <Font name="Segoe UI" size="15.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="mailField" layoutX="284.0" layoutY="176.0" prefHeight="25.0" prefWidth="413.0" styleClass="Search" />
+                  <Label layoutX="183.0" layoutY="235.0" prefHeight="38.0" prefWidth="101.0" text="Role">
+                     <font>
+                        <Font name="Segoe UI" size="15.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="roleField" layoutX="284.0" layoutY="237.0" prefHeight="25.0" prefWidth="413.0" styleClass="Search" />
+                  <Label layoutX="183.0" layoutY="377.0" prefHeight="38.0" prefWidth="101.0" text="Password">
+                     <font>
+                        <Font name="Segoe UI" size="15.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="passwordField" layoutX="284.0" layoutY="379.0" prefHeight="25.0" prefWidth="413.0" styleClass="Search" />
+                  <Button fx:id="applyEditUserButton" layoutX="950.0" layoutY="540.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="83.0" styleClass="action-button" text="Apply">
+                     <font>
+                        <Font name="Segoe UI Bold" size="15.0" />
+                     </font>
+                  </Button>
+                  <Button layoutX="445.0" layoutY="322.0" mnemonicParsing="false" text="Change Pass">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Button>
+                  <Label layoutX="183.0" layoutY="430.0" prefHeight="38.0" prefWidth="101.0" text="Confirm">
+                     <font>
+                        <Font name="Segoe UI" size="15.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="confirmpassField" layoutX="284.0" layoutY="432.0" prefHeight="25.0" prefWidth="413.0" styleClass="Search" />
+                  <Label fx:id="confirmpassLabel" layoutX="550.0" layoutY="480.0" prefHeight="19.0" prefWidth="104.0" />
+                  <Button fx:id="cancelEditUser" layoutX="1069.0" layoutY="9.0" mnemonicParsing="false" prefHeight="8.0" prefWidth="23.0" text="X" textFill="RED" />
+               </children>
+            </Pane>
+            <Pane fx:id="addUserPane" layoutX="170.0" layoutY="80.0" prefHeight="630.0" prefWidth="1100.0" styleClass="PaneIn" visible="false">
+               <children>
+                  <Label layoutX="183.0" layoutY="122.0" prefHeight="38.0" prefWidth="101.0" text="User Name">
+                     <font>
+                        <Font name="Segoe UI" size="15.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="nameUserAddField" layoutX="284.0" layoutY="124.0" prefHeight="25.0" prefWidth="413.0" styleClass="Search" />
+                  <Label layoutX="183.0" layoutY="174.0" prefHeight="38.0" prefWidth="101.0" text="Mail">
+                     <font>
+                        <Font name="Segoe UI" size="15.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="mailUserAddField" layoutX="284.0" layoutY="176.0" prefHeight="25.0" prefWidth="413.0" styleClass="Search" />
+                  <Label layoutX="183.0" layoutY="235.0" prefHeight="38.0" prefWidth="101.0" text="Role">
+                     <font>
+                        <Font name="Segoe UI" size="15.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="roleUserAddField" layoutX="284.0" layoutY="237.0" prefHeight="25.0" prefWidth="413.0" styleClass="Search" />
+                  <Label layoutX="183.0" layoutY="299.0" prefHeight="38.0" prefWidth="101.0" text="Password">
+                     <font>
+                        <Font name="Segoe UI" size="15.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="passwordAddField" layoutX="284.0" layoutY="301.0" prefHeight="25.0" prefWidth="413.0" styleClass="Search" />
+                  <Button fx:id="acceptAddUserButton" layoutX="893.0" layoutY="490.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="83.0" styleClass="action-button" text="Add">
+                     <font>
+                        <Font name="Segoe UI Bold" size="15.0" />
+                     </font>
+                  </Button>
+                  <Label layoutX="183.0" layoutY="352.0" prefHeight="38.0" prefWidth="101.0" text="Confirm">
+                     <font>
+                        <Font name="Segoe UI" size="15.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="confirmpassAddField" layoutX="284.0" layoutY="354.0" prefHeight="25.0" prefWidth="413.0" styleClass="Search" />
+                  <Label fx:id="confirmpassAddLabel" layoutX="550.0" layoutY="480.0" prefHeight="19.0" prefWidth="104.0" />
+                  <Button fx:id="cancelAddUserButton" layoutX="1069.0" layoutY="9.0" mnemonicParsing="false" prefHeight="8.0" prefWidth="23.0" text="X" textFill="RED" />
                </children>
             </Pane>
          </children>

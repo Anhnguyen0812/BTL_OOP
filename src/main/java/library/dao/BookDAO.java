@@ -34,18 +34,19 @@ public class BookDAO implements DAO{
   public void updateBook(Book book) {
     // Implementation for updating the book in the database
     // This is a placeholder implementation
-    String sql = "UPDATE books SET title = ?, author = ?, isbn = ?, description = ?, imageUrl = ?, QRcode = ?, categories = ?, available = ? WHERE id = ?";
+    String sql = "UPDATE books SET title = ?, author = ?, isbn = ?, available = ?, description = ?, imageUrl = ?, QRcode = ?, categories = ?, rate_avg = ? WHERE id = ?";
 
     try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
       pstmt.setString(1, book.getTitle());
       pstmt.setString(2, book.getAuthor());
       pstmt.setString(3, book.getIsbn());
-      pstmt.setString(4, book.getDescription());
-      pstmt.setString(5, book.getImageUrl());
-      pstmt.setString(6, book.getQRcode());
-      pstmt.setString(7, book.getCategories());
-      pstmt.setInt(8, book.isAvailable());
-      pstmt.setInt(9, book.getId());
+      pstmt.setInt(4, book.isAvailable());
+      pstmt.setString(5, book.getDescription());
+      pstmt.setString(6, book.getImageUrl());
+      pstmt.setString(7, book.getQRcode());
+      pstmt.setString(8, book.getCategories());
+      pstmt.setDouble(9, book.isAvailable());
+      pstmt.setInt(10, book.getId());
       int cnt = pstmt.executeUpdate();
       System.out.println(cnt + " records affected");
     } catch (SQLException e) {
@@ -105,14 +106,19 @@ public class BookDAO implements DAO{
       if (!isbnExists(book.getIsbn())) {
         addBook(book);
         System.out.println("no duplicate isbn");
+        return; 
       }
     } else {
       if (!titleExists(book.getTitle())) {
         addBook(book);
         System.out.println("no duplicate title");
+        return;
       }
     }
-    System.out.println("no add book");
+    javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+    alert.setTitle("Book duplicate");
+    alert.setHeaderText("Book duplicate");
+    alert.showAndWait();
   }
 
   public Book getBookById(int id) throws SQLException {

@@ -9,6 +9,7 @@ public class BorrowRecord {
   private Book book;
   private LocalDate borrowDate;
   private LocalDate returnDate;
+  private int status;
 
   public BorrowRecord(int id, User user, Book book, LocalDate borrowDate, LocalDate returnDate) {
     this.id = id;
@@ -16,6 +17,15 @@ public class BorrowRecord {
     this.book = book;
     this.borrowDate = borrowDate;
     this.returnDate = returnDate;
+  }
+
+  public BorrowRecord(int id, User user, Book book, LocalDate borrowDate, LocalDate returnDate, int status) {
+    this.id = id;
+    this.user = user;
+    this.book = book;
+    this.borrowDate = borrowDate;
+    this.returnDate = returnDate;
+    this.status = status;
   }
 
   // Getters và Setters
@@ -41,5 +51,13 @@ public class BorrowRecord {
 
   public void setReturnDate(LocalDate returnDate) {
     this.returnDate = returnDate;
+  }
+
+  public int getStatus() {
+    return status;
+  }
+
+  public void setStatus(int status) {
+    this.status = status;
   }
 }
