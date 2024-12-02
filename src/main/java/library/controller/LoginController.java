@@ -113,18 +113,6 @@ public class LoginController {
       }
     } else if (check == 2) {
       try {
-        // user = getUserbyname(Username.getText());
-        // // DashController dashController = new DashController(user, hostServices);
-        // UserController userController = new UserController(user, hostServices);
-        // FXMLLoader loader = new
-        // FXMLLoader(getClass().getResource("/library/dash.fxml"));
-        // loader.setController(userController);
-        // Parent root = loader.load();
-        // Stage stage = (Stage) loginButton.getScene().getWindow();
-        // stage.setScene(new Scene(root, 960, 720));
-        // stage.setTitle("Library Management System");
-        // stage.centerOnScreen();
-        // stage.show();
         user = getUserbyname(Username.getText());
         DashController dashController = new DashController(user, hostServices);
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/dash.fxml"));

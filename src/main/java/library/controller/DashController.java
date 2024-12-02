@@ -66,6 +66,7 @@ import library.service.UserService;
 import library.dao.AllDao;
 import library.dao.BookReviewDAO;
 import library.dao.BorrowRecordDAO;
+import library.model.Member;
 
 public class DashController {
 
@@ -156,14 +157,14 @@ public class DashController {
   List<Book> booksNew;
   List<Book> booksRecent;
   protected BorrowRecordDAO borrowRecordDAO = BorrowRecordDAO.getBorrowRecordDAO();
-  protected User user;
+  protected Member user;
   protected HostServices hostServices;
   protected BookDAO bookDAO = BookDAO.getBookDAO();
   private NotiDAO notiDAO = NotiDAO.geNotiDAO();
   protected final BookController bookController = new BookController();
-  private BookReviewDAO bookReviewDAO = BookReviewDAO.getBookReviewDao();
+  private final BookReviewDAO bookReviewDAO = BookReviewDAO.getBookReviewDao();
 
-  double scrollSpeed = 1; // Tốc độ cuộn (pixels/giây)
+  private final double scrollSpeed = 1; // Tốc độ cuộn (pixels/giây)
 
   boolean isHomeTop = true;
 
@@ -171,7 +172,7 @@ public class DashController {
   }
 
   public DashController(User user, HostServices hostServices) {
-    this.user = user;
+    this.user = (Member) user;
     this.hostServices = hostServices;
   }
 
@@ -805,7 +806,7 @@ public class DashController {
         returnBook.setVisible(true);
         returnBook.setOnAction(event -> {
             if (borrowRecordDAO.isBorrowed(user, book)) {
-            borrowRecordDAO.requestReturnBook(record);
+            user.requestReturnBook(record);
             notiDAO = NotiDAO.geNotiDAO();
             try {
                 notiDAO.addNotificationFromUserToAdmin(1,
@@ -846,7 +847,7 @@ public class DashController {
           try {
             if (borrowRecordDAO.isBorrowed(user, book)) {
             BorrowRecord borrowRecord = new BorrowRecord(1, user, book, LocalDate.now(), LocalDate.now().plusDays(20));
-            borrowRecordDAO.addRequestBorrowRecord(borrowRecord);
+            user.requestBorrowBook(borrowRecord);
             borrowBook.setVisible(false);
             NotiDAO notiDAO = NotiDAO.geNotiDAO();
               notiDAO.addNotificationFromUserToAdmin(1,
@@ -970,7 +971,7 @@ public class DashController {
   private boolean isStarYellow(GraphicsContext gc) {
     Color color = (Color) gc.getFill();
     return color.equals(Color.YELLOW);
-}
+  }
 
   private void drawStar(GraphicsContext gc, double x, double y, double radius, Color color) {
     double innerRadius = radius / 2.5; // Bán kính bên trong ngôi sao

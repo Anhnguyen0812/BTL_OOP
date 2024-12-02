@@ -113,6 +113,28 @@ public class BorrowRecordDAO implements DAO {
     }
   }
 
+  // tu choi yeu cau muon sach
+  public void rejectRequestBorrow(BorrowRecord record) {
+    String query = "DELETE FROM borrow_records WHERE id = ?";
+    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+      stmt.setInt(1, record.getId());
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  // tu choi yeu cau tra sach
+  public void rejectRequestReturn(BorrowRecord record) {
+    String query = "UPDATE borrow_records SET status = 1 WHERE id = ?";
+    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+      stmt.setInt(1, record.getId());
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
   // get list book with status = 0
   public ObservableList<BorrowRecord> getBorrowRequest() {
     ObservableList<BorrowRecord> records = FXCollections.observableArrayList();

@@ -11,6 +11,8 @@ import java.util.Base64;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import library.model.Admin;
+import library.model.Member;
 import library.model.User;
 import library.util.DBConnection;
 
@@ -78,16 +80,27 @@ public class UserDAO {
   }
 
   public static User getUserByName(String username) throws SQLException {
-    String query = "SELECT * FROM users WHERE name = ?";
+    String query = "SELECT * FROM users WHERE name LIKE ?";
     PreparedStatement stmt = connection.prepareStatement(query);
     stmt.setString(1, username);
     ResultSet rs = stmt.executeQuery();
     if (rs.next()) {
-      return new User(
+      if (rs.getString("role").equals("admin")) {
+        return new Admin(
+            rs.getInt("id"),
+            rs.getString("name"),
+            rs.getString("email"),
+            rs.getString("password"),
+            rs.getString("role"),
+            rs.getString("salt"));
+      }
+      return new Member(
           rs.getInt("id"),
           rs.getString("name"),
           rs.getString("email"),
-          rs.getString("role"));
+          rs.getString("password"),
+          rs.getString("role"),
+          rs.getString("salt"));
     }
     return null;
   }
@@ -135,6 +148,24 @@ public class UserDAO {
           rs.getString("salt"));
     }
     return null;
+  }
+
+  public void deleteUser(int id) throws SQLException {
+    String query = "DELETE FROM users WHERE id = ?";
+    PreparedStatement stmt = connection.prepareStatement(query);
+    stmt.setInt(1, id);
+    stmt.executeUpdate();
+  }
+
+  public void EditUser(User user) throws SQLException {
+    String query = "UPDATE users SET name = ?, email = ?, password = ?, role = ? WHERE id = ?";
+    PreparedStatement stmt = connection.prepareStatement(query);
+    stmt.setString(1, user.getName());
+    stmt.setString(2, user.getEmail());
+    stmt.setString(3, user.getPassword());
+    stmt.setString(4, user.getRole());
+    stmt.setInt(5, user.getId());
+    stmt.executeUpdate();
   }
 
 }

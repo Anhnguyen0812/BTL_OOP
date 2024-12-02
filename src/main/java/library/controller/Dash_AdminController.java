@@ -67,8 +67,9 @@ import library.model.ImageHandler;
 import library.model.User;
 import library.model.UserQRCode;
 import library.dao.AllDao;
+import library.model.Admin;
 
-public class Dash_AdminController extends DashController {
+public class Dash_AdminController {
 
   @FXML
   private TextField author, publisher, isbn, bookId, search;
@@ -123,7 +124,7 @@ public class Dash_AdminController extends DashController {
   private ImageView avatar, avatar1, imageManageBook, imageManageUser, qrUser;
 
   protected BorrowRecordDAO borrowRecordDAO = BorrowRecordDAO.getBorrowRecordDAO();
-  protected User user;
+  protected Admin user;
   protected HostServices hostServices;
 
   @FXML
@@ -164,7 +165,7 @@ public class Dash_AdminController extends DashController {
   }
 
   public Dash_AdminController(User user, HostServices hostServices) {
-    this.user = user;
+    this.user = (Admin) user;
     this.hostServices = hostServices;
   }
 
@@ -321,29 +322,28 @@ public class Dash_AdminController extends DashController {
             BorrowRecord request = getTableView().getItems().get(getIndex());
             System.out.println("Accepted: " + request.getId());
             borrowRecordDAO.acceptRequestBorrow(request);
-            try {
-              bookDAO.borrowBook(request.getBook());
-            } catch (SQLException e) {
-              System.out.println("error borrow book"); 
-            }
+            user.acceptRequestBorrow(request);
             getTableView().getItems().remove(request); // Xóa yêu cầu khỏi danh sách
           } else {
             BorrowRecord request = getTableView().getItems().get(getIndex());
             System.out.println("Accepted: " + request.getId());
-            borrowRecordDAO.acceptRequestReturn(request);
-            try {
-              bookDAO.returnBook(request.getBook());
-            } catch (SQLException e) {
-              System.out.println("error return book");
-            }
+            user.acceptRequestReturn(request);
             getTableView().getItems().remove(request); // Xóa yêu cầu khỏi danh sách
           }
         });
 
         rejectButton.setOnAction(event -> {
-          BorrowRecord request = getTableView().getItems().get(getIndex());
-          System.out.println("Rejected: " + request.getId());
-          getTableView().getItems().remove(request); // Xóa yêu cầu khỏi danh sách
+          if (requestBox.getValue().getText().equals("Borrow")) {
+            BorrowRecord request = getTableView().getItems().get(getIndex());
+            System.out.println("Rejected: " + request.getId());
+            user.rejectRequestBorrow(request);
+            getTableView().getItems().remove(request); // Xóa yêu cầu khỏi danh sách
+          } else {
+            BorrowRecord request = getTableView().getItems().get(getIndex());
+            System.out.println("Rejected: " + request.getId());
+            user.rejectRequestReturn(request);
+            getTableView().getItems().remove(request); // Xóa yêu cầu khỏi danh sách
+          }
         });
 
       }
@@ -911,8 +911,7 @@ public class Dash_AdminController extends DashController {
   public void gotoDeleteBook() {
     if (manageBookEdit != null) {
       try {
-        bookDAO.deleteBook(manageBookEdit.getId());
-        showAlert("Success", "Book deleted successfully.");
+        user.deleteBook(manageBookEdit);
         SearchLibrary(); // Refresh the book list
       } catch (SQLException e) {
         showAlert("Error", "Failed to delete book: " + manageBookEdit.getTitle());
