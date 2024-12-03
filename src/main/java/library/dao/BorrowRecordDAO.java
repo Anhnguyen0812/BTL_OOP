@@ -79,9 +79,10 @@ public class BorrowRecordDAO implements DAO {
 
   // chap nhan yeu cau muon sach
   public void acceptRequestBorrow(BorrowRecord record) {
-    String query = "UPDATE borrow_records SET return_date = ?, status = 1 WHERE id = ?";
+    String query = "UPDATE borrow_records SET borrow_date = ?, return_date = ?, status = 1 WHERE id = ?";
     try (PreparedStatement stmt = connection.prepareStatement(query)) {
       stmt.setDate(1, java.sql.Date.valueOf(LocalDate.now()));
+      stmt.setDate(2, java.sql.Date.valueOf(LocalDate.now().plusDays(20)));
       stmt.setInt(2, record.getId());
       stmt.executeUpdate();
     } catch (SQLException e) {
@@ -317,9 +318,9 @@ public class BorrowRecordDAO implements DAO {
         UserService userService = new UserService();
         User user = userService.getUserById(userId);
         Book book = bookDAO.getBookById(bookId);
-
+        int status = rs.getInt("status");
         int recordId = rs.getInt("id");
-        BorrowRecord record = new BorrowRecord(recordId, user, book, borrowDate, null);
+        BorrowRecord record = new BorrowRecord(recordId, user, book, borrowDate, null, status);
         records.add(record);
       }
     } catch (SQLException e) {
@@ -352,7 +353,8 @@ public class BorrowRecordDAO implements DAO {
         LocalDate returnDate = rs.getDate("return_date") != null ? rs.getDate("return_date").toLocalDate() : null;
         User user = new UserService().getUserById(userId);
         Book book = new BookService(bookDAO).getBookById(bookId);
-        return new BorrowRecord(recordId, user, book, borrowDate, returnDate);
+        int status = rs.getInt("status");
+        return new BorrowRecord(recordId, user, book, borrowDate, returnDate, status);
       }
     } catch (SQLException e) {
     }
@@ -375,7 +377,8 @@ public class BorrowRecordDAO implements DAO {
                 rs.getDate("borrow_date").toLocalDate(),
                 rs.getDate("return_date") != null
                     ? rs.getDate("return_date").toLocalDate()
-                    : null // Return date can be null if not returned yet
+                    : null, // Return date can be null if not returned yet
+                rs.getInt("status")
             ));
       }
     } catch (SQLException e) {
@@ -400,7 +403,8 @@ public class BorrowRecordDAO implements DAO {
               rs.getDate("borrow_date").toLocalDate(),
               rs.getDate("return_date") != null
                   ? rs.getDate("return_date").toLocalDate()
-                  : null // Return date can be null if not returned yet
+                  : null,
+              rs.getInt("status") // Return date can be null if not returned yet
           ));
     }
     return records;
@@ -419,7 +423,9 @@ public class BorrowRecordDAO implements DAO {
               user,
               bookDAO.getBookById(rs.getInt("book_id")),
               rs.getDate("borrow_date").toLocalDate(),
-              rs.getDate("return_date").toLocalDate()));
+              rs.getDate("return_date").toLocalDate(),
+              rs.getInt("status")
+            ));
     }
     return records;
   }
@@ -498,7 +504,9 @@ public class BorrowRecordDAO implements DAO {
                 rs.getDate("borrow_date").toLocalDate(),
                 rs.getDate("return_date") != null
                     ? rs.getDate("return_date").toLocalDate()
-                    : null // Return date can be null if not returned yet
+                    : null, // Return date can be null if not returned yet
+                
+                rs.getInt("status")
             ));
       }
     } catch (SQLException e) {
@@ -639,6 +647,53 @@ public class BorrowRecordDAO implements DAO {
     } catch (SQLException e) {
       e.printStackTrace();
     }
+  }
+
+  public ObservableList<BorrowRecord> getBookAlmostDueByUser(int id) {
+    // Placeholder implementation
+    String query = "SELECT * FROM borrow_records WHERE status = 1 AND user_id = ? AND return_date < DATE_ADD(CURDATE(), INTERVAL 3 DAY)";
+    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+      stmt.setInt(1, id);
+      ResultSet rs = stmt.executeQuery();
+      ObservableList<BorrowRecord> records = FXCollections.observableArrayList();
+      while (rs.next()) {
+        records.add(
+            new BorrowRecord(
+                rs.getInt("id"),
+                new UserService().getUserById(rs.getInt("user_id")),
+                bookDAO.getBookById(rs.getInt("book_id")),
+                rs.getDate("borrow_date").toLocalDate(),
+                rs.getDate("return_date").toLocalDate(),
+                rs.getInt("status")));
+      }
+      return records;
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public ObservableList<BorrowRecord> getAllBookAlmostDue() {
+    // Placeholder implementation
+    String query = "SELECT * FROM borrow_records WHERE status = 1 AND return_date < DATE_ADD(CURDATE(), INTERVAL 3 DAY)";
+    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+      ResultSet rs = stmt.executeQuery();
+      ObservableList<BorrowRecord> records = FXCollections.observableArrayList();
+      while (rs.next()) {
+        records.add(
+            new BorrowRecord(
+                rs.getInt("id"),
+                new UserService().getUserById(rs.getInt("user_id")),
+                bookDAO.getBookById(rs.getInt("book_id")),
+                rs.getDate("borrow_date").toLocalDate(),
+                rs.getDate("return_date").toLocalDate(),
+                rs.getInt("status")));
+      }
+      return records;
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 
 }

@@ -60,4 +60,21 @@ public class BorrowRecord {
   public void setStatus(int status) {
     this.status = status;
   }
+
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  public void setUser(User user) {
+    this.user = user;
+  }
+
+  public void setBook(Book book) {
+    this.book = book;
+  }
+
+  public void setBorrowDate(LocalDate borrowDate) {
+    this.borrowDate = borrowDate;
+  }
+
 }
