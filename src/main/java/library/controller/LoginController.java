@@ -108,7 +108,7 @@ public class LoginController {
         if (admin != null) {
             Parent root = admin.getDashboard();
             Stage stage = (Stage) loginButton.getScene().getWindow();
-            stage.setScene(new Scene(root, 960, 720));
+            stage.setScene(new Scene(root));
             stage.setTitle("Library Management System");
             stage.centerOnScreen();
             stage.show();

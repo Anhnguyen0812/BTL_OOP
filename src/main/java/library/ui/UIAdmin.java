@@ -5,7 +5,7 @@ import java.io.IOException;
 import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import library.controller.AdminController;
+import library.controller.Dash_AdminController;
 import library.model.User;
 
 public class UIAdmin implements UIInterface {
@@ -21,9 +21,9 @@ public class UIAdmin implements UIInterface {
     @Override
     public Parent getDashboard() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Admin.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/dash_admin.fxml"));
             // Truyền dữ liệu vào controller
-            AdminController controller = new AdminController(user, hostServices);
+            Dash_AdminController controller = new Dash_AdminController(user, hostServices);
             loader.setController(controller);
             Parent root = loader.load();
             return root;

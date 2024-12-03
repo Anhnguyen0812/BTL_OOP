@@ -94,13 +94,15 @@ public class UserDAO {
             rs.getString("role"),
             rs.getString("salt"));
       }
-      return new Member(
-          rs.getInt("id"),
-          rs.getString("name"),
-          rs.getString("email"),
-          rs.getString("password"),
-          rs.getString("role"),
-          rs.getString("salt"));
+      else {
+        return new Member(
+            rs.getInt("id"),
+            rs.getString("name"),
+            rs.getString("email"),
+            rs.getString("password"),
+            rs.getString("role"),
+            rs.getString("salt"));
+      }
     }
     return null;
   }

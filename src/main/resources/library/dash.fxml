@@ -562,9 +562,10 @@
          </children>
       </Pane>
       <Button fx:id="returnBook" layoutX="942.0" layoutY="322.0" mnemonicParsing="false" text="Return" visible="false" />
-      <Button fx:id="borrowBook" layoutX="834.0" layoutY="322.0" mnemonicParsing="false" text="Borrow" visible="false" /> 
+      <Button fx:id="borrowBook" layoutX="850.0" layoutY="322.0" mnemonicParsing="false" text="Borrow" visible="false" /> 
       <Button fx:id="assessment" layoutX="442.0" layoutY="207.0" mnemonicParsing="false" onAction="#gotoAssessment" prefHeight="25.0" prefWidth="70" text="assess" visible="false" />
-      <Pane fx:id="commentPane" layoutX="650.0" layoutY="251.0" prefHeight="150.0" prefWidth="300.0" visible="false ">
+      <Label fx:id="notiactive" layoutX="942.0" layoutY="322.0" mnemonicParsing="false" visible="false" textFill="RED" />
+      <Pane fx:id="commentPane" layoutX="650.0" layoutY="251.0" prefHeight="150.0" prefWidth="300.0" visible="false" >
          <children>
             <TextField fx:id="comment" layoutX="95.0" layoutY="58.0" prefHeight="30.0" prefWidth="200.0" />
             <Button fx:id="addComment" layoutX="226.0" layoutY="110.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="60.0" text="add" />

@@ -103,7 +103,7 @@ public class DashController {
   private ListView<String> notiList;
 
   @FXML
-  private Label welcome, date, notiNewLabel;
+  private Label welcome, date, notiNewLabel, notiactive;
   @FXML
   private GridPane searchView, searchReturnBooks, featuredBookGridPane;
   @FXML
@@ -806,16 +806,16 @@ public class DashController {
         returnBook.setVisible(true);
         returnBook.setOnAction(event -> {
             if (borrowRecordDAO.isBorrowed(user, book)) {
-            user.requestReturnBook(record);
-            notiDAO = NotiDAO.geNotiDAO();
-            try {
-                notiDAO.addNotificationFromUserToAdmin(1,
-                        "User " + user.getId() + ", Name: " + user.getName() + " return book " + book.getTitle());
-            } catch (Exception e) {
-                System.out.println(e);
+              user.requestReturnBook(record);
+              notiDAO = NotiDAO.geNotiDAO();
+              try {
+                  notiDAO.addNotificationFromUserToAdmin(1,
+                          "User " + user.getId() + ", Name: " + user.getName() + " return book " + book.getTitle());
+              } catch (Exception e) {
+                  System.out.println(e);
+              }
+              returnBook.setVisible(true);
             }
-            returnBook.setVisible(true);
-          }
         });
         addComment.setOnAction(event -> {
           String commentText = comment.getText();
@@ -845,7 +845,7 @@ public class DashController {
         borrowBook.setVisible(true);
         borrowBook.setOnAction(borrowEvent -> {
           try {
-            if (borrowRecordDAO.isBorrowed(user, book)) {
+            if (!borrowRecordDAO.isBorrowed(user, book)) {
             BorrowRecord borrowRecord = new BorrowRecord(1, user, book, LocalDate.now(), LocalDate.now().plusDays(20));
             user.requestBorrowBook(borrowRecord);
             borrowBook.setVisible(false);
@@ -853,6 +853,15 @@ public class DashController {
               notiDAO.addNotificationFromUserToAdmin(1,
                       "User " + user.getId() + ", Name: " + user.getName() + " request to borrow book "
                               + book.getTitle());
+            } else {
+              bookDetailPane.getChildren().add(notiactive);
+              notiactive.setText("You Borrowed This Book");
+              notiactive.setVisible(true);
+              notiactive.setLayoutX(700);
+              notiactive.setLayoutY(322);
+              Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), e -> notiactive.setVisible(false)));
+              timeline.setCycleCount(1); // Chạy một lần
+              timeline.play();
             }
           } catch (Exception e) {
                 System.out.println(e);
