@@ -21,6 +21,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.MenuButton;
 import javafx.geometry.Insets;
 import javafx.animation.AnimationTimer;
+import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.HostServices;
@@ -57,11 +58,7 @@ import javafx.stage.Stage;
 import library.dao.BookDAO;
 import library.dao.BorrowRecordDAO;
 import library.dao.NotiDAO;
-import library.model.Book;
-import library.model.BorrowRecord;
-import library.model.ConcreteBook;
-import library.model.ImageHandler;
-import library.model.User;
+import library.model.*;
 import library.service.UserService;
 import library.dao.AllDao;
 import library.dao.BookReviewDAO;
@@ -98,8 +95,9 @@ public class DashController {
 
   @FXML
   protected ProgressIndicator loading;
+
   @FXML
-  private ListView<String> notiList;
+  private ListView<String> notiList, bookDueDateList;
 
   @FXML
   private Label welcome, date, notiNewLabel;
@@ -109,7 +107,7 @@ public class DashController {
   private ChoiceBox<String> searchChoice, returnChoice;
 
   @FXML
-  private ImageView avatar, avatar1;
+  private ImageView avatar, avatar1, githubImg, fbImg;
 
   @FXML
   private MenuButton featuredBookButton;
@@ -160,7 +158,7 @@ public class DashController {
   List<Book> booksNew;
   List<Book> booksRecent;
   protected BorrowRecordDAO borrowRecordDAO = BorrowRecordDAO.getBorrowRecordDAO();
-  protected User user;
+  protected Member user;
   protected HostServices hostServices;
   protected BookDAO bookDAO = BookDAO.getBookDAO();
   private NotiDAO notiDAO = NotiDAO.geNotiDAO();
@@ -175,7 +173,7 @@ public class DashController {
   }
 
   public DashController(User user, HostServices hostServices) {
-    this.user = user;
+    this.user = (Member) user;
     this.hostServices = hostServices;
   }
 
@@ -190,10 +188,19 @@ public class DashController {
   }
 
   public void initialize() throws SQLException {
+    // set up loading
+    loading.setVisible(false);
 
     // Set up title for table
     welcome.setText("Welcome " + user.getName() + "!");
     user_Button.setText(user.getName());
+    // link github and fb
+    githubImg.setOnMouseClicked(event -> {
+      hostServices.showDocument("https://github.com/Anhnguyen0812/BTL_OOP");
+    });
+    fbImg.setOnMouseClicked(event -> {
+      hostServices.showDocument("https://www.facebook.com/profile.php?id=100018071889476");
+    });
 
     // Set up date
     // Set up date
@@ -219,13 +226,16 @@ public class DashController {
     settings.setVisible(false);
     home_Button.styleProperty().set("-fx-background-color: #777777");
 
+    javafx.animation.TranslateTransition transition = new javafx.animation.TranslateTransition(
+        javafx.util.Duration.millis(300), noti);
+
     // Set up ChoiceBox for search and return
     searchChoice.getItems().addAll("Title", "Author", "ISBN");
-    returnChoice.getItems().addAll("Borrowed", "Returned", "unReturned");
+    returnChoice.getItems().addAll("Borrow Request", "Borrow", "Return Request", "Returned");
 
     // Set up values for ChoiceBox
     searchChoice.setValue("Title");
-    returnChoice.setValue("Borrowed");
+    returnChoice.setValue("Borrow Request");
 
     // get Lib Info
     int totalBooks = bookDAO.getAllBooks().size();
@@ -356,7 +366,28 @@ public class DashController {
 
     // set up book
     SearchLibrary();
+    // setup bookduedatelist
+    List<BorrowRecord> dueSoonBooks = borrowRecordDAO.getDueSoonBooks(user.getId());
+    List<BorrowRecord> overdueBooks = borrowRecordDAO.getOverdueBooks(user.getId());
+    bookDueDateList.getItems().clear();
+    if (dueSoonBooks.size() == 0 && overdueBooks.size() == 0) {
+      bookDueDateList.getItems().add("No books due soon or overdue.");
+    } else {
+      bookDueDateList.getItems().clear();
+      if (dueSoonBooks.size() > 0)
+        for (BorrowRecord record : dueSoonBooks) {
+          bookDueDateList.getItems()
+              .add("Due Soon: " + record.getBook().getTitle() + " - Due Date: " + record.getReturnDate());
+        }
 
+      if (overdueBooks.size() > 0)
+        for (BorrowRecord record : overdueBooks) {
+          Label overdueLabel = new Label(
+              "Overdue: " + record.getBook().getTitle() + " - Due Date: " + record.getReturnDate());
+          overdueLabel.setTextFill(Color.RED);
+          bookDueDateList.getItems().add(overdueLabel.getText());
+        }
+    }
   }
 
   public void setFeaturedBooks(List<Book> booksTop) {
@@ -411,7 +442,7 @@ public class DashController {
 
   int j = 0;
 
-  private void setBorrowedBookItems(List<BorrowRecord> borrowRecords, int k, boolean needClear) {
+  private void setBorrowedBookItems(List<BorrowRecord> borrowRecords, int k, boolean needClear, int status) {
     if (needClear)
       searchReturnBooks.getChildren().clear();
 
@@ -433,7 +464,7 @@ public class DashController {
         } else {
           controller.displayBookRate(record.getBook().getRateAvg(), true);
         }
-        controller.setReturnButton(record);
+        controller.hideButton();
 
         if (column == 3) {
           column = 1;
@@ -442,6 +473,28 @@ public class DashController {
             break;
         }
         searchReturnBooks.add(bookItem, column++, row);
+
+        if (status == 1) {
+          Button returnRequestButton = new Button("Return Request");
+          returnRequestButton.setOnAction(event -> {
+            user.requestReturnBook(record);
+
+            try {
+              notiDAO.addNotificationFromUserToAdmin(1,
+                  "User " + user.getId() + ", Name: " + user.getName() + " requested to return book "
+                      + record.getBook().getTitle());
+            } catch (SQLException e) {
+              e.printStackTrace();
+            }
+
+            returnRequestButton.setDisable(true);
+          });
+
+          bookItem.getChildren().add(returnRequestButton);
+          returnRequestButton.setLayoutX(10); // Set X coordinate
+          returnRequestButton.setLayoutY(10); // Set Y coordinate
+        }
+
         GridPane.setMargin(bookItem, new Insets(5)); // Add margin of 5px between items
         bookItem.setOnMouseClicked(event -> {
           if (event.getClickCount() == 2) {
@@ -458,7 +511,7 @@ public class DashController {
           Button loadMoreButton = new Button("Load More");
           loadMoreButton.setOnAction(event -> {
             searchReturnBooks.getChildren().remove(loadMoreButton);
-            setBorrowedBookItems(borrowRecords, j + 1, false);
+            setBorrowedBookItems(borrowRecords, j + 1, false, status);
           });
           searchReturnBooks.add(loadMoreButton, 2, row + 1, 3, 1);
           GridPane.setMargin(loadMoreButton, new Insets(5));
@@ -469,6 +522,7 @@ public class DashController {
         e.printStackTrace();
       }
     }
+
   }
 
   private void saveSearchResults(List<Book> books) {
@@ -498,6 +552,10 @@ public class DashController {
     resetStyle();
     home.setVisible(true);
     home_Button.styleProperty().set("-fx-background-color: #777777");
+    FadeTransition fadeTransition = new FadeTransition(Duration.millis(300), home);
+    fadeTransition.setFromValue(0.0);
+    fadeTransition.setToValue(1.0);
+    fadeTransition.play();
   }
 
   public void gotoBooks() {
@@ -506,6 +564,10 @@ public class DashController {
     books_Button.styleProperty().set("-fx-background-color: #777777");
     searchGG.setOnAction(event -> searchGoogle());
     searchGG.setDefaultButton(true);
+    FadeTransition fadeTransition = new FadeTransition(Duration.millis(300), books);
+    fadeTransition.setFromValue(0.0);
+    fadeTransition.setToValue(1.0);
+    fadeTransition.play();
   }
 
   public void gotoReturnBooks() throws SQLException {
@@ -513,35 +575,52 @@ public class DashController {
     returnBooks.setVisible(true);
     returnBooks_Button.styleProperty().set("-fx-background-color: #777777");
     List<BorrowRecord> borrowRecords = borrowRecordDAO.getBorrowRequestByUserId(user.getId());
-    System.out.println(user.getId());
+
     if (!borrowRecords.isEmpty())
-      setBorrowedBookItems(borrowRecords, 1, true);
+      setBorrowedBookItems(borrowRecords, 1, true, 0);
+
+    FadeTransition fadeTransition = new FadeTransition(Duration.millis(300), returnBooks);
+    fadeTransition.setFromValue(0.0);
+    fadeTransition.setToValue(1.0);
+    fadeTransition.play();
   }
 
   public void gotoIssueBooks() {
     resetStyle();
     issueBooks.setVisible(true);
     issueBooks_Button.styleProperty().set("-fx-background-color: #777777");
+
+    FadeTransition fadeTransition = new FadeTransition(Duration.millis(300), issueBooks);
+    fadeTransition.setFromValue(0.0);
+    fadeTransition.setToValue(1.0);
+    fadeTransition.play();
   }
 
   public void gotoSettings() {
     resetStyle();
     settings.setVisible(true);
     settings_Button.styleProperty().set("-fx-background-color: #777777");
+
+    FadeTransition fadeTransition = new FadeTransition(Duration.millis(300), settings);
+    fadeTransition.setFromValue(0.0);
+    fadeTransition.setToValue(1.0);
+    fadeTransition.play();
   }
 
   @FXML
-  public void gotoRateBook() {
+  public void gotoRateBook() throws SQLException {
+    booksTop = bookDAO.getTopBooks();
     setFeaturedBooks(booksTop);
   }
 
   @FXML
-  public void gotoRecentBooks() {
+  public void gotoRecentBooks() throws SQLException {
     setFeaturedBooks(booksRecent);
   }
 
   @FXML
-  public void gotoNewBooks() {
+  public void gotoNewBooks() throws SQLException {
+    booksNew = bookDAO.getNewBooks();
     setFeaturedBooks(booksNew);
   }
 
@@ -574,18 +653,18 @@ public class DashController {
 
   @FXML
   public void reloadReturnBooksAction() throws SQLException {
-    if (returnChoice.getValue().equals("Borrowed")) {
+    if (returnChoice.getValue().equals("Borrow Request")) {
+      List<BorrowRecord> borrowRecords = borrowRecordDAO.getBorrowRequestByUserId(user);
+      setBorrowedBookItems(borrowRecords, 1, true, 0);
+    } else if (returnChoice.getValue().equals("Borrow")) {
       List<BorrowRecord> borrowRecords = borrowRecordDAO.getBorrowRecordsByUserId(user);
-      if (!borrowRecords.isEmpty())
-        setBorrowedBookItems(borrowRecords, 1, true);
-    } else if (returnChoice.getValue().equals("Returned")) {
-      List<BorrowRecord> borrowRecords = borrowRecordDAO.getReturnRecordsByUserId(user);
-      if (!borrowRecords.isEmpty())
-        setBorrowedBookItems(borrowRecords, 1, true);
-    } else if (returnChoice.getValue().equals("unReturned")) {
-      List<BorrowRecord> borrowRecords = borrowRecordDAO.getBorrowRecordsByUserIdWithoutReturnDate(user);
-      if (!borrowRecords.isEmpty())
-        setBorrowedBookItems(borrowRecords, 1, true);
+      setBorrowedBookItems(borrowRecords, 1, true, 1);
+    } else if (returnChoice.getValue().equals("Return Request")) {
+      List<BorrowRecord> borrowRecords = borrowRecordDAO.getReturnRequestByUserId(user);
+      setBorrowedBookItems(borrowRecords, 1, true, 0);
+    } else {
+      List<BorrowRecord> borrowRecords = borrowRecordDAO.getReturnedByUserId(user);
+      setBorrowedBookItems(borrowRecords, 1, true, 0);
     }
   }
 
@@ -631,7 +710,18 @@ public class DashController {
         return null;
       }
     };
+    loading.progressProperty().bind(task.progressProperty());
     new Thread(task).start();
+    loading.setVisible(true);
+    task.setOnSucceeded(event -> {
+      loading.setVisible(false);
+      loading.progressProperty().unbind();
+    });
+    task.setOnFailed(event -> {
+      loading.setVisible(false);
+      loading.progressProperty().unbind();
+      showAlert("Error", "Failed to search books on Google.");
+    });
 
   }
 
@@ -659,6 +749,7 @@ public class DashController {
           AnchorPane bookItem = loader.load();
           BookItemController controller = loader.getController();
           controller.setItemData(book, i, user);
+
           if (book.getRateAvg() == null) {
             controller.displayBookRate(0, false);
           } else {
@@ -668,6 +759,9 @@ public class DashController {
             controller.setBorrowButtonVisible();
           } else {
             controller.checkBorrowed();
+          }
+          if (isGoogle) {
+            controller.hideButton();
           }
 
           if (column == 3) {
@@ -695,17 +789,34 @@ public class DashController {
             Button loadMoreButton = new Button("Load More");
             loadMoreButton.setOnAction(event -> {
               searchView.getChildren().remove(loadMoreButton);
-              if (isGoogle) {
-                try {
-                  List<Book> book1 = bookController.searchBookByTitleWithStartIndex(title.getText(), i,
-                      MAX_RESULTS_EACH_TIME);
-                  books.addAll(book1);
-                } catch (Exception e) {
-                  e.printStackTrace();
+              Task<Void> loadMoreTask = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                  if (isGoogle) {
+                    try {
+                      List<Book> book1 = bookController.searchBookByTitleWithStartIndex(title.getText(), i,
+                          MAX_RESULTS_EACH_TIME);
+                      books.addAll(book1);
+                    } catch (Exception e) {
+                      e.printStackTrace();
+                    }
+                  }
+                  return null;
                 }
-
-              }
-              setBookItem(books, i + 1, needCheck, false, isGoogle);
+              };
+              loading.progressProperty().bind(loadMoreTask.progressProperty());
+              loadMoreTask.setOnSucceeded(e -> {
+                setBookItem(books, i + 1, needCheck, false, isGoogle);
+                loading.setVisible(false);
+                loading.progressProperty().unbind();
+              });
+              loadMoreTask.setOnFailed(e -> {
+                loading.setVisible(false);
+                loading.progressProperty().unbind();
+                showAlert("Error", "Failed to load more books.");
+              });
+              new Thread(loadMoreTask).start();
+              loading.setVisible(true);
 
             });
             searchView.add(loadMoreButton, 2, row + 1, 3, 1);
@@ -719,21 +830,36 @@ public class DashController {
   }
 
   public void gotoNoti() {
+    javafx.animation.TranslateTransition transition = new javafx.animation.TranslateTransition(
+        javafx.util.Duration.millis(300), noti);
     if (noti.isVisible()) {
-      noti.setVisible(false);
+      transition.setFromX(0);
+      transition.setToX(noti.getWidth());
+      transition.setOnFinished(event -> noti.setVisible(false));
     } else {
       noti.setVisible(true);
+      transition.setFromX(noti.getWidth());
+      transition.setToX(0);
       noti.toFront();
     }
+    transition.play();
   }
 
   public void gotoSubUser() {
+    javafx.animation.TranslateTransition transition = new javafx.animation.TranslateTransition(
+        javafx.util.Duration.millis(200), subUser);
     if (subUser.isVisible()) {
-      subUser.setVisible(false);
+      transition.setFromY(0);
+      transition.setToY(subUser.getHeight());
+      transition.setOnFinished(event -> subUser.setVisible(false));
+
     } else {
       subUser.setVisible(true);
+      transition.setFromY(subUser.getHeight());
+      transition.setToY(0);
       subUser.toFront();
     }
+    transition.play();
   }
 
   public void gotoChangePass() {
@@ -764,6 +890,8 @@ public class DashController {
       Stage stage = (Stage) logOut.getScene().getWindow();
       stage.setScene(new Scene(root));
       stage.setTitle("Library Management System");
+      LoginController loginController = loader.getController();
+      loginController.setHostServices(hostServices);
       stage.centerOnScreen();
       stage.show();
     } catch (IOException e) {
@@ -778,7 +906,7 @@ public class DashController {
       Pane bookDetailPane = loader.load();
       bookDetailPane.setStyle("-fx-background-color: rgba(92, 161, 171, 0.3);");
       DetailController controller = loader.getController();
-      controller.setBookData(book);
+      controller.setBookData(book, hostServices);
       isHomeTop = false;
       if (book.getRateAvg() == null) {
         controller.displayBookRate(0, false);
@@ -811,7 +939,7 @@ public class DashController {
         returnBook.setVisible(true);
         returnBook.setOnAction(event -> {
           if (borrowRecordDAO.isBorrowed(user, book)) {
-            borrowRecordDAO.requestReturnBook(record);
+            user.requestReturnBook(record);
             notiDAO = NotiDAO.geNotiDAO();
             try {
               notiDAO.addNotificationFromUserToAdmin(1,
@@ -836,9 +964,13 @@ public class DashController {
             boolean check = bookReviewDAO.getReviewBookByUser(user.getId(), book.getId());
             if (check == false) {
               bookReviewDAO.addReview(book.getId(), user.getId(), commentText, count);
+              bookReviewDAO.updateRateBook(book.getId(), bookReviewDAO.getRateBook(book.getId()));
             } else {
               bookReviewDAO.updateReview(user.getId(), book.getId(), commentText, count);
+              bookReviewDAO.updateRateBook(book.getId(), bookReviewDAO.getRateBook(book.getId()));
             }
+            BookDAO bookDAO = BookDAO.getBookDAO();
+            book.setRateAvg(bookDAO.getBookById(book.getId()).getRateAvg());
           } catch (SQLException e) {
             e.printStackTrace();
             showAlert("Error", "Failed to handle book review.");
@@ -849,15 +981,26 @@ public class DashController {
         borrowBook.setVisible(true);
         borrowBook.setOnAction(borrowEvent -> {
           try {
-            if (borrowRecordDAO.isBorrowed(user, book)) {
+            if (!borrowRecordDAO.isBorrowed(user, book)) {
               BorrowRecord borrowRecord = new BorrowRecord(1, user, book, LocalDate.now(),
                   LocalDate.now().plusDays(20));
-              borrowRecordDAO.addRequestBorrowRecord(borrowRecord);
+              user.requestBorrowBook(borrowRecord);
               borrowBook.setVisible(false);
               NotiDAO notiDAO = NotiDAO.geNotiDAO();
               notiDAO.addNotificationFromUserToAdmin(1,
                   "User " + user.getId() + ", Name: " + user.getName() + " request to borrow book "
                       + book.getTitle());
+            } else {
+              Label notiactive = new Label();
+              bookDetailPane.getChildren().add(notiactive);
+              notiactive.setText("You Borrowed This Book");
+              notiactive.setVisible(true);
+              notiactive.setLayoutX(700);
+              notiactive.setLayoutY(322);
+              notiactive.setTextFill(Color.RED);
+              Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), e -> notiactive.setVisible(false)));
+              timeline.setCycleCount(1); // Chạy một lần
+              timeline.play();
             }
           } catch (Exception e) {
             System.out.println(e);
@@ -959,13 +1102,15 @@ public class DashController {
         GraphicsContext gc = star.getGraphicsContext2D();
         gc.clearRect(0, 0, star.getWidth(), star.getHeight());
         gc.setFill(Color.GRAY);
-        drawStar(gc, 15, 15, 15, Color.GRAY);
+        drawStar(gc, 10, 10, 10, Color.GRAY);
         star.setOnMouseClicked(event -> {
-          if (event.getClickCount() == 2) {
-            if (isStarYellow(gc)) {
-              drawStar(gc, 15, 15, 15, Color.GRAY); // Chuyển thành màu xám
-            } else {
-              drawStar(gc, 15, 15, 15, Color.YELLOW); // Chuyển thành màu vàng
+          if (event.getClickCount() == 1) {
+            int clickedIndex = java.util.Arrays.asList(stars).indexOf(star);
+            for (int i = 0; i <= clickedIndex; i++) {
+              drawStar(stars[i].getGraphicsContext2D(), 10, 10, 10, Color.YELLOW); // Tô sáng ngôi sao
+            }
+            for (int i = clickedIndex + 1; i < stars.length; i++) {
+              drawStar(stars[i].getGraphicsContext2D(), 10, 10, 10, Color.GRAY); // Chuyển thành màu xám
             }
           }
         });

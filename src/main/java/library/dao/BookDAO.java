@@ -14,7 +14,7 @@ import library.model.Book;
 import library.model.ConcreteBook;
 import library.util.DBConnection;
 
-public class BookDAO {
+public class BookDAO implements DAO {
   private final Connection connection;
   private static BookDAO instance;
 
@@ -29,6 +29,16 @@ public class BookDAO {
     return instance;
   }
 
+  protected void showAlert(String title, String message) {
+    // Implementation for showing an alert
+    // For example, using JavaFX Alert:
+    javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+    alert.setTitle(title);
+    alert.setHeaderText(null);
+    alert.setContentText(message);
+    alert.showAndWait();
+  }
+
   public void updateBook(Book book) {
     // Implementation for updating the book in the database
     // This is a placeholder implementation
@@ -37,12 +47,15 @@ public class BookDAO {
       statement.setString(1, book.getTitle());
       statement.setString(2, book.getAuthor());
       statement.setString(3, book.getIsbn());
-      statement.setBoolean(4, book.isAvailable());
+      statement.setInt(4, book.getAvailable());
       statement.setString(5, book.getDescription());
       statement.setString(6, book.getImageUrl());
       statement.setString(7, book.getQRcode());
       statement.setString(8, book.getCategories());
-      statement.setDouble(9, book.getRateAvg());
+      if (book.getRateAvg() == null) {
+        statement.setNull(9, java.sql.Types.DOUBLE);
+      } else
+        statement.setDouble(9, book.getRateAvg());
       statement.setInt(10, book.getId());
       statement.executeUpdate();
     } catch (SQLException e) {
@@ -100,7 +113,7 @@ public class BookDAO {
     } else {
       stmt.setString(3, "N/A");
     }
-    stmt.setBoolean(4, false); // Assuming available is always set to false when adding a new book
+    stmt.setInt(4, 5); // Assuming available is always set to false when adding a new book
     if (book.getDescription() != null) {
       stmt.setString(5, book.getDescription());
     } else {
@@ -135,6 +148,8 @@ public class BookDAO {
         System.out.println("no duplicate title");
         return;
       }
+
+      showAlert("Book added successfully", "Success");
     }
 
     javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);

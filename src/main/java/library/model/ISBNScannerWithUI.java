@@ -1,10 +1,14 @@
 package library.model;
 
 import com.google.zxing.*;
+import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
@@ -147,4 +151,15 @@ public class ISBNScannerWithUI {
     // launch(args);
     // }
 
+    public static Image generateISBN(String isbn) {
+        try {
+            MultiFormatWriter writer = new MultiFormatWriter();
+            BitMatrix bitMatrix = writer.encode(isbn, BarcodeFormat.EAN_13, 400, 200);
+            BufferedImage image = MatrixToImageWriter.toBufferedImage(bitMatrix);
+            return SwingFXUtils.toFXImage(image, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

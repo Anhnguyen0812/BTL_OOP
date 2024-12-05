@@ -7,14 +7,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.Base64;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import library.model.Admin;
+import library.model.Member;
 import library.model.User;
 import library.util.DBConnection;
 
-public class UserDAO {
+public class UserDAO implements DAO {
   private static Connection connection;
   private static UserDAO instance;
 
@@ -43,17 +46,30 @@ public class UserDAO {
   }
 
   public void addUser(User user) throws SQLException, NoSuchAlgorithmException {
-    String query = "INSERT INTO users (name, email, password, role, salt) VALUES (?, ?, ?, ?, ?)";
+    String query = "INSERT INTO users (name, email, password, role, salt, created_at) VALUES (?, ?, ?, ?, ?, ?)";
     PreparedStatement stmt = connection.prepareStatement(query);
     stmt.setString(1, user.getName());
     stmt.setString(2, user.getEmail());
     stmt.setString(3, hashPassword(user.getPassword(), user.getSalt()));
     stmt.setString(4, user.getRole());
     stmt.setString(5, user.getSalt());
+    stmt.setDate(6, java.sql.Date.valueOf(LocalDate.now()));
     stmt.executeUpdate();
   }
 
-  public void updateUser(User user) throws SQLException {
+  public void updateUser(User user) throws SQLException, NoSuchAlgorithmException {
+    String query = "UPDATE users SET name = ?, email = ?, password = ?, role = ?, salt = ? WHERE id = ?";
+    PreparedStatement stmt = connection.prepareStatement(query);
+    stmt.setString(1, user.getName());
+    stmt.setString(2, user.getEmail());
+    stmt.setString(3, user.getPassword());
+    stmt.setString(4, user.getRole());
+    stmt.setString(5, user.getSalt());
+    stmt.setInt(6, user.getId());
+    stmt.executeUpdate();
+  }
+
+  public void updateUserWithoutPassword(User user) throws SQLException {
     String query = "UPDATE users SET name = ?, email = ?, role = ? WHERE id = ?";
     PreparedStatement stmt = connection.prepareStatement(query);
     stmt.setString(1, user.getName());
@@ -69,7 +85,13 @@ public class UserDAO {
     stmt.setInt(1, id);
     ResultSet rs = stmt.executeQuery();
     if (rs.next()) {
-      return new User(rs.getInt("id"), rs.getString("name"), rs.getString("email"));
+      return new User(
+          rs.getInt("id"),
+          rs.getString("name"),
+          rs.getString("email"),
+          rs.getString("password"),
+          rs.getString("role"),
+          rs.getString("salt"));
     }
     return null;
   }
@@ -82,7 +104,12 @@ public class UserDAO {
     while (rs.next()) {
       users.add(
           new User(
-              rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("role")));
+              rs.getInt("id"),
+              rs.getString("name"),
+              rs.getString("email"),
+              rs.getString("password"),
+              rs.getString("role"),
+              rs.getString("salt")));
     }
     return users;
   }
@@ -93,11 +120,23 @@ public class UserDAO {
     stmt.setString(1, username);
     ResultSet rs = stmt.executeQuery();
     if (rs.next()) {
-      return new User(
-          rs.getInt("id"),
-          rs.getString("name"),
-          rs.getString("email"),
-          rs.getString("role"));
+      if (rs.getString("role").equals("admin")) {
+        return new Admin(
+            rs.getInt("id"),
+            rs.getString("name"),
+            rs.getString("email"),
+            rs.getString("password"),
+            rs.getString("role"),
+            rs.getString("salt"));
+      } else {
+        return new Member(
+            rs.getInt("id"),
+            rs.getString("name"),
+            rs.getString("email"),
+            rs.getString("password"),
+            rs.getString("role"),
+            rs.getString("salt"));
+      }
     }
     return null;
   }
@@ -111,7 +150,12 @@ public class UserDAO {
     while (rs.next()) {
       users.add(
           new User(
-              rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("role")));
+              rs.getInt("id"),
+              rs.getString("name"),
+              rs.getString("email"),
+              rs.getString("password"),
+              rs.getString("role"),
+              rs.getString("salt")));
     }
     return users;
   }
@@ -125,7 +169,12 @@ public class UserDAO {
     while (rs.next()) {
       users.add(
           new User(
-              rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("role")));
+              rs.getInt("id"),
+              rs.getString("name"),
+              rs.getString("email"),
+              rs.getString("password"),
+              rs.getString("role"),
+              rs.getString("salt")));
     }
     return users;
   }
@@ -152,6 +201,43 @@ public class UserDAO {
     PreparedStatement stmt = connection.prepareStatement(query);
     stmt.setInt(1, user.getId());
     stmt.executeUpdate();
+  }
+
+  public static String getNameById(int id) throws SQLException {
+    String query = "SELECT name FROM users WHERE id = ?";
+    PreparedStatement stmt = connection.prepareStatement(query);
+    stmt.setInt(1, id);
+    ResultSet rs = stmt.executeQuery();
+    if (rs.next()) {
+      return rs.getString("name");
+    }
+    return null;
+  }
+
+  public boolean checkBan(String username) {
+    String query = "SELECT ban FROM users WHERE name = ?";
+    try {
+      PreparedStatement stmt = connection.prepareStatement(query);
+      stmt.setString(1, username);
+      ResultSet rs = stmt.executeQuery();
+      if (rs.next()) {
+        return rs.getBoolean("ban");
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
+  public void banUser(int id) {
+    String query = "UPDATE users SET ban = true WHERE id = ?";
+    try {
+      PreparedStatement stmt = connection.prepareStatement(query);
+      stmt.setInt(1, id);
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
   }
 
 }

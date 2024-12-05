@@ -14,7 +14,7 @@ import library.model.Book;
 import library.model.ConcreteBook;
 import library.util.DBConnection;
 
-public class NotiDAO {
+public class NotiDAO implements DAO {
     private final Connection connection;
     private static NotiDAO instance;
 
@@ -77,4 +77,23 @@ public class NotiDAO {
         }
     }
 
+    public void deleteNoti(String message) throws SQLException {
+        String query = "DELETE FROM noti WHERE message = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, message);
+            statement.executeUpdate();
+        }
+    }
+
+    public boolean isUserHasNotification(int id) {
+        String query = "SELECT * FROM noti WHERE users_id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

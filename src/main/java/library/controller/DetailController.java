@@ -8,6 +8,7 @@ package library.controller;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
@@ -16,10 +17,13 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 import javafx.fxml.FXML;
+import javafx.application.HostServices;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import library.dao.BookReviewDAO;
 import library.model.Book;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -30,19 +34,38 @@ public class DetailController {
     @FXML
     private ImageView bookImageView, qrCodeImageView;
     @FXML
-    private Label titleLabel, authorLabel, isbnLabel, category, ratingLabel;
+    private Label titleLabel, authorLabel, isbnLabel, category, ratingLabel, previewLinkLabel;
     @FXML
     private Text description;
     @FXML
     private ScrollPane scrollPane;
 
     @FXML
+    VBox v2;
+    @FXML
     private Canvas star1, star2, star3, star4, star5;
+    private Book book;
 
     @FXML
     public void initialize() {
         scrollPane.setFitToWidth(true);
         description.setWrappingWidth(1020);
+    }
+
+    public void initComment() throws IOException {
+        v2.getChildren().clear();
+        BookReviewDAO bookReviewDAO = BookReviewDAO.getBookReviewDao();
+        try {
+            List<String> comments = bookReviewDAO.getAllCommentBook(book.getId());
+            for (String comment : comments) {
+                Text text = new Text(comment);
+                v2.getChildren().add(text);
+                text.setStyle("-fx-font-size: 15px;");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     public Image generateQRCode(String text, int width, int height)
@@ -117,8 +140,9 @@ public class DetailController {
         }
     }
 
-    public void setBookData(Book books) {
-
+    public void setBookData(Book books, HostServices hostServices) throws IOException {
+        this.book = books;
+        initComment();
         titleLabel.setText(books.getTitle());
         authorLabel.setText("By    " + books.getAuthor());
         isbnLabel.setText(books.getIsbn());
@@ -137,6 +161,11 @@ public class DetailController {
                 e.printStackTrace();
                 // Handle the exception appropriately
             }
+            previewLinkLabel.setText("Preview link");
+
+            previewLinkLabel.setOnMouseClicked(event -> {
+                hostServices.showDocument(books.getQRcode());
+            });
         }
 
     }

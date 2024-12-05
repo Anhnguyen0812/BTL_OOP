@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import library.api.GoogleBooksAPI;
-import library.dao.BookDAO;
 import library.model.Book;
 import library.model.ConcreteBook;
 import library.util.DBConnection;
@@ -68,7 +67,9 @@ public class BookController {
       String description = volumeInfo.has("description") ? volumeInfo.getString("description") : null;
       String imageUrl = volumeInfo.has("imageLinks") ? volumeInfo.getJSONObject("imageLinks").getString("thumbnail")
           : null;
-      String bookUrl = volumeInfo.has("infoLink") ? (String) volumeInfo.get("infoLink") : null;
+      String bookUrl = volumeInfo.has("previewLink")
+          ? (String) volumeInfo.get("previewLink")
+          : null;
       Double rateAvg = volumeInfo.has("averageRating") ? volumeInfo.getDouble("averageRating") : null;
       Book temp = new ConcreteBook(title, authorName, isbn, description, imageUrl, bookUrl);
       temp.setRateAvg(rateAvg);
@@ -104,7 +105,9 @@ public class BookController {
         String imageUrl = volumeInfo.has("imageLinks")
             ? volumeInfo.getJSONObject("imageLinks").getString("thumbnail")
             : null;
-        String bookUrl = volumeInfo.has("infoLink") ? (String) volumeInfo.get("infoLink") : null;
+        String bookUrl = volumeInfo.has("previewLink")
+            ? (String) volumeInfo.get("previewLink")
+            : null;
         Book temp = new ConcreteBook(title, authorName, isbn, description, imageUrl, bookUrl);
 
         temp.setCategories(categories);

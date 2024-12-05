@@ -77,10 +77,16 @@
 }
 
 .hyperlink {
-    -fx-text-fill: #ff0000;
-    -fx-font-size: 12;
+    -fx-font-size: 13;
     -fx-border-color: transparent;
     -fx-background-color: transparent;
+}
+
+.hyperlink:hover {
+    -fx-font-size: 13;
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+    text-wrap: true;
 }
 
 .text-field {
@@ -293,6 +299,51 @@
     -fx-font-family: "Segoe UI";
     -fx-border-color: #acacac;
     -fx-border-width: 1px;
+}
+
+.barChart {
+    -fx-background-color: #a9ddc5;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1px;
+    -fx-font-size: 14px;
+    -fx-font-family: "Segoe UI";
+}
+
+.warring {
+    -fx-background-color: #8fa8dc;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+}
+
+.paneShow {
+    -fx-background-color: #b5b5b5;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-color: #848484;
+    -fx-border-width: 1px;
+}
+
+.buttonIssue {
+    -fx-background-color: #7b9f95;
+    -fx-text-fill: rgb(0, 0, 0);
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+}
+
+.buttonIssue:hover {
+    -fx-background-color: #406f6f;
+    -fx-text-fill: rgb(0, 0, 0);
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+}
+
+.buttonIssue:pressed {
+    -fx-background-color: #7cc5bd;
+    -fx-text-fill: rgb(0, 0, 0);
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
 }
 
 

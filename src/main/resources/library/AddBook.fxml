@@ -20,60 +20,80 @@
                   <Pane prefHeight="200.0" prefWidth="200.0">
                      <children>
                         <Button fx:id="AddButton" layoutX="1000.0" layoutY="520.0" mnemonicParsing="false" onAction="#gotoAddBook1" text="ADD" />
-                        <Text layoutX="110.0" layoutY="128.0" strokeType="OUTSIDE" strokeWidth="0.0" text="img url">
+                        <Text layoutX="617.0" layoutY="344.0" strokeType="OUTSIDE" strokeWidth="0.0" text="img url">
                            <font>
                               <Font name="Segoe UI Bold" size="15.0" />
                            </font>
                         </Text>
-                        <TextField fx:id="imgUrl" layoutX="219.0" layoutY="108.0" />
-                        <Text layoutX="110.0" layoutY="209.0" strokeType="OUTSIDE" strokeWidth="0.0" text="title">
+                        <TextField fx:id="imgUrl" layoutX="726.0" layoutY="324.0" styleClass="Search" />
+                        <Text layoutX="105.0" layoutY="133.0" strokeType="OUTSIDE" strokeWidth="0.0" text="title">
                            <font>
                               <Font name="Segoe UI Bold" size="15.0" />
                            </font>
                         </Text>
-                        <TextField fx:id="title" layoutX="219.0" layoutY="189.0" />
-                        <Text layoutX="110.0" layoutY="281.0" strokeType="OUTSIDE" strokeWidth="0.0" text="author">
+                        <TextField fx:id="title" layoutX="214.0" layoutY="113.0" styleClass="Search" />
+                        <Text layoutX="105.0" layoutY="202.0" strokeType="OUTSIDE" strokeWidth="0.0" text="author">
                            <font>
                               <Font name="Segoe UI Bold" size="15.0" />
                            </font>
                         </Text>
-                        <TextField fx:id="author" layoutX="219.0" layoutY="260.0" />
-                        <Text layoutX="110.0" layoutY="360.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Isbn">
+                        <TextField fx:id="author" layoutX="214.0" layoutY="181.0" styleClass="Search" />
+                        <Text layoutX="105.0" layoutY="281.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Isbn">
                            <font>
                               <Font name="Segoe UI Bold" size="15.0" />
                            </font>
                         </Text>
-                        <TextField fx:id="isbn" layoutX="219.0" layoutY="340.0" />
+                        <TextField fx:id="isbn" layoutX="214.0" layoutY="261.0" styleClass="Search" />
                         <Text layoutX="110.0" layoutY="435.0" strokeType="OUTSIDE" strokeWidth="0.0" text="description">
                            <font>
                               <Font name="Segoe UI Bold" size="15.0" />
                            </font>
                         </Text>
-                        <TextField fx:id="description" layoutX="219.0" layoutY="415.0" />
+                        <TextField fx:id="description" layoutX="219.0" layoutY="415.0" styleClass="Search" />
                         <Text layoutX="617.0" layoutY="128.0" strokeType="OUTSIDE" strokeWidth="0.0" text="link QRCode">
                            <font>
                               <Font name="Segoe UI Bold" size="15.0" />
                            </font>
                         </Text>
-                        <TextField fx:id="linkQrCode" layoutX="722.0" layoutY="107.0" />
+                        <TextField fx:id="linkQrCode" layoutX="722.0" layoutY="107.0" styleClass="Search" />
                         <Text layoutX="617.0" layoutY="208.0" strokeType="OUTSIDE" strokeWidth="0.0" text="categories">
                            <font>
                               <Font name="Segoe UI Bold" size="15.0" />
                            </font>
                         </Text>
-                        <TextField fx:id="category" layoutX="722.0" layoutY="187.0" />
+                        <TextField fx:id="category" layoutX="722.0" layoutY="187.0" styleClass="Search" />
                         <Text layoutX="617.0" layoutY="282.0" strokeType="OUTSIDE" strokeWidth="0.0" text="rate AVG">
                            <font>
                               <Font name="Segoe UI Bold" size="15.0" />
                            </font>
                         </Text>
-                        <TextField fx:id="rateAvg" layoutX="724.0" layoutY="261.0" />
-                        <Text layoutX="617.0" layoutY="361.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Availble">
+                        <TextField fx:id="rateAvg" layoutX="724.0" layoutY="261.0" styleClass="Search" />
+                        <Text layoutX="105.0" layoutY="348.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Availble">
                            <font>
                               <Font name="Segoe UI Bold" size="15.0" />
                            </font>
                         </Text>
-                        <TextField fx:id="availble" layoutX="724.0" layoutY="340.0" />
+                        <TextField fx:id="availble" layoutX="212.0" layoutY="327.0" styleClass="Search" />
+                        <Label layoutX="380.0" layoutY="101.0" text="*" textFill="RED">
+                           <font>
+                              <Font name="System Bold" size="19.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="380.0" layoutY="170.0" text="*" textFill="RED">
+                           <font>
+                              <Font name="System Bold" size="19.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="380.0" layoutY="249.0" text="*" textFill="RED">
+                           <font>
+                              <Font name="System Bold" size="19.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="376.0" layoutY="315.0" text="*" textFill="RED">
+                           <font>
+                              <Font name="System Bold" size="19.0" />
+                           </font>
+                        </Label>
                      </children>
                   </Pane>
                </content>
@@ -93,7 +113,7 @@
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <Pane fx:id="root" layoutX="636.0" layoutY="18.0" prefHeight="171.0" prefWidth="304.0" styleClass="itemAnchor" />
+                        <Pane fx:id="root" layoutX="636.0" layoutY="18.0" prefHeight="171.0" prefWidth="304.0" styleClass="paneShow" />
                         <Button fx:id="Scan" layoutX="997.0" layoutY="68.0" mnemonicParsing="false" onAction="#gotoScanBook" text="Scan">
                            <font>
                               <Font name="Segoe UI Bold" size="13.0" />

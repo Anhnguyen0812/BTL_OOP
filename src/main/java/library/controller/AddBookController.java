@@ -5,10 +5,6 @@ import java.io.File;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-
-import com.gluonhq.impl.charm.a.b.a.b;
-import com.gluonhq.impl.charm.a.b.b.s;
-
 import javafx.fxml.FXML;
 import library.dao.BookDAO;
 import library.model.Book;
@@ -20,9 +16,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 
+/**
+ * Controller class for adding books to the library.
+ */
 public class AddBookController {
     private Book book1, book2;
 
@@ -30,7 +27,7 @@ public class AddBookController {
     private Button AddButton, cancelScanButton;
 
     @FXML
-    private TextField imgUrl, title, author, isbn, category, description, rateAvg, avaible, availbleScan;
+    private TextField imgUrl, title, author, isbn, category, description, rateAvg, availble, availbleScan, linkQrCode;
     BookDAO bookDAO = BookDAO.getBookDAO();
 
     @FXML
@@ -42,10 +39,35 @@ public class AddBookController {
     private Pane root;
     ISBNScannerWithUI scanner = new ISBNScannerWithUI();
 
+    /**
+     * Shows an alert with the specified message and title.
+     * 
+     * @param message The message of the alert.
+     * @param title   The title of the alert.
+     */
+    private void showAlert(String message, String title) {
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
+                javafx.scene.control.Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    /**
+     * Initializes the controller class. This method is automatically called after
+     * the
+     * FXML file has been loaded.
+     */
     public void initialize() {
         cancelScanButton.setVisible(false);
     }
 
+    /**
+     * Searches for a book by its ISBN and displays the book details.
+     * 
+     * @throws Exception If an error occurs during the search.
+     */
     @FXML
     public void gotoFindBook() throws Exception {
         BookController bookController = new BookController();
@@ -62,6 +84,11 @@ public class AddBookController {
         }
     }
 
+    /**
+     * Initiates the scanning process for a book ISBN.
+     * 
+     * @throws Exception If an error occurs during the scanning process.
+     */
     @FXML
     public void gotoScanBook() throws Exception {
         cancelScanButton.setVisible(true);
@@ -71,6 +98,7 @@ public class AddBookController {
             try {
                 BookController bookController = new BookController();
                 book2 = bookController.searchBookByISBN(isbntext);
+                book2.setRateAvg(null);
                 // Play success sound
                 File audioFile = new File("src/main/resources/sound/success.wav");
                 AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
@@ -102,34 +130,58 @@ public class AddBookController {
 
     }
 
+    /**
+     * Adds a new book to the library with the details provided in the form.
+     * 
+     * @throws Exception If an error occurs during the book addition.
+     */
     @FXML
     public void gotoAddBook1() throws Exception {
 
         if (title.getText().equals("") || author.getText().equals("") || isbn.getText().equals("")
-                || description.getText().equals("") || imgUrl.getText().equals("")
-                || availbleScan.getText().equals("")) {
-            System.out.println("Please fill all the fields");
+                || availble.getText().equals("")) {
+            showAlert("error", "Please fill all the important fields");
             return;
         } else
-            book1 = new ConcreteBook(title.getText(), author.getText(), isbn.getText(), description.getText(),
-                    imgUrl.getText(), availbleScan.getText());
+            book1 = new ConcreteBook(0,
+                    title.getText(),
+                    author.getText(),
+                    isbn.getText(),
+                    Integer.parseInt(availble.getText()),
+                    description.getText().isEmpty() ? null : description.getText(),
+                    imgUrl.getText().isEmpty() ? null : imgUrl.getText(),
+                    linkQrCode.getText().isEmpty() ? null : linkQrCode.getText(),
+                    rateAvg.getText().isEmpty() ? null : Double.parseDouble(rateAvg.getText()));
 
         if (book1 != null)
             bookDAO.addBookNoDuplicateIsbn(book1);
         else
             System.out.println("Book is null");
+
     }
 
+    /**
+     * Adds the scanned book to the library with the specified availability.
+     * 
+     * @throws Exception If an error occurs during the book addition.
+     */
     @FXML
     public void gotoAddBook2() throws Exception {
-
+        book2.setAvailable(Integer.parseInt(availbleScan.getText()));
         if (book2 != null)
             bookDAO.addBookNoDuplicateIsbn(book2);
         else
             System.out.println("Book is null");
         // scanner.stopCamera();
+
+        showAlert("Book added successfully", "Success");
     }
 
+    /**
+     * Cancels the book ISBN scanning process.
+     * 
+     * @throws Exception If an error occurs while stopping the scanner.
+     */
     @FXML
     public void gotoCancelScan() throws Exception {
         if (scanner != null)

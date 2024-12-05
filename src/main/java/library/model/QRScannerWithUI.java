@@ -80,7 +80,7 @@ public class QRScannerWithUI {
             System.out.println("Không thể mở camera.");
             return;
         }
-
+        running = true;
         Thread cameraThread = new Thread(() -> {
             Mat frame = new Mat();
             while (running) {
@@ -162,5 +162,12 @@ public class QRScannerWithUI {
     public void setOnScanCompleteListener(Object object) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setOnScanCompleteListener'");
+    }
+
+    public void stopCamera() {
+        running = false;
+        if (camera != null && camera.isOpened()) {
+            camera.release();
+        }
     }
 }

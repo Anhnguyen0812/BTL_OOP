@@ -60,4 +60,9 @@ public class BorrowRecord {
   public void setStatus(int status) {
     this.status = status;
   }
+
+  public String getDueDate() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'getDueDate'");
+  }
 }

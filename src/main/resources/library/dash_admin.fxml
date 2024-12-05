@@ -10,6 +10,7 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -24,7 +25,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
@@ -202,24 +202,6 @@
                   </Button>
                   <Pane prefHeight="321.0" prefWidth="160.0">
                      <children>
-                        <Circle fx:id="shpActive" fill="WHITE" layoutX="46.0" layoutY="42.0" radius="7.0" stroke="#1cd95c" strokeType="INSIDE" />
-                        <Circle fill="WHITE" layoutX="46.0" layoutY="73.0" radius="7.0" stroke="#d9c81c" strokeType="INSIDE" />
-                        <Circle fill="WHITE" layoutX="46.0" layoutY="104.0" radius="7.0" stroke="#da1c1c" strokeType="INSIDE" />
-                        <Label fx:id="lblActive" layoutX="61.0" layoutY="34.0" text="10 Active" textFill="#4a4747">
-                           <font>
-                              <Font size="13.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="lblOffline" layoutX="63.0" layoutY="65.0" text="2 Offline" textFill="#4a4747">
-                           <font>
-                              <Font size="13.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="lblExp" layoutX="61.0" layoutY="96.0" text="8 Expired" textFill="#4a4747">
-                           <font>
-                              <Font size="13.0" />
-                           </font>
-                        </Label>
                         <Label fx:id="posotion" alignment="CENTER" layoutX="6.0" layoutY="207.0" prefHeight="30.0" prefWidth="149.0" text="Admin">
                            <font>
                               <Font name="System Bold" size="16.0" />
@@ -231,12 +213,22 @@
                               <Font name="Segoe UI Bold" size="13.0" />
                            </font>
                            <graphic>
-                              <ImageView fx:id="avatar" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="avatarImage">
+                              <ImageView fx:id="avatar" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../imgs/account.png" />
                                  </image></ImageView>
                            </graphic>
                         </Button>
+                        <ImageView fx:id="githubImg" fitHeight="60.0" fitWidth="60.0" layoutX="51.0" layoutY="41.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../imgs/github.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="fbImg" fitHeight="60.0" fitWidth="60.0" layoutX="51.0" layoutY="119.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../imgs/facebook.png" />
+                           </image>
+                        </ImageView>
                      </children>
                   </Pane>
                </children>
@@ -267,7 +259,7 @@
                                           <Font name="Segoe UI Bold" size="16.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="39.0" layoutY="49.0" text="20">
+                                    <Label fx:id="totalUsersLabel" layoutX="39.0" layoutY="49.0" text="20">
                                        <font>
                                           <Font name="Segoe UI" size="31.0" />
                                        </font>
@@ -284,7 +276,7 @@
                                           <Font name="Segoe UI Bold" size="16.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="34.0" layoutY="49.0" text="100">
+                                    <Label fx:id="totalBooksLabel" layoutX="34.0" layoutY="49.0" text="100">
                                        <font>
                                           <Font name="Segoe UI" size="31.0" />
                                        </font>
@@ -301,7 +293,7 @@
                                           <Font name="Segoe UI Bold" size="16.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="41.0" layoutY="49.0" text="30">
+                                    <Label fx:id="remainingLabel" layoutX="41.0" layoutY="49.0" text="30">
                                        <font>
                                           <Font name="Segoe UI" size="31.0" />
                                        </font>
@@ -318,22 +310,22 @@
                                           <Font name="Segoe UI Bold" size="16.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="54.0" layoutY="38.0" prefHeight="38.0" prefWidth="53.0" text="30">
+                                    <Label fx:id="borrowLabel" layoutX="82.0" layoutY="38.0" prefHeight="38.0" prefWidth="53.0" text="30">
                                        <font>
                                           <Font name="Segoe UI" size="31.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="54.0" layoutY="76.0" prefHeight="38.0" prefWidth="53.0" text="30">
+                                    <Label fx:id="returnLabel" layoutX="82.0" layoutY="76.0" prefHeight="38.0" prefWidth="53.0" text="30">
                                        <font>
                                           <Font name="Segoe UI" size="31.0" />
                                        </font>
                                     </Label>
-                                    <Label alignment="CENTER" layoutX="7.0" layoutY="40.0" prefHeight="33.0" prefWidth="42.0" text="Borrow">
+                                    <Label alignment="CENTER" layoutX="35.0" layoutY="40.0" prefHeight="33.0" prefWidth="42.0" text="Borrow">
                                        <font>
                                           <Font name="Segoe UI Bold" size="11.0" />
                                        </font>
                                     </Label>
-                                    <Label alignment="CENTER" layoutX="7.0" layoutY="78.0" prefHeight="33.0" prefWidth="43.0" text="Return">
+                                    <Label alignment="CENTER" layoutX="35.0" layoutY="78.0" prefHeight="33.0" prefWidth="43.0" text="Return">
                                        <font>
                                           <Font name="Segoe UI Bold" size="11.0" />
                                        </font>
@@ -349,7 +341,7 @@
                            <children>
                               <Pane layoutX="64.0" layoutY="69.0" prefHeight="306.0" prefWidth="435.0" styleClass="homeInfoPane">
                                  <children>
-                                    <BarChart fx:id="barChart" layoutX="-6.0" layoutY="-1.0" prefHeight="314.0" prefWidth="447.0">
+                                    <BarChart fx:id="barChart" layoutX="-6.0" layoutY="-1.0" prefHeight="314.0" prefWidth="447.0" styleClass="barChart">
                                       <xAxis>
                                         <CategoryAxis side="BOTTOM" />
                                       </xAxis>
@@ -369,7 +361,7 @@
                                     <Font name="Comic Sans MS Bold" size="25.0" />
                                  </font>
                               </Label>
-                              <Pane layoutX="601.0" layoutY="70.0" prefHeight="306.0" prefWidth="435.0" styleClass="homeInfoPane">
+                              <Pane layoutX="601.0" layoutY="70.0" prefHeight="306.0" prefWidth="435.0" styleClass="warring">
                                  <children>
                                     <Label alignment="CENTER" layoutX="-1.0" layoutY="25.0" prefHeight="23.0" prefWidth="435.0" text="Borrow Requests Pending">
                                        <font>
@@ -386,17 +378,17 @@
                                           <Font name="Comic Sans MS Bold" size="16.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="202.0" layoutY="64.0" text="20">
+                                    <Label fx:id="borrowPendingLabel" layoutX="202.0" layoutY="64.0" text="20">
                                        <font>
                                           <Font name="Segoe UI Bold" size="26.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="202.0" layoutY="164.0" text="20">
+                                    <Label fx:id="returnPendingLabel" layoutX="202.0" layoutY="164.0" text="20">
                                        <font>
                                           <Font name="Segoe UI Bold" size="26.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="204.0" layoutY="255.0" text="20">
+                                    <Label fx:id="lateLabel" layoutX="204.0" layoutY="255.0" text="20">
                                        <font>
                                           <Font name="Segoe UI Bold" size="26.0" />
                                        </font>
@@ -419,7 +411,7 @@
                               <Insets left="20.0" top="10.0" />
                            </HBox.margin>
                         </Label>
-                        <TextField fx:id="title" prefHeight="19.0" prefWidth="238.0" promptText="Search" styleClass="Search">
+                        <TextField fx:id="title" prefHeight="34.0" prefWidth="252.0" promptText="Search" styleClass="Search">
                            <HBox.margin>
                               <Insets left="10.0" right="20.0" top="15.0" />
                            </HBox.margin>
@@ -435,19 +427,19 @@
                               <Font size="16.0" />
                            </font>
                         </Label>
-                        <ChoiceBox fx:id="searchChoice" prefHeight="26.0" prefWidth="77.0" styleClass="multiChoice">
+                        <ChoiceBox fx:id="searchChoice" prefHeight="29.0" prefWidth="102.0" styleClass="multiChoice">
                            <HBox.margin>
                               <Insets top="18.0" />
                            </HBox.margin>
                         </ChoiceBox>
-                        <ChoiceBox fx:id="CategoriesChoice" prefHeight="26.0" prefWidth="135.0" styleClass="multiChoice">
+                        <ProgressIndicator fx:id="loading" prefHeight="49.0" prefWidth="55.0" progress="0.0">
                            <HBox.margin>
-                              <Insets left="20.0" top="18.0" />
+                              <Insets left="30.0" top="10.0" />
                            </HBox.margin>
-                        </ChoiceBox>
+                        </ProgressIndicator>
                         <Button fx:id="searchLib" mnemonicParsing="false" onAction="#SearchLibrary" prefHeight="30.0" prefWidth="82.0" styleClass="SearchButton" text="Search Lib">
                            <HBox.margin>
-                              <Insets left="50.0" right="20.0" top="15.0" />
+                              <Insets left="100.0" right="20.0" top="15.0" />
                            </HBox.margin>
                            <font>
                               <Font name="System Bold" size="13.0" />
@@ -504,7 +496,7 @@
                         <Font name="System Bold" size="16.0" />
                      </font>
                   </Label>
-                  <Pane layoutX="27.0" layoutY="450.0" prefHeight="174.0" prefWidth="447.0" styleClass="itemAnchor">
+                  <Pane layoutX="27.0" layoutY="450.0" prefHeight="174.0" prefWidth="447.0" styleClass="paneShow">
                      <children>
                         <ImageView fx:id="imageManageBook" fitHeight="164.0" fitWidth="125.0" layoutX="12.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true" styleClass="imageBook">
                            <image>
@@ -637,13 +629,9 @@
                         <Font name="Segoe UI Bold" size="15.0" />
                      </font>
                   </Label>
-                  <Pane layoutX="39.0" layoutY="442.0" prefHeight="174.0" prefWidth="447.0" styleClass="itemAnchor">
+                  <Pane layoutX="39.0" layoutY="442.0" prefHeight="174.0" prefWidth="447.0" styleClass="paneShow">
                      <children>
-                        <ImageView fx:id="imageManageUser" fitHeight="80.0" fitWidth="77.0" layoutX="38.0" layoutY="49.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../imgs/account.png" />
-                           </image>
-                        </ImageView>
+                        <ImageView fx:id="imageManageUser" fitHeight="144.0" fitWidth="103.0" layoutX="27.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true" styleClass="imageBook" />
                         <Label fx:id="nameUser" layoutX="155.0" layoutY="8.0" prefHeight="32.0" prefWidth="284.0" text="Name">
                            <font>
                               <Font name="Segoe UI Bold" size="15.0" />
@@ -667,6 +655,11 @@
                         <ImageView fx:id="qrUser" fitHeight="60.0" fitWidth="60.0" layoutX="373.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true" />
                      </children>
                   </Pane>
+                  <Button fx:id="banUserButton" layoutX="991.0" layoutY="559.0" mnemonicParsing="false" onAction="#gotoBanUser" styleClass="multiChoice" text="Ban" textFill="#e80000">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Button>
                </children>
             </Pane>
             <Pane fx:id="issueBooks" layoutX="170.0" layoutY="80.0" prefHeight="630.0" prefWidth="1100.0" styleClass="PaneIn">
@@ -707,10 +700,10 @@
                                                             <Insets left="60.0" top="10.0" />
                                                          </HBox.margin>
                                                       </Label>
-                                                      <MenuButton mnemonicParsing="false" text="borrow-return">
+                                                      <MenuButton fx:id="menuButtonIssue" mnemonicParsing="false" text="Borrow Requests">
                                                         <items>
-                                                          <MenuItem mnemonicParsing="false" text="Action 1" />
-                                                          <MenuItem mnemonicParsing="false" text="Action 2" />
+                                                          <MenuItem fx:id="buttonBorrow" mnemonicParsing="false" text="Borrow Request" />
+                                                          <MenuItem fx:id="buttonReturn" mnemonicParsing="false" text="Return Request" />
                                                         </items>
                                                          <HBox.margin>
                                                             <Insets top="20.0" />
@@ -724,17 +717,17 @@
                                                             <Font name="Segoe UI" size="18.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField prefHeight="34.0" prefWidth="226.0" styleClass="Search">
+                                                      <TextField fx:id="issueField" prefHeight="34.0" prefWidth="226.0" styleClass="Search">
                                                          <HBox.margin>
                                                             <Insets left="20.0" top="10.0" />
                                                          </HBox.margin>
                                                       </TextField>
-                                                      <ChoiceBox prefHeight="25.0" prefWidth="110.0" styleClass="multiChoice">
+                                                      <ChoiceBox fx:id="choiceIssue" prefHeight="25.0" prefWidth="110.0" styleClass="multiChoice">
                                                          <HBox.margin>
                                                             <Insets left="20.0" top="12.0" />
                                                          </HBox.margin>
                                                       </ChoiceBox>
-                                                      <Button mnemonicParsing="false" styleClass="SearchButton" text="Button">
+                                                      <Button mnemonicParsing="false" onAction="#gotoSearchIssue" styleClass="SearchButton" text="Button">
                                                          <HBox.margin>
                                                             <Insets left="20.0" top="15.0" />
                                                          </HBox.margin>
@@ -765,6 +758,11 @@
                                  </content>
                             </Tab>
                               <Tab fx:id="directlyTab" text="Directly" />
+                              <Tab fx:id="directlyTab1" text="Noti">
+                                 <content>
+                                    <ListView fx:id="bookDueDateList" prefHeight="200.0" prefWidth="200.0" styleClass="listViewNoti" />
+                                 </content>
+                              </Tab>
                           </tabs>
                         </TabPane>
                      </children>
@@ -774,9 +772,9 @@
             <Pane fx:id="settings" layoutX="170.0" layoutY="80.0" prefHeight="630.0" prefWidth="1100.0" styleClass="PaneIn" visible="false" />
             <Pane fx:id="subUser" layoutX="180.0" layoutY="430.0" prefHeight="270.0" prefWidth="343.0" style="-fx-background-color: EBEBEB; -fx-background-radius: 10; -fx-border-radius: 10;" visible="false">
                <children>
-                  <Button fx:id="logOut1" layoutX="122.0" mnemonicParsing="false" onAction="#handleSaveImage" prefHeight="60.0" prefWidth="175.0" styleClass="transparent" text="User name">
+                  <Button fx:id="logOut1" layoutX="97.0" mnemonicParsing="false" onAction="#handleSaveImage" prefHeight="61.0" prefWidth="149.0" styleClass="transparent" text="User name">
                      <font>
-                        <Font name="Segoe UI Bold" size="13.0" />
+                        <Font name="Segoe UI Bold" size="14.0" />
                      </font>
                      <graphic>
                         <ImageView fx:id="avatar1" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="avatarImage" />
@@ -794,12 +792,24 @@
                         <Font name="Segoe UI Black" size="12.0" />
                      </font>
                   </Button>
-                  <TextFlow layoutX="29.0" layoutY="49.0" prefHeight="20.0" prefWidth="197.0">
+                  <TextFlow layoutX="28.0" layoutY="92.0" prefHeight="20.0" prefWidth="197.0">
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+                        <Text fx:id="nameAdminText" strokeType="OUTSIDE" strokeWidth="0.0" text="Name" wrappingWidth="174.81671142578125">
+                           <font>
+                              <Font size="15.0" />
+                           </font></Text>
                      </children>
                   </TextFlow>
-                  <TextFlow layoutX="28.0" layoutY="82.0" prefHeight="25.0" prefWidth="197.0" />
+                  <Label fx:id="idAdminLabel" layoutX="28.0" layoutY="51.0" prefHeight="21.0" prefWidth="89.0" text="ID">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="mailAdminLabel" layoutX="28.0" layoutY="135.0" prefHeight="21.0" prefWidth="264.0" text="Mail">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
                </children>
             </Pane>
             <Pane fx:id="noti" layoutX="866.0" layoutY="87.0" prefHeight="362.0" prefWidth="394.0" visible="false">
@@ -895,28 +905,28 @@
                      </font>
                   </Label>
                   <TextField fx:id="roleField" layoutX="284.0" layoutY="237.0" prefHeight="25.0" prefWidth="413.0" styleClass="Search" />
-                  <Label layoutX="183.0" layoutY="377.0" prefHeight="38.0" prefWidth="101.0" text="Password">
+                  <Label fx:id="passwordLabel" layoutX="183.0" layoutY="377.0" prefHeight="38.0" prefWidth="101.0" text="Password" visible="false">
                      <font>
                         <Font name="Segoe UI" size="15.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="passwordField" layoutX="284.0" layoutY="379.0" prefHeight="25.0" prefWidth="413.0" styleClass="Search" />
+                  <TextField fx:id="passwordField" layoutX="284.0" layoutY="379.0" prefHeight="25.0" prefWidth="413.0" styleClass="Search" visible="false" />
                   <Button fx:id="applyEditUserButton" layoutX="950.0" layoutY="540.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="83.0" styleClass="action-button" text="Apply">
                      <font>
                         <Font name="Segoe UI Bold" size="15.0" />
                      </font>
                   </Button>
-                  <Button layoutX="445.0" layoutY="322.0" mnemonicParsing="false" text="Change Pass">
+                  <Button fx:id="changePassButton" layoutX="445.0" layoutY="322.0" mnemonicParsing="false" text="Change Pass">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Button>
-                  <Label layoutX="183.0" layoutY="430.0" prefHeight="38.0" prefWidth="101.0" text="Confirm">
+                  <Label fx:id="confirmpasswordLabel" layoutX="183.0" layoutY="430.0" prefHeight="38.0" prefWidth="101.0" text="Confirm" visible="false">
                      <font>
                         <Font name="Segoe UI" size="15.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="confirmpassField" layoutX="284.0" layoutY="432.0" prefHeight="25.0" prefWidth="413.0" styleClass="Search" />
+                  <TextField fx:id="confirmpassField" layoutX="284.0" layoutY="432.0" prefHeight="25.0" prefWidth="413.0" styleClass="Search" visible="false" />
                   <Label fx:id="confirmpassLabel" layoutX="550.0" layoutY="480.0" prefHeight="19.0" prefWidth="104.0" />
                   <Button fx:id="cancelEditUser" layoutX="1069.0" layoutY="9.0" mnemonicParsing="false" prefHeight="8.0" prefWidth="23.0" text="X" textFill="RED" />
                </children>
