@@ -11,10 +11,10 @@ import org.junit.jupiter.api.Test;
 public class AllDaoTest {
     private AllDao allDao;
 
-    @BeforeEach
-    public void setUp() {
-        allDao = new AllDao();
-    }
+    // @BeforeEach
+    // public void setUp() {
+    // allDao = new AllDao();
+    // }
 
     @Test
     public void testGetTotalBooks() {
