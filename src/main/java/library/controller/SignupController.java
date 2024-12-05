@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -39,6 +40,8 @@ public class SignupController {
   private Button hideButton1;
   @FXML
   private ImageView imgHide1, imgHide2;
+  @FXML
+  private Label info;
 
   @FXML
   private Button signupButton, loginButton;
@@ -76,26 +79,24 @@ public class SignupController {
         && !Email.getText().isEmpty()
         && UserDAO.getUserByName(Username.getText()) == null) {
       try {
-        User user = new User(Username.getText(), Email.getText(), Passhide.getText(), "User", getSalt());
-        userDAO.addUser(user);
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Login.fxml"));
-        Parent root = loader.load();
-        Stage stage = (Stage) signupButton.getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
+          if (UserDAO.getUserByName(Username.getText()) == null && UserDAO.getUserByEmail(Email.getText()) == null) {
+          String salt = getSalt();
+          String hashPassword = UserDAO.hashPassword(Passhide.getText(), salt);
+          User user = new User(Username.getText(), Email.getText(), hashPassword, "User", salt);
+          userDAO.addUser(user);
+          FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Login.fxml"));
+          Parent root = loader.load();
+          Stage stage = (Stage) signupButton.getScene().getWindow();
+          stage.setScene(new Scene(root));
+          stage.show();
+        } else {
+          info.setVisible(true);
+        }
       } catch (IOException e) {
         e.printStackTrace();
       }
-    } else if (signupButton.isDefaultButton()) {
-      try {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Login.fxml"));
-        Parent root = loader.load();
-        Stage stage = (Stage) signupButton.getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+    } else {
+      info.setVisible(true);
     }
   }
 

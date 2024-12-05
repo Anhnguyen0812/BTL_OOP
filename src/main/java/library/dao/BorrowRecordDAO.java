@@ -83,7 +83,7 @@ public class BorrowRecordDAO implements DAO {
     try (PreparedStatement stmt = connection.prepareStatement(query)) {
       stmt.setDate(1, java.sql.Date.valueOf(LocalDate.now()));
       stmt.setDate(2, java.sql.Date.valueOf(LocalDate.now().plusDays(20)));
-      stmt.setInt(2, record.getId());
+      stmt.setInt(3, record.getId());
       stmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();

@@ -49,7 +49,7 @@ public class UserDAO {
     PreparedStatement stmt = connection.prepareStatement(query);
     stmt.setString(1, user.getName());
     stmt.setString(2, user.getEmail());
-    stmt.setString(3, hashPassword(user.getPassword(), user.getSalt()));
+    stmt.setString(3, user.getPassword());
     stmt.setString(4, user.getRole());
     stmt.setString(5, user.getSalt());
     stmt.executeUpdate();
@@ -159,14 +159,15 @@ public class UserDAO {
     stmt.executeUpdate();
   }
 
-  public void editUser(User user) throws SQLException {
-    String query = "UPDATE users SET name = ?, email = ?, password = ?, role = ? WHERE id = ?";
+  public void updateUser(User user) throws SQLException {
+    String query = "UPDATE users SET name = ?, email = ?, password = ?, role = ?, salt = ? WHERE id = ?";
     PreparedStatement stmt = connection.prepareStatement(query);
     stmt.setString(1, user.getName());
     stmt.setString(2, user.getEmail());
     stmt.setString(3, user.getPassword());
     stmt.setString(4, user.getRole());
-    stmt.setInt(5, user.getId());
+    stmt.setString(5, user.getSalt());
+    stmt.setInt(6, user.getId());
     stmt.executeUpdate();
   }
 

@@ -5,6 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
 import javafx.application.HostServices;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,6 +19,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import library.dao.UserDAO;
 import library.model.User;
+import library.service.PasswordRecoveryService;
 import library.service.UserService;
 import library.ui.UIFactory;
 import library.ui.UIInterface;
@@ -29,19 +31,19 @@ public class LoginController {
   @FXML
   private Button loginButton;
   @FXML
-  private Button signupButton;
+  private Button signupButton, getCode, confirm;
   @FXML
   private TextField Username;
   @FXML
   private PasswordField Passhide;
   @FXML
-  private TextField Pass;
+  private TextField Pass, email, code, newpass, veritypass;
   @FXML
   private Button hide;
   @FXML
   private ImageView imgHide;
   @FXML
-  private Pane pane;
+  private Pane forgotPane, loginPane;
 
   private User user;
 
@@ -142,4 +144,63 @@ public class LoginController {
     return user;
   }
 
+  @FXML
+  public void MoveToForgotPassword() {
+    forgotPane.setVisible(true);
+    loginPane.setVisible(false);
+    String token = PasswordRecoveryService.randomCode();
+    System.out.println(token);
+    getCode.setOnAction(event -> {
+      if (!email.getText().isEmpty()) {
+          Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+              UserDAO userDAO = UserDAO.getUserDAO();
+              User user1 = UserDAO.getUserByEmail(email.getText());
+              if (user1 != null) {
+                PasswordRecoveryService.sendEmail(email.getText(), "Mã xác nhận là: ", token);
+              } else {
+                System.out.println("Email not found.");
+              }
+              return null;
+            }
+          };
+          new Thread(task).start();
+      // PasswordRecoveryService.sendEmail("hoangbao28112005@gmail.com", "Mã xác nhận là: ", token);
+      }
+    });
+    
+    confirm.setOnAction(event -> {
+      String confirmCode = code.getText();
+      String newpassword = newpass.getText();
+      String verifypassword = veritypass.getText();
+      if (confirmCode.equals(token) && newpassword.equals(verifypassword)) {
+        try {
+          User user1 = UserDAO.getUserByEmail(email.getText());
+          if (user1 != null) {
+            String salt = SignupController.getSalt();
+            String hashPassword = UserDAO.hashPassword(newpassword, salt);
+            user1.setPassword(hashPassword);
+            user1.setSalt(salt);
+            UserDAO userDAO = UserDAO.getUserDAO();
+            userDAO.updateUser(user1);
+            System.out.println("Password updated successfully.");
+          } else {
+            System.out.println("Email not found.");
+          }
+        } catch (SQLException | NoSuchAlgorithmException e) {
+          e.printStackTrace();
+        }
+      }
+      else {
+        System.out.println("Invalid code or password.");
+      }
+    });
+  }
+
+  @FXML
+  public void MoveToLogin() {
+    forgotPane.setVisible(false);
+    loginPane.setVisible(true);
+  }
 }

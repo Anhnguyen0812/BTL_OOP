@@ -335,7 +335,6 @@ public class Dash_AdminController {
           if (requestBox.getValue().getText().equals("Borrow")) {
             BorrowRecord request = getTableView().getItems().get(getIndex());
             System.out.println("Accepted: " + request.getId());
-            borrowRecordDAO.acceptRequestBorrow(request);
             user.acceptRequestBorrow(request);
             getTableView().getItems().remove(request); // Xóa yêu cầu khỏi danh sách
           } else {

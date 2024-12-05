@@ -11,7 +11,7 @@ public class Admin extends User {
 
   private final BookDAO bookDAO = BookDAO.getBookDAO();
   private final UserDAO userDAO = UserDAO.getUserDAO();
-    private final BorrowRecordDAO borrowRecordDAO = BorrowRecordDAO.getBorrowRecordDAO();
+  private final BorrowRecordDAO borrowRecordDAO = BorrowRecordDAO.getBorrowRecordDAO();
 
   public Admin(int id, String name, String email) {
     super(id, name, email);
@@ -81,6 +81,6 @@ public class Admin extends User {
   }
 
   public void editUser(User user) throws SQLException {
-    userDAO.editUser(user);
+    userDAO.updateUser(user);
   }
 }
