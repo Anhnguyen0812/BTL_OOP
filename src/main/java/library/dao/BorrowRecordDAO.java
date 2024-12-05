@@ -1042,4 +1042,19 @@ public class BorrowRecordDAO implements DAO {
     return records;
   }
 
+  public void updateBorrowRecord(BorrowRecord a) {
+    String query = "UPDATE borrow_records SET user_id = ?, book_id = ?, borrow_date = ?, return_date = ?, status = ? WHERE id = ?";
+    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+      stmt.setInt(1, a.getUser().getId());
+      stmt.setInt(2, a.getBook().getId());
+      stmt.setDate(3, java.sql.Date.valueOf(a.getBorrowDate()));
+      stmt.setDate(4, a.getReturnDate() != null ? java.sql.Date.valueOf(a.getReturnDate()) : null);
+      stmt.setInt(5, a.getStatus());
+      stmt.setInt(6, a.getId());
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
 }

@@ -36,10 +36,12 @@ public class UserDAOTest {
     }
 
     @Test
-    public void testDeleteUser() throws SQLException {
+    public void testDeleteUser() throws SQLException, NoSuchAlgorithmException {
         User user = new User(1, "Test User", "test@example.com", "password", "member", "salt");
+        user.setId(20);
+        userDAO.addUser(user);
         userDAO.deleteUser(user);
-        User retrievedUser = userDAO.getUserById(1);
+        User retrievedUser = userDAO.getUserById(20);
         assertNull(retrievedUser);
     }
 }

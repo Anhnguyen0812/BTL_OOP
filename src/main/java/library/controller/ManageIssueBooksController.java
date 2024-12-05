@@ -300,23 +300,33 @@ public class ManageIssueBooksController {
      * Applies the borrow or return operation based on the selected menu option.
      */
     @FXML
-    public void gotoApply() {
+    public void gotoApply() throws SQLException {
         // Code here
         if (menuButton.getText().equals("Borrow")) {
             BorrowRecordDAO borrowRecordDAO = BorrowRecordDAO.getBorrowRecordDAO();
             for (Book book : books) {
-                BorrowRecord borrowRecord = new BorrowRecord(1, user, book, LocalDate.now(),
-                        LocalDate.now().plusDays(20), 1);
-                borrowRecordDAO.addBorrowRecord(borrowRecord);
+                BookDAO bookDAO = BookDAO.getBookDAO();
+                if (bookDAO.checkAvailble(book)) {
+                    BorrowRecord borrowRecord = new BorrowRecord(1, user, book, LocalDate.now(),
+                            LocalDate.now().plusDays(20), 1);
+                    borrowRecordDAO.addBorrowRecord(borrowRecord);
+                    book.setAvailable(book.getAvailable() - 1);
+                    bookDAO.updateBook(book);
+
+                } else {
+                    showAlert("error", "Book is not available");
+                }
             }
         } else {
             BorrowRecordDAO borrowRecordDAO = BorrowRecordDAO.getBorrowRecordDAO();
             for (Book book : books) {
                 BorrowRecord a = borrowRecordDAO.getBorrowRecordByUserBook(user, book);
-
-                BorrowRecord borrowRecord = new BorrowRecord(1, user, book, a.getBorrowDate(),
-                        LocalDate.now(), 3);
-                borrowRecordDAO.addBorrowRecord(borrowRecord);
+                a.setReturnDate(LocalDate.now());
+                a.setStatus(3);
+                borrowRecordDAO.updateBorrowRecord(a);
+                book.setAvailable(book.getAvailable() + 1);
+                bookDAO.updateBook(book);
+                showAlert("succesfull", "Book is returned");
             }
         }
     }

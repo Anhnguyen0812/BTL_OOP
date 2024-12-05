@@ -449,7 +449,7 @@ public class DashController {
         bookItem.setOnMouseClicked(event -> {
           if (event.getClickCount() == 2) {
             try {
-              showBookDetails(book, false, false, null);
+              showBookDetails(book, false, false, null, 0);
             } catch (SQLException e) {
               e.printStackTrace();
               showAlert("Error", "Failed to show book details.");
@@ -483,7 +483,8 @@ public class DashController {
    * @param needClear     whether to clear the existing items
    * @param status        the status of the borrow records
    */
-  private void setBorrowedBookItems(List<BorrowRecord> borrowRecords, int k, boolean needClear, int status) {
+  private void setBorrowedBookItems(List<BorrowRecord> borrowRecords, int k, boolean needClear, int status,
+      int showassess) {
     if (needClear)
       searchReturnBooks.getChildren().clear();
 
@@ -540,7 +541,7 @@ public class DashController {
         bookItem.setOnMouseClicked(event -> {
           if (event.getClickCount() == 2) {
             try {
-              showBookDetails(record.getBook(), true, false, record);
+              showBookDetails(record.getBook(), true, false, record, showassess);
             } catch (SQLException e) {
               e.printStackTrace();
               showAlert("Error", "Failed to show book details.");
@@ -552,7 +553,7 @@ public class DashController {
           Button loadMoreButton = new Button("Load More");
           loadMoreButton.setOnAction(event -> {
             searchReturnBooks.getChildren().remove(loadMoreButton);
-            setBorrowedBookItems(borrowRecords, j + 1, false, status);
+            setBorrowedBookItems(borrowRecords, j + 1, false, status, showassess);
           });
           searchReturnBooks.add(loadMoreButton, 2, row + 1, 3, 1);
           GridPane.setMargin(loadMoreButton, new Insets(5));
@@ -630,6 +631,7 @@ public class DashController {
    * 
    * @throws SQLException if a database access error occurs
    */
+
   public void gotoReturnBooks() throws SQLException {
     resetStyle();
     returnBooks.setVisible(true);
@@ -637,7 +639,7 @@ public class DashController {
     List<BorrowRecord> borrowRecords = borrowRecordDAO.getBorrowRequestByUserId(user.getId());
 
     if (!borrowRecords.isEmpty())
-      setBorrowedBookItems(borrowRecords, 1, true, 0);
+      setBorrowedBookItems(borrowRecords, 1, true, 0, 0);
 
     FadeTransition fadeTransition = new FadeTransition(Duration.millis(300), returnBooks);
     fadeTransition.setFromValue(0.0);
@@ -751,16 +753,16 @@ public class DashController {
   public void reloadReturnBooksAction() throws SQLException {
     if (returnChoice.getValue().equals("Borrow Request")) {
       List<BorrowRecord> borrowRecords = borrowRecordDAO.getBorrowRequestByUserId(user);
-      setBorrowedBookItems(borrowRecords, 1, true, 0);
+      setBorrowedBookItems(borrowRecords, 1, true, 0, 0);
     } else if (returnChoice.getValue().equals("Borrow")) {
       List<BorrowRecord> borrowRecords = borrowRecordDAO.getBorrowRecordsByUserId(user);
-      setBorrowedBookItems(borrowRecords, 1, true, 1);
+      setBorrowedBookItems(borrowRecords, 1, true, 1, 1);
     } else if (returnChoice.getValue().equals("Return Request")) {
       List<BorrowRecord> borrowRecords = borrowRecordDAO.getReturnRequestByUserId(user);
-      setBorrowedBookItems(borrowRecords, 1, true, 0);
+      setBorrowedBookItems(borrowRecords, 1, true, 0, 1);
     } else {
       List<BorrowRecord> borrowRecords = borrowRecordDAO.getReturnedByUserId(user);
-      setBorrowedBookItems(borrowRecords, 1, true, 0);
+      setBorrowedBookItems(borrowRecords, 1, true, 0, 1);
     }
   }
 
@@ -888,7 +890,7 @@ public class DashController {
           bookItem.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
               try {
-                showBookDetails(book, false, isGoogle, null);
+                showBookDetails(book, false, isGoogle, null, 0);
               } catch (SQLException e) {
                 e.printStackTrace();
                 showAlert("Error", "Failed to show book details.");
@@ -1031,7 +1033,7 @@ public class DashController {
    * @param record        the borrow record of the book
    * @throws SQLException if a database access error occurs
    */
-  public void showBookDetails(Book book, boolean checkBorrowed, boolean isGoogle, BorrowRecord record)
+  public void showBookDetails(Book book, boolean checkBorrowed, boolean isGoogle, BorrowRecord record, int showAssess)
       throws SQLException, SQLException {
     try {
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Detail.fxml"));
@@ -1062,7 +1064,7 @@ public class DashController {
 
       pane.getChildren().add(bookDetailPane);
       // dang duoc muon
-      if (checkBorrowed) {
+      if (checkBorrowed && showAssess == 1) {
         bookDetailPane.getChildren().add(assessment);
         bookDetailPane.getChildren().add(returnBook);
         assessment.setLayoutX(720);

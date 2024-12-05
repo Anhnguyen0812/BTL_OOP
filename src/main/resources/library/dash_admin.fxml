@@ -662,7 +662,7 @@
                   </Button>
                </children>
             </Pane>
-            <Pane fx:id="issueBooks" layoutX="170.0" layoutY="80.0" prefHeight="630.0" prefWidth="1100.0" styleClass="PaneIn">
+            <Pane fx:id="issueBooks" layoutX="170.0" layoutY="80.0" prefHeight="630.0" prefWidth="1100.0" styleClass="PaneIn" visible="false">
                <children>
                   <VBox prefHeight="630.0" prefWidth="1100.0">
                      <children>
