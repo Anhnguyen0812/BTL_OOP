@@ -156,4 +156,8 @@ public class Admin extends User {
   public void banUser(int id) {
     userDAO.banUser(id);
   }
+
+  public void deBanUser(int id) {
+    userDAO.deBanUser(id);
+  }
 }

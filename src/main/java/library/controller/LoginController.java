@@ -217,7 +217,7 @@ public class LoginController {
     forgotPane.setVisible(true);
     loginPane.setVisible(false);
     String token = PasswordRecoveryService.randomCode();
-    System.out.println(token);
+    // System.out.println(token);
     getCode.setOnAction(event -> {
       if (!email.getText().isEmpty()) {
         Task<Void> task = new Task<Void>() {
@@ -236,6 +236,7 @@ public class LoginController {
         new Thread(task).start();
         // PasswordRecoveryService.sendEmail("hoangbao28112005@gmail.com", "Mã xác nhận
         // là: ", token);
+
       }
     });
 

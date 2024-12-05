@@ -95,7 +95,7 @@ public class Dash_AdminController {
   private Button searchLib, searchGG, home_Button, books_Button, returnBooks_Button, issueBooks_Button, settings_Button;
   @FXML
   private Button addBookButton, editBookButton, deleteBookButton, qrCodeButton, applyEditBook, cancelEditBook,
-      applyEditUserButton, cancelEditUser, cancelAddUser;
+      applyEditUserButton, cancelEditUser, cancelAddUser, banUserButton;
 
   @FXML
   private MenuButton menuButtonIssue;
@@ -587,6 +587,12 @@ public class Dash_AdminController {
           if (event.getClickCount() == 1) {
             showUser(user);
             manageUserEdit = user;
+            UserDAO userDao = UserDAO.getUserDAO();
+            if (userDao.checkIsBan(manageUserEdit.getId())) {
+              banUserButton.setText("Unban User");
+            } else {
+              banUserButton.setText("Ban User");
+            }
           }
           if (event.getClickCount() == 2) {
             // showUserDetails(user);
@@ -931,8 +937,8 @@ public class Dash_AdminController {
    * @param isGoogle  whether the books are from Google
    */
   private void setBookItem(List<Book> books, int j, boolean needCheck, boolean needClear, boolean isGoogle) {
-    if (isGoogle)
-      saveSearchResults(books);
+    // if (isGoogle)
+    // saveSearchResults(books);
 
     i = j;
     if (needClear)
@@ -1313,18 +1319,31 @@ public class Dash_AdminController {
   }
 
   @FXML
-  public void gotoBanUser() {
-    if (manageUserEdit != null) {
+  public void gotoBanUser() throws SQLException {
+    UserDAO userDao = UserDAO.getUserDAO();
+    if (!userDao.checkIsBan(manageUserEdit.getId())) {
+      if (manageUserEdit != null) {
+        try {
+          user.banUser(manageUserEdit.getId());
+          showAlert("Success", "User banned successfully.");
+          searchUserManage();
+        } catch (SQLException e) {
+          showAlert("Error", "Failed to ban user: " + manageUserEdit.getName());
+        }
+      } else {
+        showAlert("Error", "No user selected to ban.");
+      }
+    } else {
       try {
-        user.banUser(manageUserEdit.getId());
+        user.deBanUser(manageUserEdit.getId());
         showAlert("Success", "User banned successfully.");
         searchUserManage();
       } catch (SQLException e) {
         showAlert("Error", "Failed to ban user: " + manageUserEdit.getName());
       }
-    } else {
-      showAlert("Error", "No user selected to ban.");
+
     }
+
   }
 
   /**

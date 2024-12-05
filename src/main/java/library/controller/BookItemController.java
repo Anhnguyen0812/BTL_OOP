@@ -48,6 +48,22 @@ public class BookItemController {
     }
 
     /**
+     * Shows an alert with the given title and message.
+     * 
+     * @param title   the title of the alert
+     * @param message the message of the alert
+     */
+    protected void showAlert(String title, String message) {
+        // Implementation for showing an alert
+        // For example, using JavaFX Alert:
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    /**
      * Sets the item data for the book or user.
      * 
      * @param <T>  The type of the item (Book or User).
@@ -231,18 +247,24 @@ public class BookItemController {
      * Handles the borrow action for the book.
      */
     @FXML
-    public void borrowAction() {
-        BorrowRecordDAO borrowRecordDAO = BorrowRecordDAO.getBorrowRecordDAO();
-        BorrowRecord borrowRecord = new BorrowRecord(1, user, book, LocalDate.now(), null);
-        borrowRecordDAO.addResquestBorrowRecord(borrowRecord);
-        borrowButton.setVisible(false);
-        NotiDAO notiDAO = NotiDAO.geNotiDAO();
-        try {
-            notiDAO.addNotificationFromUserToAdmin(1,
-                    "User " + user.getId() + ", Name: " + user.getName() + " request to borrow book "
-                            + book.getTitle());
-        } catch (Exception e) {
-            System.out.println(e);
+    public void borrowAction() throws Exception {
+        BookDAO bookDAO = BookDAO.getBookDAO();
+        if (bookDAO.checkAvailble(book)) {
+            BorrowRecordDAO borrowRecordDAO = BorrowRecordDAO.getBorrowRecordDAO();
+            BorrowRecord borrowRecord = new BorrowRecord(1, user, book, LocalDate.now(), null);
+            borrowRecordDAO.addResquestBorrowRecord(borrowRecord);
+            borrowButton.setVisible(false);
+            NotiDAO notiDAO = NotiDAO.geNotiDAO();
+            try {
+                notiDAO.addNotificationFromUserToAdmin(1,
+                        "User " + user.getId() + ", Name: " + user.getName() + " request to borrow book "
+                                + book.getTitle());
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+            showAlert("succesfull", "Request borrow book " + book.getTitle() + " successfull");
+        } else {
+            showAlert("Error", "Book is not available");
         }
 
     }

@@ -458,4 +458,15 @@ public class BookDAO implements DAO {
       return rowsUpdated > 0;
     }
   }
+
+  public boolean checkAvailble(Book book) throws SQLException {
+    String query = "SELECT * FROM books WHERE id = ?";
+    PreparedStatement stmt = connection.prepareStatement(query);
+    stmt.setInt(1, book.getId());
+    ResultSet rs = stmt.executeQuery();
+    if (rs.next()) {
+      return rs.getInt("available") > 0;
+    }
+    return false;
+  }
 }

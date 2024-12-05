@@ -240,4 +240,30 @@ public class UserDAO implements DAO {
     }
   }
 
+  public boolean checkIsBan(int id) {
+    String query = "SELECT ban FROM users WHERE id = ?";
+    try {
+      PreparedStatement stmt = connection.prepareStatement(query);
+      stmt.setInt(1, id);
+      ResultSet rs = stmt.executeQuery();
+      if (rs.next()) {
+        return rs.getBoolean("ban");
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
+  public void deBanUser(int id) {
+    String query = "UPDATE users SET ban = false WHERE id = ?";
+    try {
+      PreparedStatement stmt = connection.prepareStatement(query);
+      stmt.setInt(1, id);
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
 }
