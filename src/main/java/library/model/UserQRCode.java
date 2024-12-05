@@ -21,8 +21,17 @@ import com.google.zxing.common.HybridBinarizer;
 import javax.imageio.ImageIO;
 import java.io.ByteArrayInputStream;
 
+/**
+ * UserQRCode class provides methods to generate and decode QR codes for users.
+ */
 public class UserQRCode {
 
+    /**
+     * Generates a QR code image for the given user.
+     * 
+     * @param user the user data
+     * @return the QR code image
+     */
     public static Image generateQRCode(User user) {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         try {
@@ -39,6 +48,13 @@ public class UserQRCode {
         return null;
     }
 
+    /**
+     * Decodes the QR code string to get the user data.
+     * 
+     * @param qrCode the QR code string
+     * @return the user data
+     * @throws SQLException if a database access error occurs
+     */
     public User decodeQRCode(String qrCode) throws SQLException {
         String id = qrCode.split(",")[0];
         // String name = qrCode.split(",")[1];

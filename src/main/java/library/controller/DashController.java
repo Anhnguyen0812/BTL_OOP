@@ -64,6 +64,9 @@ import library.dao.AllDao;
 import library.dao.BookReviewDAO;
 import library.dao.BorrowRecordDAO;
 
+/**
+ * Controller class for the dashboard of the library management system.
+ */
 public class DashController {
 
   // @FXML
@@ -133,7 +136,7 @@ public class DashController {
   @FXML
   PieChart chart2;
 
-  AllDao allDao = new AllDao();
+  AllDao allDao = AllDao.getAllDao();
 
   @FXML
   private Button Books, logOut, user_Button;
@@ -169,14 +172,29 @@ public class DashController {
 
   boolean isHomeTop = true;
 
+  /**
+   * Default constructor for DashController.
+   */
   public DashController() {
   }
 
+  /**
+   * Constructor for DashController with user and host services.
+   * 
+   * @param user         the user
+   * @param hostServices the host services
+   */
   public DashController(User user, HostServices hostServices) {
     this.user = (Member) user;
     this.hostServices = hostServices;
   }
 
+  /**
+   * Shows an alert with the specified title and message.
+   * 
+   * @param title   the title of the alert
+   * @param message the message of the alert
+   */
   protected void showAlert(String title, String message) {
     // Implementation for showing an alert
     // For example, using JavaFX Alert:
@@ -187,6 +205,11 @@ public class DashController {
     alert.showAndWait();
   }
 
+  /**
+   * Initializes the dashboard controller.
+   * 
+   * @throws SQLException if a database access error occurs
+   */
   public void initialize() throws SQLException {
     // set up loading
     loading.setVisible(false);
@@ -336,7 +359,7 @@ public class DashController {
 
     // Không tự động cuộn khi trỏ chuột ra ngoài
     featuredScrollPane.setOnMouseExited(event -> {
-      timeline.play(); // Tiếp tục Timeline khi trỏ chuột ra ngoài
+      timeline.play(); // Tiếp tục Timeline khi trỏ chu���t ra ngoài
     });
     featuredBookButton.setOnMouseExited(event -> {
       timeline.play(); // Tiếp tục Timeline khi trỏ chuột ra ngoài
@@ -390,6 +413,11 @@ public class DashController {
     }
   }
 
+  /**
+   * Sets the featured books in the grid pane.
+   * 
+   * @param booksTop the list of top books
+   */
   public void setFeaturedBooks(List<Book> booksTop) {
     int column = 1;
     int row = 1;
@@ -435,6 +463,11 @@ public class DashController {
 
   }
 
+  /**
+   * Applies a circular clip to the specified image view.
+   * 
+   * @param imageView the image view to apply the clip to
+   */
   private void applyCircularClip(ImageView imageView) {
     Circle clip = new Circle(25, 25, 25);
     imageView.setClip(clip);
@@ -442,6 +475,14 @@ public class DashController {
 
   int j = 0;
 
+  /**
+   * Sets the borrowed book items in the grid pane.
+   * 
+   * @param borrowRecords the list of borrow records
+   * @param k             the starting index
+   * @param needClear     whether to clear the existing items
+   * @param status        the status of the borrow records
+   */
   private void setBorrowedBookItems(List<BorrowRecord> borrowRecords, int k, boolean needClear, int status) {
     if (needClear)
       searchReturnBooks.getChildren().clear();
@@ -525,6 +566,11 @@ public class DashController {
 
   }
 
+  /**
+   * Saves the search results to the database.
+   * 
+   * @param books the list of books to save
+   */
   private void saveSearchResults(List<Book> books) {
     for (Book book : books) {
       try {
@@ -535,6 +581,9 @@ public class DashController {
     }
   }
 
+  /**
+   * Resets the style of the dashboard.
+   */
   public void resetStyle() {
     home.setVisible(false);
     books.setVisible(false);
@@ -548,6 +597,9 @@ public class DashController {
     settings_Button.styleProperty().set("-fx-background-color: #A6AEBF");
   }
 
+  /**
+   * Navigates to the home pane.
+   */
   public void gotoHome() {
     resetStyle();
     home.setVisible(true);
@@ -558,6 +610,9 @@ public class DashController {
     fadeTransition.play();
   }
 
+  /**
+   * Navigates to the books pane.
+   */
   public void gotoBooks() {
     resetStyle();
     books.setVisible(true);
@@ -570,6 +625,11 @@ public class DashController {
     fadeTransition.play();
   }
 
+  /**
+   * Navigates to the return books pane.
+   * 
+   * @throws SQLException if a database access error occurs
+   */
   public void gotoReturnBooks() throws SQLException {
     resetStyle();
     returnBooks.setVisible(true);
@@ -585,6 +645,9 @@ public class DashController {
     fadeTransition.play();
   }
 
+  /**
+   * Navigates to the issue books pane.
+   */
   public void gotoIssueBooks() {
     resetStyle();
     issueBooks.setVisible(true);
@@ -596,6 +659,9 @@ public class DashController {
     fadeTransition.play();
   }
 
+  /**
+   * Navigates to the settings pane.
+   */
   public void gotoSettings() {
     resetStyle();
     settings.setVisible(true);
@@ -607,23 +673,43 @@ public class DashController {
     fadeTransition.play();
   }
 
+  /**
+   * Navigates to the rate book pane.
+   * 
+   * @throws SQLException if a database access error occurs
+   */
   @FXML
   public void gotoRateBook() throws SQLException {
     booksTop = bookDAO.getTopBooks();
     setFeaturedBooks(booksTop);
   }
 
+  /**
+   * Navigates to the recent books pane.
+   * 
+   * @throws SQLException if a database access error occurs
+   */
   @FXML
   public void gotoRecentBooks() throws SQLException {
     setFeaturedBooks(booksRecent);
   }
 
+  /**
+   * Navigates to the new books pane.
+   * 
+   * @throws SQLException if a database access error occurs
+   */
   @FXML
   public void gotoNewBooks() throws SQLException {
     booksNew = bookDAO.getNewBooks();
     setFeaturedBooks(booksNew);
   }
 
+  /**
+   * Handles the save image action.
+   * 
+   * @param event the action event
+   */
   @FXML
   private void handleSaveImage(ActionEvent event) {
     ImageHandler imageHandler = new ImageHandler();
@@ -635,6 +721,11 @@ public class DashController {
     applyCircularClip(avatar1);
   }
 
+  /**
+   * Loads the image for the specified image view.
+   * 
+   * @param imageView_ the image view to load the image into
+   */
   private void handleLoadImage(ImageView imageView_) {
     ImageHandler imageHandler = new ImageHandler();
     ImageView imageView = imageHandler.loadImage(user.getId() + ".png"); // replace with your image file name
@@ -651,6 +742,11 @@ public class DashController {
     imageView_.setImage(croppedImage);
   }
 
+  /**
+   * Reloads the return books based on the selected choice.
+   * 
+   * @throws SQLException if a database access error occurs
+   */
   @FXML
   public void reloadReturnBooksAction() throws SQLException {
     if (returnChoice.getValue().equals("Borrow Request")) {
@@ -668,6 +764,9 @@ public class DashController {
     }
   }
 
+  /**
+   * Searches the library for books based on the title.
+   */
   @FXML
   public void SearchLibrary() {
     String bookTitle = title.getText();
@@ -694,6 +793,9 @@ public class DashController {
     new Thread(task).start();
   }
 
+  /**
+   * Searches for books on Google based on the title.
+   */
   @FXML
   public void searchGoogle() {
     Task<Void> task = new Task<Void>() {
@@ -727,6 +829,15 @@ public class DashController {
 
   int i = 1;
 
+  /**
+   * Sets the book items in the grid pane.
+   * 
+   * @param books     the list of books
+   * @param j         the starting index
+   * @param needCheck whether to check if the books are borrowed
+   * @param needClear whether to clear the existing items
+   * @param isGoogle  whether the books are from Google
+   */
   private void setBookItem(List<Book> books, int j, boolean needCheck, boolean needClear, boolean isGoogle) {
     // if (isGoogle)
     // saveSearchResults(books);
@@ -829,6 +940,9 @@ public class DashController {
       }
   }
 
+  /**
+   * Navigates to the notifications pane.
+   */
   public void gotoNoti() {
     javafx.animation.TranslateTransition transition = new javafx.animation.TranslateTransition(
         javafx.util.Duration.millis(300), noti);
@@ -845,6 +959,9 @@ public class DashController {
     transition.play();
   }
 
+  /**
+   * Navigates to the sub-user pane.
+   */
   public void gotoSubUser() {
     javafx.animation.TranslateTransition transition = new javafx.animation.TranslateTransition(
         javafx.util.Duration.millis(200), subUser);
@@ -862,6 +979,9 @@ public class DashController {
     transition.play();
   }
 
+  /**
+   * Navigates to the change password pane.
+   */
   public void gotoChangePass() {
     if (boxchange.isVisible()) {
       boxchange.setVisible(false);
@@ -882,6 +1002,9 @@ public class DashController {
     }
   }
 
+  /**
+   * Logs out the current user and navigates to the login pane.
+   */
   @FXML
   public void logOut() {
     try {
@@ -899,6 +1022,15 @@ public class DashController {
     }
   }
 
+  /**
+   * Shows the details of the specified book.
+   * 
+   * @param book          the book to show details for
+   * @param checkBorrowed whether to check if the book is borrowed
+   * @param isGoogle      whether the book is from Google
+   * @param record        the borrow record of the book
+   * @throws SQLException if a database access error occurs
+   */
   public void showBookDetails(Book book, boolean checkBorrowed, boolean isGoogle, BorrowRecord record)
       throws SQLException, SQLException {
     try {
@@ -1031,6 +1163,12 @@ public class DashController {
     }
   }
 
+  /**
+   * Changes the password of the current user.
+   * 
+   * @throws SQLException             if a database access error occurs
+   * @throws NoSuchAlgorithmException if the hashing algorithm is not available
+   */
   @FXML
   private void changePassword() throws SQLException, NoSuchAlgorithmException {
     String oldPassword = oldpass.getText();
@@ -1059,6 +1197,9 @@ public class DashController {
     }
   }
 
+  /**
+   * Enables dark mode for the dashboard.
+   */
   @FXML
   public void gotoDarkMode() {
     // Set up dark mode
@@ -1090,6 +1231,9 @@ public class DashController {
     });
   }
 
+  /**
+   * Navigates to the assessment pane.
+   */
   @FXML
   public void gotoAssessment() {
     if (commentPane.isVisible()) {
@@ -1118,11 +1262,26 @@ public class DashController {
     }
   }
 
+  /**
+   * Checks if the star is yellow.
+   * 
+   * @param gc the graphics context of the star
+   * @return true if the star is yellow, false otherwise
+   */
   private boolean isStarYellow(GraphicsContext gc) {
     Color color = (Color) gc.getFill();
     return color.equals(Color.YELLOW);
   }
 
+  /**
+   * Draws a star with the specified parameters.
+   * 
+   * @param gc     the graphics context to draw the star
+   * @param x      the x-coordinate of the star
+   * @param y      the y-coordinate of the star
+   * @param radius the radius of the star
+   * @param color  the color of the star
+   */
   private void drawStar(GraphicsContext gc, double x, double y, double radius, Color color) {
     double innerRadius = radius / 2.5; // Bán kính bên trong ngôi sao
     double[] xPoints = new double[10];

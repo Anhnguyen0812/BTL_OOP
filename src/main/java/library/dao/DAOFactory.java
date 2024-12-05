@@ -4,7 +4,7 @@ public class DAOFactory {
     public static DAO getDAO(DAOType daoType) {
         switch (daoType) {
             case ALL_DAO:
-                return new AllDao();
+                return AllDao.getAllDao();
             case BORROW_RECORD_DAO:
                 return BorrowRecordDAO.getBorrowRecordDAO();
             case BOOK_REVIEW_DAO:

@@ -30,6 +30,10 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * QRScannerWithUI class provides functionality to scan QR codes using a camera
+ * and display the video feed in a JavaFX UI.
+ */
 public class QRScannerWithUI {
 
     private static final int CAMERA_ID = 0; // Camera mặc định
@@ -42,16 +46,29 @@ public class QRScannerWithUI {
     }
     private OnScanCompleteListener listener;
 
+    /**
+     * Interface for handling scan completion events.
+     */
     public interface OnScanCompleteListener {
         void onScanComplete(String isbn);
     }
 
+    /**
+     * Sets the listener for scan completion events.
+     * 
+     * @param listener the listener to set
+     */
     public void setOnScanCompleteListener(OnScanCompleteListener listener) {
 
         this.listener = listener;
 
     }
 
+    /**
+     * Displays the camera feed in the provided Pane.
+     * 
+     * @param root the Pane to display the camera feed in
+     */
     public void show(Pane root) {
         // Thiết lập giao diện
         imageView = new ImageView();
@@ -74,6 +91,9 @@ public class QRScannerWithUI {
         });
     }
 
+    /**
+     * Starts the camera and begins scanning for QR codes.
+     */
     private void startCamera() {
         camera = new VideoCapture(CAMERA_ID);
         if (!camera.isOpened()) {
@@ -120,6 +140,12 @@ public class QRScannerWithUI {
         cameraThread.start();
     }
 
+    /**
+     * Converts a Mat object to a WritableImage.
+     * 
+     * @param mat the Mat object to convert
+     * @return the converted WritableImage
+     */
     private WritableImage matToWritableImage(Mat mat) {
         BufferedImage bufferedImage = matToBufferedImage(mat);
         if (bufferedImage != null) {
@@ -128,6 +154,12 @@ public class QRScannerWithUI {
         return null;
     }
 
+    /**
+     * Converts a Mat object to a BufferedImage.
+     * 
+     * @param mat the Mat object to convert
+     * @return the converted BufferedImage
+     */
     private BufferedImage matToBufferedImage(Mat mat) {
         try {
             MatOfByte mob = new MatOfByte();
@@ -139,6 +171,12 @@ public class QRScannerWithUI {
         }
     }
 
+    /**
+     * Decodes a QR code from a BufferedImage.
+     * 
+     * @param image the BufferedImage to decode
+     * @return the decoded QR code text, or null if no QR code is found
+     */
     private String decodeQRCode(BufferedImage image) {
         try {
             LuminanceSource source = new BufferedImageLuminanceSource(image);
@@ -150,6 +188,12 @@ public class QRScannerWithUI {
         }
     }
 
+    /**
+     * Checks if a given URL is valid.
+     * 
+     * @param url the URL to check
+     * @return true if the URL is valid, false otherwise
+     */
     private boolean isValidURL(String url) {
         try {
             new java.net.URI(url);
@@ -164,6 +208,9 @@ public class QRScannerWithUI {
         throw new UnsupportedOperationException("Unimplemented method 'setOnScanCompleteListener'");
     }
 
+    /**
+     * Stops the camera and releases resources.
+     */
     public void stopCamera() {
         running = false;
         if (camera != null && camera.isOpened()) {

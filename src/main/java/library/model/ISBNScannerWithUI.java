@@ -22,6 +22,10 @@ import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Map;
 
+/**
+ * ISBNScannerWithUI class provides functionality to scan ISBN barcodes using a
+ * camera and display the video feed in a JavaFX UI.
+ */
 public class ISBNScannerWithUI {
 
     private static final int CAMERA_ID = 0; // Camera mặc định
@@ -34,16 +38,29 @@ public class ISBNScannerWithUI {
     }
     private OnScanCompleteListener listener;
 
+    /**
+     * Interface for handling scan completion events.
+     */
     public interface OnScanCompleteListener {
         void onScanComplete(String isbn);
     }
 
+    /**
+     * Sets the listener for scan completion events.
+     * 
+     * @param listener the listener to set
+     */
     public void setOnScanCompleteListener(OnScanCompleteListener listener) {
 
         this.listener = listener;
 
     }
 
+    /**
+     * Displays the camera feed in the provided Pane.
+     * 
+     * @param root the Pane to display the camera feed in
+     */
     public void show(Pane root) {
         imageView = new ImageView();
         root.getChildren().add(imageView);
@@ -54,6 +71,9 @@ public class ISBNScannerWithUI {
 
     String isbnFinal;
 
+    /**
+     * Starts the camera and begins scanning for ISBN barcodes.
+     */
     private void startCamera() {
         running = true;
         camera = new VideoCapture(CAMERA_ID);
@@ -97,6 +117,9 @@ public class ISBNScannerWithUI {
         cameraThread.start();
     }
 
+    /**
+     * Stops the camera and releases resources.
+     */
     public void stopCamera() {
         running = false;
         if (camera != null && camera.isOpened()) {
@@ -104,6 +127,12 @@ public class ISBNScannerWithUI {
         }
     }
 
+    /**
+     * Converts a Mat object to a WritableImage.
+     * 
+     * @param mat the Mat object to convert
+     * @return the converted WritableImage
+     */
     private WritableImage matToWritableImage(Mat mat) {
         BufferedImage bufferedImage = matToBufferedImage(mat);
         if (bufferedImage != null) {
@@ -112,6 +141,12 @@ public class ISBNScannerWithUI {
         return null;
     }
 
+    /**
+     * Converts a Mat object to a BufferedImage.
+     * 
+     * @param mat the Mat object to convert
+     * @return the converted BufferedImage
+     */
     private BufferedImage matToBufferedImage(Mat mat) {
         try {
             MatOfByte mob = new MatOfByte();
@@ -123,6 +158,12 @@ public class ISBNScannerWithUI {
         }
     }
 
+    /**
+     * Decodes an ISBN barcode from a BufferedImage.
+     * 
+     * @param image the BufferedImage to decode
+     * @return the decoded ISBN barcode text, or null if no barcode is found
+     */
     private String decodeBarcode(BufferedImage image) {
         try {
             LuminanceSource source = new BufferedImageLuminanceSource(image);
@@ -143,6 +184,11 @@ public class ISBNScannerWithUI {
         }
     }
 
+    /**
+     * Gets the final scanned ISBN code.
+     * 
+     * @return the final scanned ISBN code
+     */
     public String getIsbnFinal() {
         return isbnFinal;
     }
@@ -151,6 +197,12 @@ public class ISBNScannerWithUI {
     // launch(args);
     // }
 
+    /**
+     * Generates an image of the ISBN barcode.
+     * 
+     * @param isbn the ISBN code to generate the barcode for
+     * @return the generated barcode image
+     */
     public static Image generateISBN(String isbn) {
         try {
             MultiFormatWriter writer = new MultiFormatWriter();

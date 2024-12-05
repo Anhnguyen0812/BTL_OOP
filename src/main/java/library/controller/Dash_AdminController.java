@@ -146,7 +146,7 @@ public class Dash_AdminController {
   @FXML
   BarChart barChart;
 
-  AllDao allDao = new AllDao();
+  AllDao allDao = AllDao.getAllDao();
 
   @FXML
   private Button Books, logOut, user_Button;

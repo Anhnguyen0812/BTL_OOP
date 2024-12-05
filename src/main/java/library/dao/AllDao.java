@@ -12,8 +12,12 @@ import library.util.DBConnection;
 public class AllDao implements DAO {
     private static Connection connection;
 
-    public AllDao() {
+    private AllDao() {
         this.connection = DBConnection.getInstance().getConnection();
+    }
+
+    public static AllDao getAllDao() {
+        return new AllDao();
     }
 
     public int getTotalBooks() {

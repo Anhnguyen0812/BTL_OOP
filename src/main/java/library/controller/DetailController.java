@@ -1,4 +1,3 @@
-
 /**
  * hiển thị thông tin chi tiết của sách.
  */
@@ -46,12 +45,20 @@ public class DetailController {
     private Canvas star1, star2, star3, star4, star5;
     private Book book;
 
+    /**
+     * Initializes the controller class.
+     */
     @FXML
     public void initialize() {
         scrollPane.setFitToWidth(true);
         description.setWrappingWidth(1020);
     }
 
+    /**
+     * Initializes the comments section with comments from the database.
+     * 
+     * @throws IOException if an I/O error occurs.
+     */
     public void initComment() throws IOException {
         v2.getChildren().clear();
         BookReviewDAO bookReviewDAO = BookReviewDAO.getBookReviewDao();
@@ -68,6 +75,16 @@ public class DetailController {
 
     }
 
+    /**
+     * Generates a QR code image from the given text.
+     * 
+     * @param text   the text to encode in the QR code.
+     * @param width  the width of the QR code image.
+     * @param height the height of the QR code image.
+     * @return the generated QR code as an Image.
+     * @throws WriterException if an error occurs while generating the QR code.
+     * @throws IOException     if an I/O error occurs.
+     */
     public Image generateQRCode(String text, int width, int height)
             throws WriterException, IOException {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
@@ -81,6 +98,12 @@ public class DetailController {
         return new Image(inputStream); // Trả về hình ảnh QR dưới dạng Image
     }
 
+    /**
+     * Displays the book rating using star icons.
+     * 
+     * @param rateAvg    the average rating of the book.
+     * @param isHaveRate whether the book has any ratings.
+     */
     public void displayBookRate(double rateAvg, boolean isHaveRate) {
         if (!isHaveRate) {
             ratingLabel.setText("No rate");
@@ -104,6 +127,13 @@ public class DetailController {
         }
     }
 
+    /**
+     * Draws a star with the specified color and fill ratio.
+     * 
+     * @param gc        the GraphicsContext to draw on.
+     * @param color     the color of the star.
+     * @param fillRatio the ratio of the star to fill with the specified color.
+     */
     private void drawStar(GraphicsContext gc, Color color, double fillRatio) {
         double width = 15;
         double height = 15;
@@ -140,6 +170,13 @@ public class DetailController {
         }
     }
 
+    /**
+     * Sets the book data and updates the UI components with the book details.
+     * 
+     * @param books        the book object containing the book details.
+     * @param hostServices the HostServices instance to open URLs.
+     * @throws IOException if an I/O error occurs.
+     */
     public void setBookData(Book books, HostServices hostServices) throws IOException {
         this.book = books;
         initComment();

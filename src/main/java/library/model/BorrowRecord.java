@@ -2,6 +2,9 @@ package library.model;
 
 import java.time.LocalDate;
 
+/**
+ * BorrowRecord class represents a record of a book borrowed by a user.
+ */
 public class BorrowRecord {
 
   private int id;
@@ -61,6 +64,11 @@ public class BorrowRecord {
     this.status = status;
   }
 
+  /**
+   * Gets the due date for returning the book.
+   * 
+   * @return the due date as a String
+   */
   public String getDueDate() {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'getDueDate'");
