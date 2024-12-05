@@ -143,7 +143,7 @@ LibraryManagementSystem/<br>
 | **Họ và tên**        | **Mã sinh viên** |
 |-----------------------|------------------|
 | Hoàng Quốc Bảo        | 23020012         |
-| Nguyễn Phi Anh        | 23020158         |
+| Nguyễn Phi Anh        | 23020009         |
 
 ## Kế hoạch phát triển
 - **Phiên bản 1.0:** Hoàn thiện các tính năng cơ bản và giao diện người dùng (Done)
