@@ -19,6 +19,9 @@ import javafx.stage.Stage;
 import library.dao.UserDAO;
 import library.model.User;
 
+/**
+ * Controller class for handling user signup operations.
+ */
 public class SignupController {
 
   @FXML
@@ -43,6 +46,12 @@ public class SignupController {
   @FXML
   private Button signupButton, loginButton;
 
+  /**
+   * Generates a random salt for password hashing.
+   * 
+   * @return A base64 encoded salt string.
+   * @throws NoSuchAlgorithmException If the specified algorithm is not available.
+   */
   public static String getSalt() throws NoSuchAlgorithmException {
     // Tạo ra salt ngẫu nhiên với SecureRandom
     SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
@@ -52,6 +61,11 @@ public class SignupController {
     return Base64.getEncoder().encodeToString(salt);
   }
 
+  /**
+   * Initializes the controller class. This method is automatically called after
+   * the
+   * FXML file has been loaded.
+   */
   public void initialize() {
     Passhide.textProperty().bindBidirectional(Pass.textProperty());
     CPasshide.textProperty().bindBidirectional(CPass.textProperty());
@@ -59,6 +73,12 @@ public class SignupController {
     CPass.setVisible(false);
   }
 
+  /**
+   * Handles the signup process and moves to the login screen if successful.
+   * 
+   * @throws SQLException             If a database access error occurs.
+   * @throws NoSuchAlgorithmException If the specified algorithm is not available.
+   */
   public void MoveToSignup() throws SQLException, NoSuchAlgorithmException {
     System.out.println(
         "Username: "
@@ -74,7 +94,8 @@ public class SignupController {
     if (Passhide.getText().equals(CPasshide.getText())
         && !Username.getText().isEmpty()
         && !Email.getText().isEmpty()
-        && UserDAO.getUserByName(Username.getText()) == null) {
+        && UserDAO.getUserByName(Username.getText()) == null
+        && UserDAO.getUserByEmail(Email.getText()) == null) {
       try {
         User user = new User(Username.getText(), Email.getText(), Passhide.getText(), "User", getSalt());
         userDAO.addUser(user);
@@ -99,6 +120,9 @@ public class SignupController {
     }
   }
 
+  /**
+   * Moves to the login screen.
+   */
   public void MoveToLogin() {
     try {
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/library/Login.fxml"));
@@ -111,6 +135,9 @@ public class SignupController {
     }
   }
 
+  /**
+   * Toggles the visibility of the password fields.
+   */
   public void togglePass() {
     if (Pass.isVisible()) {
       Pass.setVisible(false);

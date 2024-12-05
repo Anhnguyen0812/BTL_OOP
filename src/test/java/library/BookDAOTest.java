@@ -28,7 +28,8 @@ public class BookDAOTest {
 
     @Test
     public void testAddBook() throws SQLException {
-        Book book = new ConcreteBook(0, "Test Book", "Author", "1234567890123", true, "Description", "http://example.com/image.jpg", "QRCODE");
+        Book book = new ConcreteBook(0, "Test Book", "Author", "1234567890123", 10, "Description",
+                "http://example.com/image.jpg", "QRCODE");
         bookDAO.addBook(book);
         assertTrue(bookDAO.isbnExists(book.getIsbn()), "Book should exist in the database after adding");
     }
@@ -43,15 +44,19 @@ public class BookDAOTest {
 
     // @Test
     // public void testUpdateBook() throws SQLException {
-    //     Book book = new ConcreteBook(1, "Updated Book", "Updated Author", "1234567890123", true, "Updated Description", "http://example.com/updated.jpg", "UPDATED_QRCODE");
-    //     bookDAO.updateBook(book);
-    //     Book updatedBook = bookDAO.getBookById(book.getId());
-    //     assertEquals("Updated Book", updatedBook.getTitle(), "Title should be updated");
+    // Book book = new ConcreteBook(1, "Updated Book", "Updated Author",
+    // "1234567890123", true, "Updated Description",
+    // "http://example.com/updated.jpg", "UPDATED_QRCODE");
+    // bookDAO.updateBook(book);
+    // Book updatedBook = bookDAO.getBookById(book.getId());
+    // assertEquals("Updated Book", updatedBook.getTitle(), "Title should be
+    // updated");
     // }
 
     @Test
     public void testDeleteBook() throws SQLException {
-        Book book = new ConcreteBook(2, "Book to Delete", "Author", "1234567890123", true, "Description", "http://example.com/image.jpg", "QRCODE");
+        Book book = new ConcreteBook(2, "Book to Delete", "Author", "1234567890123", 10, "Description",
+                "http://example.com/image.jpg", "QRCODE");
         bookDAO.addBook(book);
         int idToDelete = book.getId();
         bookDAO.deleteBook(idToDelete);

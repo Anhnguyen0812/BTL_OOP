@@ -11,15 +11,8 @@ import org.json.JSONObject;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import library.api.GoogleBooksAPI;
-import library.dao.BookDAO;
-import library.model.ArtBook;
 import library.model.Book;
-import library.model.ComputerBook;
 import library.model.ConcreteBook;
-import library.model.HistoryBook;
-import library.model.ScienceBook;
-import library.model.TechnologyBook;
-import library.model.ThesisBook;
 import library.util.DBConnection;
 
 public class BookController {
@@ -29,31 +22,90 @@ public class BookController {
 
   private final DBConnection connection = DBConnection.getInstance();
 
+  /**
+   * Constructor for BookController.
+   */
   public BookController() {
     this.googleBooksAPI = new GoogleBooksAPI();
   }
 
+  /**
+   * Searches for books by title using the Google Books API.
+   *
+   * @param query the title of the book to search for
+   * @return an ObservableList of Book objects
+   * @throws IOException if an I/O error occurs
+   * @throws SQLException if a database access error occurs
+   */
   public ObservableList<Book> searchBookByTitle(String query) throws IOException, SQLException {
     String response = googleBooksAPI.searchBook("" + query);
     return parseBooksNoCheck(response);
   }
 
+  /**
+   * Searches for books by title with a maximum result limit using the Google Books API.
+   *
+   * @param query the title of the book to search for
+   * @param maxResult the maximum number of results to return
+   * @return an ObservableList of Book objects
+   * @throws IOException if an I/O error occurs
+   * @throws SQLException if a database access error occurs
+   */
   public ObservableList<Book> searchBookByTitleMaxResult(String query, int maxResult) throws IOException, SQLException {
     String response = googleBooksAPI.searchBookMaxResult("" + query, maxResult);
     return parseBooksNoCheck(response);
   }
 
+  /**
+   * Searches for books by title with a start index and maximum result limit using the Google Books API.
+   *
+   * @param query the title of the book to search for
+   * @param startIndex the index of the first result to return
+   * @param maxResult the maximum number of results to return
+   * @return an ObservableList of Book objects
+   * @throws IOException if an I/O error occurs
+   * @throws SQLException if a database access error occurs
+   */
   public ObservableList<Book> searchBookByTitleWithStartIndex(String query, int startIndex, int maxResult)
       throws IOException, SQLException {
     String response = googleBooksAPI.searchBookMaxResultWithStartIndex("" + query, startIndex, maxResult);
     return parseBooksNoCheck(response);
   }
 
+  /**
+   * Searches for books by subject using the Google Books API.
+   *
+   * @param query the subject of the book to search for
+   * @return an ObservableList of Book objects
+   * @throws IOException if an I/O error occurs
+   * @throws SQLException if a database access error occurs
+   */
   public ObservableList<Book> searchBook(String query) throws IOException, SQLException {
     String response = googleBooksAPI.searchBook("subject:" + query);
     return parseBooks(response);
   }
 
+  /**
+   * Searches for a book by its ISBN using the Google Books API.
+   *
+   * @param isbn the ISBN of the book to search for
+   * @return a Book object if found, otherwise null
+   * @throws IOException if an I/O error occurs
+   * @throws SQLException if a database access error occurs
+   */
+  public Book searchBookByISBN(String isbn) throws IOException, SQLException {
+    String response = googleBooksAPI.getBookByISBN(isbn);
+    ObservableList<Book> books = parseBooksNoCheck(response);
+    return books.size() > 0 ? books.get(0) : null;
+  }
+
+  /**
+   * Parses JSON data into an ObservableList of Book objects without checking for the presence of items.
+   *
+   * @param jsonData the JSON data to parse
+   * @return an ObservableList of Book objects
+   * @throws SQLException if a database access error occurs
+   */
   private ObservableList<Book> parseBooksNoCheck(String jsonData) throws SQLException {
     ObservableList<Book> books = FXCollections.observableArrayList();
     JSONObject jsonObject = new JSONObject(jsonData);
@@ -68,7 +120,9 @@ public class BookController {
       String description = volumeInfo.has("description") ? volumeInfo.getString("description") : null;
       String imageUrl = volumeInfo.has("imageLinks") ? volumeInfo.getJSONObject("imageLinks").getString("thumbnail")
           : null;
-      String bookUrl = volumeInfo.has("infoLink") ? (String) volumeInfo.get("infoLink") : null;
+      String bookUrl = volumeInfo.has("previewLink")
+          ? (String) volumeInfo.get("previewLink")
+          : null;
       Double rateAvg = volumeInfo.has("averageRating") ? volumeInfo.getDouble("averageRating") : null;
       Book temp = new ConcreteBook(title, authorName, isbn, description, imageUrl, bookUrl);
       temp.setRateAvg(rateAvg);
@@ -79,6 +133,13 @@ public class BookController {
     return books;
   }
 
+  /**
+   * Parses JSON data into an ObservableList of Book objects.
+   *
+   * @param jsonData the JSON data to parse
+   * @return an ObservableList of Book objects
+   * @throws SQLException if a database access error occurs
+   */
   private ObservableList<Book> parseBooks(String jsonData) throws SQLException {
     // ObservableList<Book> books = FXCollections.observableArrayList();
     ObservableList<Book> books = FXCollections.observableArrayList();
@@ -104,28 +165,15 @@ public class BookController {
         String imageUrl = volumeInfo.has("imageLinks")
             ? volumeInfo.getJSONObject("imageLinks").getString("thumbnail")
             : null;
-        String bookUrl = volumeInfo.has("infoLink") ? (String) volumeInfo.get("infoLink") : null;
+        String bookUrl = volumeInfo.has("previewLink")
+            ? (String) volumeInfo.get("previewLink")
+            : null;
         Book temp = new ConcreteBook(title, authorName, isbn, description, imageUrl, bookUrl);
 
         temp.setCategories(categories);
 
         books.add(temp);
         temp.setCategories(categories);
-
-        Book temp2;
-        temp2 = switch (categories) {
-          case "Art" -> new ArtBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-          case "TechnologyBook" -> new TechnologyBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-          case "Science" -> new ScienceBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-          case "Computer" -> new ComputerBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-          case "HistoryBook" -> new HistoryBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-          case "EBook" -> new ConcreteBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-          case "Thesis" -> new ThesisBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-          default -> new ConcreteBook(0, title, authorName, isbn, true, description, imageUrl, bookUrl);
-        };
-
-        BookDAO bookDAO = BookDAO.getBookDAO();
-        // bookDAO.addBook(temp2);
       }
     } else {
       System.out.println("No books found in JSON data.");
@@ -134,6 +182,38 @@ public class BookController {
     return books;
   }
 
+  /**
+   * Retrieves a book by its ISBN from the database.
+   *
+   * @param isbn the ISBN of the book to retrieve
+   * @return a Book object if found, otherwise null
+   * @throws SQLException if a database access error occurs
+   */
+  public Book getBookByISBN(String isbn) throws SQLException {
+    String query = "SELECT * FROM books WHERE isbn = '" + isbn + "'";
+    Statement stmt = connection.getConnection().createStatement();
+    ResultSet rs = stmt.executeQuery(query);
+    if (rs.next()) {
+      return new ConcreteBook(
+          rs.getInt("id"),
+          rs.getString("title"),
+          rs.getString("author"),
+          rs.getString("isbn"),
+          rs.getInt("available"),
+          rs.getString("description"),
+          rs.getString("imageUrl"),
+          rs.getString("QRcode"),
+          rs.getDouble("rate_avg"));
+    }
+    return null;
+  }
+
+  /**
+   * Retrieves all books from the database.
+   *
+   * @return an ObservableList of all Book objects in the database
+   * @throws SQLException if a database access error occurs
+   */
   public ObservableList<Book> getAllBooks() throws SQLException {
     ObservableList<Book> books = FXCollections.observableArrayList();
     String query = "SELECT * FROM books";
@@ -146,7 +226,7 @@ public class BookController {
               rs.getString("title"),
               rs.getString("author"),
               rs.getString("isbn"),
-              rs.getBoolean("available"),
+              rs.getInt("available"),
               rs.getString("description"),
               rs.getString("imageUrl"),
               rs.getString("QRcode"),

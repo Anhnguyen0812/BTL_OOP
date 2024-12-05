@@ -10,17 +10,11 @@ import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import library.model.ArtBook;
 import library.model.Book;
-import library.model.ComputerBook;
 import library.model.ConcreteBook;
-import library.model.HistoryBook;
-import library.model.ScienceBook;
-import library.model.TechnologyBook;
-import library.model.ThesisBook;
 import library.util.DBConnection;
 
-public class BookDAO {
+public class BookDAO implements DAO {
   private final Connection connection;
   private static BookDAO instance;
 
@@ -35,9 +29,38 @@ public class BookDAO {
     return instance;
   }
 
+  protected void showAlert(String title, String message) {
+    // Implementation for showing an alert
+    // For example, using JavaFX Alert:
+    javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+    alert.setTitle(title);
+    alert.setHeaderText(null);
+    alert.setContentText(message);
+    alert.showAndWait();
+  }
+
   public void updateBook(Book book) {
     // Implementation for updating the book in the database
     // This is a placeholder implementation
+    String sql = "UPDATE books SET title = ?, author = ?, isbn = ?, available = ?, description = ?, imageUrl = ?, QRcode = ?, categories = ?, rate_avg = ? WHERE id = ?";
+    try (PreparedStatement statement = connection.prepareStatement(sql)) {
+      statement.setString(1, book.getTitle());
+      statement.setString(2, book.getAuthor());
+      statement.setString(3, book.getIsbn());
+      statement.setInt(4, book.getAvailable());
+      statement.setString(5, book.getDescription());
+      statement.setString(6, book.getImageUrl());
+      statement.setString(7, book.getQRcode());
+      statement.setString(8, book.getCategories());
+      if (book.getRateAvg() == null) {
+        statement.setNull(9, java.sql.Types.DOUBLE);
+      } else
+        statement.setDouble(9, book.getRateAvg());
+      statement.setInt(10, book.getId());
+      statement.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
 
     System.out.println("Updating book: " + book.getTitle());
   }
@@ -75,14 +98,38 @@ public class BookDAO {
     String query = "INSERT INTO books (title, author, isbn, available, description, imageUrl, QRcode, categories) VALUES ("
         + " ?, ?, ?, ?, ?, ?, ?, ?)";
     PreparedStatement stmt = connection.prepareStatement(query);
-    stmt.setString(1, book.getTitle());
-    stmt.setString(2, book.getAuthor());
-    stmt.setString(3, book.getIsbn());
-    stmt.setBoolean(4, false);
-    stmt.setString(5, book.getDescription());
-    stmt.setString(6, book.getImageUrl());
-    stmt.setString(7, book.getQRcode());
-    stmt.setString(8, book.getCategories());
+    if (book.getTitle() != null) {
+      stmt.setString(1, book.getTitle());
+    } else {
+      stmt.setString(1, "N/A");
+    }
+    if (book.getAuthor() != null) {
+      stmt.setString(2, book.getAuthor());
+    } else {
+      stmt.setString(2, "N/A");
+    }
+    if (book.getIsbn() != null) {
+      stmt.setString(3, book.getIsbn());
+    } else {
+      stmt.setString(3, "N/A");
+    }
+    stmt.setInt(4, 5); // Assuming available is always set to false when adding a new book
+    if (book.getDescription() != null) {
+      stmt.setString(5, book.getDescription());
+    } else {
+      stmt.setString(5, "N/A");
+    }
+    if (book.getImageUrl() != null) {
+      stmt.setString(6, book.getImageUrl());
+    }
+    if (book.getQRcode() != null) {
+      stmt.setString(7, book.getQRcode());
+    }
+    if (book.getCategories() != null) {
+      stmt.setString(8, book.getCategories());
+    } else {
+      stmt.setString(8, "N/A");
+    }
     stmt.executeUpdate();
   }
 
@@ -93,14 +140,23 @@ public class BookDAO {
       if (!isbnExists(book.getIsbn())) {
         addBook(book);
         System.out.println("no duplicate isbn");
+        return;
       }
     } else {
       if (!titleExists(book.getTitle())) {
         addBook(book);
         System.out.println("no duplicate title");
+        return;
       }
+
+      showAlert("Book added successfully", "Success");
     }
-    System.out.println("no add book");
+
+    javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+    alert.setTitle("Book duplicate");
+    alert.setHeaderText("Book duplicate");
+    alert.showAndWait();
+
   }
 
   public Book getBookById(int id) throws SQLException {
@@ -113,29 +169,20 @@ public class BookDAO {
       String titlee = rs.getString("title");
       String authorName = rs.getString("author");
       String isbn = rs.getString("isbn");
-      boolean available = rs.getBoolean("available");
+      int available = rs.getInt("available");
       String description = rs.getString("description");
       String imageUrl = rs.getString("imageUrl");
       String QRcode = rs.getString("QRcode");
-
-      Book temp2;
-      temp2 = switch (category) {
-        case "Art" -> new ArtBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-        case "TechnologyBook" ->
-          new TechnologyBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-        case "Science" -> new ScienceBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-        case "Computer" -> new ComputerBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-        case "HistoryBook" -> new HistoryBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-        case "EBook" -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-        case "Thesis" -> new ThesisBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-        default -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-      };
+      Double rate_avg = rs.getObject("rate_avg") != null ? rs.getDouble("rate_avg") : null;
+      Book temp2 = new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+      temp2.setCategories(category);
+      temp2.setRateAvg(rate_avg);
       return temp2;
     }
     return null;
   }
 
-  public Book getBookByISBN(String isbn) throws SQLException, InterruptedException {
+  public Book getBookByISBN(String isbn) throws SQLException {
     String query = "SELECT * FROM books WHERE isbn = ?";
     PreparedStatement stmt = connection.prepareStatement(query);
     stmt.setString(1, isbn);
@@ -145,23 +192,14 @@ public class BookDAO {
       int id = rs.getInt("id");
       String title = rs.getString("title");
       String authorName = rs.getString("author");
-      boolean available = rs.getBoolean("available");
+      int available = rs.getInt("available");
       String description = rs.getString("description");
       String imageUrl = rs.getString("imageUrl");
       String QRcode = rs.getString("QRcode");
-
-      Book temp2;
-      temp2 = switch (category) {
-        case "Art" -> new ArtBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-        case "TechnologyBook" ->
-          new TechnologyBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-        case "Science" -> new ScienceBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-        case "Computer" -> new ComputerBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-        case "HistoryBook" -> new HistoryBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-        case "EBook" -> new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-        case "Thesis" -> new ThesisBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-        default -> new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-      };
+      Double rate_avg = rs.getObject("rate_avg") != null ? rs.getDouble("rate_avg") : null;
+      Book temp2 = new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+      temp2.setCategories(category);
+      temp2.setRateAvg(rate_avg);
       return temp2;
     }
     return null;
@@ -178,23 +216,14 @@ public class BookDAO {
       int id = rs.getInt("id");
       String title = rs.getString("title");
       String authorName = rs.getString("author");
-      boolean available = rs.getBoolean("available");
+      int avaible = rs.getInt("available");
       String description = rs.getString("description");
       String imageUrl = rs.getString("imageUrl");
       String QRcode = rs.getString("QRcode");
-
-      Book temp2;
-      temp2 = switch (category) {
-        case "Art" -> new ArtBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-        case "TechnologyBook" ->
-          new TechnologyBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-        case "Science" -> new ScienceBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-        case "Computer" -> new ComputerBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-        case "HistoryBook" -> new HistoryBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-        case "EBook" -> new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-        case "Thesis" -> new ThesisBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-        default -> new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-      };
+      Double rate_avg = rs.getObject("rate_avg") != null ? rs.getDouble("rate_avg") : null;
+      Book temp2 = new ConcreteBook(id, title, authorName, isbn, avaible, description, imageUrl, QRcode);
+      temp2.setCategories(category);
+      temp2.setRateAvg(rate_avg);
       books.add(temp2);
     }
     return books;
@@ -209,6 +238,7 @@ public class BookDAO {
   }
 
   public ObservableList<Book> getBookByTitle(String title) throws SQLException {
+    title = title.trim();
     ObservableList<Book> books = FXCollections.observableArrayList();
     String query = "SELECT * FROM books WHERE title LIKE ?";
     PreparedStatement stmt = connection.prepareStatement(query);
@@ -221,29 +251,48 @@ public class BookDAO {
       String titlee = rs.getString("title");
       String authorName = rs.getString("author");
       String isbn = rs.getString("isbn");
-      boolean available = rs.getBoolean("available");
+      int available = rs.getInt("available");
       String description = rs.getString("description");
       String imageUrl = rs.getString("imageUrl");
       String QRcode = rs.getString("QRcode");
-
-      Book temp2;
-      temp2 = switch (category) {
-        case "Art" -> new ArtBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-        case "TechnologyBook" ->
-          new TechnologyBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-        case "Science" -> new ScienceBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-        case "Computer" -> new ComputerBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-        case "HistoryBook" -> new HistoryBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-        case "EBook" -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-        case "Thesis" -> new ThesisBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-        default -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-      };
+      Double rate_avg = rs.getObject("rate_avg") != null ? rs.getDouble("rate_avg") : null;
+      Book temp2 = new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+      temp2.setCategories(category);
+      temp2.setRateAvg(rate_avg);
       books.add(temp2);
     }
     return books;
   }
 
+  public Book getOneBookByTitle(String title) throws SQLException {
+    title = title.trim();
+    String query = "SELECT * FROM books WHERE title LIKE ?";
+    PreparedStatement stmt = connection.prepareStatement(query);
+    stmt.setString(1, "%" + title + "%");
+
+    ResultSet rs = stmt.executeQuery();
+    if (rs.next()) {
+      String category = rs.getString("categories");
+      int id = rs.getInt("id");
+      String titlee = rs.getString("title");
+      String authorName = rs.getString("author");
+      String isbn = rs.getString("isbn");
+      int available = rs.getInt("available");
+      String description = rs.getString("description");
+      String imageUrl = rs.getString("imageUrl");
+      String QRcode = rs.getString("QRcode");
+      Double rate_avg = rs.getObject("rate_avg") != null ? rs.getDouble("rate_avg") : null;
+      Book temp2 = new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
+      temp2.setCategories(category);
+      temp2.setRateAvg(rate_avg);
+      return temp2;
+
+    }
+    return null;
+  }
+
   public ObservableList<Book> getBookByAuthor(String author) throws SQLException {
+    author = author.trim();
     ObservableList<Book> books = FXCollections.observableArrayList();
     String query = "SELECT * FROM books WHERE author LIKE ?";
     PreparedStatement stmt = connection.prepareStatement(query);
@@ -256,23 +305,13 @@ public class BookDAO {
       String title = rs.getString("title");
       String authorName = rs.getString("author");
       String isbn = rs.getString("isbn");
-      boolean available = rs.getBoolean("available");
+      int available = rs.getInt("available");
       String description = rs.getString("description");
       String imageUrl = rs.getString("imageUrl");
       String QRcode = rs.getString("QRcode");
 
-      Book temp2;
-      temp2 = switch (category) {
-        case "Art" -> new ArtBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-        case "TechnologyBook" ->
-          new TechnologyBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-        case "Science" -> new ScienceBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-        case "Computer" -> new ComputerBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-        case "HistoryBook" -> new HistoryBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-        case "EBook" -> new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-        case "Thesis" -> new ThesisBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-        default -> new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
-      };
+      Book temp2 = new ConcreteBook(id, title, authorName, isbn, available, description, imageUrl, QRcode);
+      temp2.setCategories(category);
       books.add(temp2);
     }
     return books;
@@ -289,7 +328,7 @@ public class BookDAO {
       String title = rs.getString("title");
       String authorName = rs.getString("author");
       String isbn = rs.getString("isbn");
-      boolean available = rs.getBoolean("available");
+      int available = rs.getInt("available");
       String description = rs.getString("description");
       String imageUrl = rs.getString("imageUrl");
       String QRcode = rs.getString("QRcode");
@@ -312,23 +351,15 @@ public class BookDAO {
       String titlee = rs.getString("title");
       String authorName = rs.getString("author");
       String isbn = rs.getString("isbn");
-      boolean available = rs.getBoolean("available");
+      int available = rs.getInt("available");
       String description = rs.getString("description");
       String imageUrl = rs.getString("imageUrl");
       String QRcode = rs.getString("QRcode");
+      Double rate_avg = rs.getObject("rate_avg") != null ? rs.getDouble("rate_avg") : null;
+      Book temp2 = new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode, rate_avg);
+      temp2.setCategories(category);
+      temp2.setRateAvg(rate_avg);
 
-      Book temp2;
-      temp2 = switch (category) {
-        case "Art" -> new ArtBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-        case "TechnologyBook" ->
-          new TechnologyBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-        case "Science" -> new ScienceBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-        case "Computer" -> new ComputerBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-        case "HistoryBook" -> new HistoryBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-        case "EBook" -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-        case "Thesis" -> new ThesisBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-        default -> new ConcreteBook(id, titlee, authorName, isbn, available, description, imageUrl, QRcode);
-      };
       books.add(temp2);
     }
     return books;
@@ -346,7 +377,7 @@ public class BookDAO {
       String title = rs.getString("title");
       String authorName = rs.getString("author");
       String isbn = rs.getString("isbn");
-      boolean available = rs.getBoolean("available");
+      int available = rs.getInt("available");
       String description = rs.getString("description");
       String imageUrl = rs.getString("imageUrl");
       String bookUrl = rs.getString("QRcode");
@@ -373,7 +404,7 @@ public class BookDAO {
       String title = rs.getString("title");
       String authorName = rs.getString("author");
       String isbn = rs.getString("isbn");
-      boolean available = rs.getBoolean("available");
+      int available = rs.getInt("available");
       String description = rs.getString("description");
       String imageUrl = rs.getString("imageUrl");
       String bookUrl = rs.getString("QRcode");

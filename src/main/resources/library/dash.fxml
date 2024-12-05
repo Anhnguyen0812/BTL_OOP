@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
@@ -19,10 +20,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" stylesheets="@../styles/Ui.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
@@ -61,7 +60,7 @@
                <children>
                   <Label fx:id="welcome" prefHeight="33.0" prefWidth="307.0" text="Hello np_Anh!">
                      <font>
-                        <Font name="Comic Sans MS Bold" size="19.0" />
+                        <Font name="Calibri Bold" size="23.0" />
                      </font>
                      <HBox.margin>
                         <Insets left="50.0" top="8.0" />
@@ -74,7 +73,7 @@
                   </Line>
                   <Label fx:id="date" prefHeight="32.0" prefWidth="400.0" text="11 Oct 2024">
                      <font>
-                        <Font name="Comic Sans MS Bold" size="19.0" />
+                        <Font name="Calibri Bold" size="23.0" />
                      </font>
                      <HBox.margin>
                         <Insets top="8.0" />
@@ -197,31 +196,13 @@
                   </Button>
                   <Pane prefHeight="321.0" prefWidth="160.0">
                      <children>
-                        <Circle fx:id="shpActive" fill="WHITE" layoutX="46.0" layoutY="42.0" radius="7.0" stroke="#1cd95c" strokeType="INSIDE" />
-                        <Circle fill="WHITE" layoutX="46.0" layoutY="73.0" radius="7.0" stroke="#d9c81c" strokeType="INSIDE" />
-                        <Circle fill="WHITE" layoutX="46.0" layoutY="104.0" radius="7.0" stroke="#da1c1c" strokeType="INSIDE" />
-                        <Label fx:id="lblActive" layoutX="61.0" layoutY="34.0" text="10 Active" textFill="#4a4747">
-                           <font>
-                              <Font size="13.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="lblOffline" layoutX="63.0" layoutY="65.0" text="2 Offline" textFill="#4a4747">
-                           <font>
-                              <Font size="13.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="lblExp" layoutX="61.0" layoutY="96.0" text="8 Expired" textFill="#4a4747">
-                           <font>
-                              <Font size="13.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="posotion" alignment="CENTER" layoutY="151.0" prefHeight="30.0" prefWidth="149.0" text="User">
+                        <Label fx:id="posotion" alignment="CENTER" layoutX="-2.0" layoutY="200.0" prefHeight="30.0" prefWidth="149.0" text="User">
                            <font>
                               <Font name="System Bold" size="16.0" />
                            </font>
                         </Label>
                         <Line endX="-2.0" endY="-8.0" layoutX="42.0" layoutY="29.0" startX="79.0" startY="-8.0" strokeWidth="2.0" />
-                        <Button fx:id="user_Button" layoutX="18.0" layoutY="258.0" mnemonicParsing="false" onAction="#gotoSubUser" prefHeight="49.0" prefWidth="125.0" styleClass="transparent" text="User name">
+                        <Button fx:id="user_Button" layoutX="1.0" layoutY="258.0" mnemonicParsing="false" onAction="#gotoSubUser" prefHeight="60.0" prefWidth="142.0" styleClass="transparent" text="User name">
                            <font>
                               <Font name="Segoe UI Bold" size="13.0" />
                            </font>
@@ -229,6 +210,16 @@
                               <ImageView fx:id="avatar" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="avatarImage" />
                            </graphic>
                         </Button>
+                        <ImageView fx:id="githubImg" fitHeight="60.0" fitWidth="60.0" layoutX="51.0" layoutY="45.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../imgs/github.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="fbImg" fitHeight="60.0" fitWidth="60.0" layoutX="50.0" layoutY="117.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../imgs/facebook.png" />
+                           </image>
+                        </ImageView>
                      </children>
                   </Pane>
                </children>
@@ -256,12 +247,12 @@
                                        <font>
                                           <Font name="Segoe UI Bold" size="16.0" />
                                        </font></Label>
-                                    <Label layoutX="14.0" layoutY="49.0" text="100">
+                                    <Label fx:id="totalBookLabel" layoutX="14.0" layoutY="49.0" text="100">
                                        <font>
                                           <Font name="Segoe UI" size="31.0" />
                                        </font>
                                     </Label>
-                                    <ProgressIndicator fx:id="p1" layoutX="125.0" layoutY="49.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="60.0" progress="0.75" styleClass="progressHome" />
+                                    <ProgressIndicator fx:id="p1" layoutX="125.0" layoutY="49.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="60.0" progress="0.95" styleClass="progressHome" />
                                  </children>
                               </Pane>
                               <Pane prefHeight="190.0" prefWidth="200.0" styleClass="homeInfoPane">
@@ -273,12 +264,12 @@
                                        <font>
                                           <Font name="Segoe UI Bold" size="16.0" />
                                        </font></Label>
-                                    <Label layoutX="14.0" layoutY="49.0" text="20">
+                                    <Label fx:id="totalUserLabel" layoutX="14.0" layoutY="49.0" text="20">
                                        <font>
                                           <Font name="Segoe UI" size="31.0" />
                                        </font>
                                     </Label>
-                                    <ProgressIndicator fx:id="p2" layoutX="126.0" layoutY="49.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="60.0" progress="0.75" styleClass="progressHome" />
+                                    <ProgressIndicator fx:id="p2" layoutX="126.0" layoutY="49.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="60.0" progress="0.7" styleClass="progressHome" />
                                  </children>
                               </Pane>
                               <Pane prefHeight="200.0" prefWidth="200.0" styleClass="homeInfoPane">
@@ -290,12 +281,12 @@
                                        <font>
                                           <Font name="Segoe UI Bold" size="16.0" />
                                        </font></Label>
-                                    <Label layoutX="14.0" layoutY="49.0" text="30">
+                                    <Label fx:id="totalRemainingLabel" layoutX="14.0" layoutY="49.0" text="30">
                                        <font>
                                           <Font name="Segoe UI" size="31.0" />
                                        </font>
                                     </Label>
-                                    <ProgressIndicator fx:id="p3" layoutX="130.0" layoutY="49.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="60.0" progress="0.75" styleClass="progressHome" />
+                                    <ProgressIndicator fx:id="p3" layoutX="130.0" layoutY="49.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="60.0" progress="0.07" styleClass="progressHome" />
                                  </children>
                               </Pane>
                               <PieChart fx:id="chart2" prefHeight="230.0" prefWidth="300.0">
@@ -349,7 +340,7 @@
                   </VBox>
                </children>
             </Pane>
-            <Pane fx:id="books" layoutX="170.0" layoutY="80.0" prefHeight="630.0" prefWidth="1100.0" styleClass="PaneIn">
+            <Pane fx:id="books" layoutX="170.0" layoutY="80.0" prefHeight="630.0" prefWidth="1100.0" styleClass="PaneIn" visible="false">
                <children>
                   <HBox layoutX="3.0" prefHeight="60.0" prefWidth="1100.0">
                      <children>
@@ -377,19 +368,19 @@
                               <Font size="16.0" />
                            </font>
                         </Label>
-                        <ChoiceBox fx:id="searchChoice" prefHeight="26.0" prefWidth="77.0" styleClass="multiChoice">
+                        <ChoiceBox fx:id="searchChoice" prefHeight="29.0" prefWidth="118.0" styleClass="multiChoice">
                            <HBox.margin>
                               <Insets top="18.0" />
                            </HBox.margin>
                         </ChoiceBox>
-                        <ChoiceBox fx:id="CategoriesChoice" prefHeight="26.0" prefWidth="135.0" styleClass="multiChoice">
+                        <ProgressIndicator fx:id="loading" prefHeight="49.0" prefWidth="55.0" progress="0.0">
                            <HBox.margin>
-                              <Insets left="20.0" top="18.0" />
+                              <Insets left="20.0" top="10.0" />
                            </HBox.margin>
-                        </ChoiceBox>
+                        </ProgressIndicator>
                         <Button fx:id="searchLib" mnemonicParsing="false" onAction="#SearchLibrary" prefHeight="30.0" prefWidth="82.0" styleClass="SearchButton" text="Search Lib">
                            <HBox.margin>
-                              <Insets left="50.0" right="20.0" top="15.0" />
+                              <Insets left="100.0" right="20.0" top="15.0" />
                            </HBox.margin>
                            <font>
                               <Font size="14.0" />
@@ -418,7 +409,7 @@
                      </content></ScrollPane>
                </children>
             </Pane>
-            <Pane fx:id="returnBooks" layoutX="170.0" layoutY="80.0" prefHeight="630.0" prefWidth="1100.0" styleClass="PaneIn">
+            <Pane fx:id="returnBooks" layoutX="170.0" layoutY="80.0" prefHeight="630.0" prefWidth="1100.0" styleClass="PaneIn" visible="false">
                <children>
                   <VBox layoutY="9.0" prefHeight="622.0" prefWidth="1100.0">
                      <children>
@@ -477,36 +468,44 @@
             </Pane>
             <Pane fx:id="issueBooks" layoutX="170.0" layoutY="80.0" prefHeight="630.0" prefWidth="1100.0" styleClass="PaneIn" visible="false">
                <children>
-                  <VBox prefHeight="530.0" prefWidth="842.0">
-                     <children>
-                        <Label alignment="CENTER" prefHeight="60.0" prefWidth="854.0" text="Issue Books">
-                           <font>
-                              <Font name="Comic Sans MS" size="24.0" />
-                           </font>
-                        </Label>
-                        <HBox prefHeight="60.0" prefWidth="842.0">
-                           <children>
-                              <Button mnemonicParsing="false" text="Issue Book">
-                                 <HBox.margin>
-                                    <Insets left="10.0" />
-                                 </HBox.margin>
-                              </Button>
-                           </children>
-                        </HBox>
-                     </children>
-                  </VBox>
-                  <Pane prefHeight="712.0" prefWidth="851.0" />
+                  <Label alignment="CENTER" prefHeight="70.0" prefWidth="1100.0" text="Issue Books">
+                     <font>
+                        <Font name="Comic Sans MS" size="24.0" />
+                     </font>
+                  </Label>
+                  <ListView fx:id="bookDueDateList" layoutX="65.0" layoutY="70.0" prefHeight="541.0" prefWidth="966.0" styleClass="listViewNoti" />
                </children>
             </Pane>
-            <Pane fx:id="settings" layoutX="170.0" layoutY="80.0" prefHeight="630.0" prefWidth="1100.0" styleClass="PaneIn" visible="false" />
+            <Pane fx:id="settings" layoutX="170.0" layoutY="80.0" prefHeight="630.0" prefWidth="1100.0" styleClass="PaneIn" visible="false">
+               <children>
+                  <ImageView fitHeight="101.0" fitWidth="115.0" layoutX="194.0" layoutY="160.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../imgs/account.png" />
+                     </image>
+                  </ImageView>
+                  <Label layoutX="360.0" layoutY="196.0" text="Name">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="360.0" layoutY="246.0" text="Mail">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="nameUserLabel" layoutX="416.0" layoutY="189.0" prefHeight="32.0" prefWidth="250.0" styleClass="Search" />
+                  <TextField fx:id="mailUserLabel" layoutX="416.0" layoutY="239.0" prefHeight="32.0" prefWidth="250.0" styleClass="Search" />
+                  <Button fx:id="applyChangeButton" layoutX="941.0" layoutY="507.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="94.0" text="Apply" />
+               </children></Pane>
             <Pane fx:id="subUser" layoutX="180.0" layoutY="430.0" prefHeight="270.0" prefWidth="343.0" style="-fx-background-color: EBEBEB; -fx-background-radius: 10; -fx-border-radius: 10;" visible="false">
                <children>
-                  <Button fx:id="logOut1" layoutX="122.0" mnemonicParsing="false" onAction="#handleSaveImage" prefHeight="60.0" prefWidth="175.0" styleClass="transparent" text="User name">
+                  <Button fx:id="changepass" layoutX="10.0" layoutY="175.0" prefHeight="30.0" prefWidth="189.0" text="change password" />
+                  <Button fx:id="logOut1" layoutX="84.0" mnemonicParsing="false" onAction="#handleSaveImage" prefHeight="60.0" prefWidth="175.0" styleClass="transparent" text="User name">
                      <font>
                         <Font name="Segoe UI Bold" size="13.0" />
                      </font>
                      <graphic>
-                        <ImageView fx:id="avatar1" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="avatarImage" />
+                        <ImageView fx:id="avatar1" fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true" styleClass="avatarImage" />
                      </graphic>
                   </Button>
                   <Button fx:id="logOut" layoutX="131.0" layoutY="228.0" mnemonicParsing="false" onAction="#logOut" styleClass="transparent" text="logOut">
@@ -521,12 +520,12 @@
                         <Font name="Segoe UI Black" size="12.0" />
                      </font>
                   </Button>
-                  <TextFlow layoutX="29.0" layoutY="49.0" prefHeight="20.0" prefWidth="197.0">
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-                     </children>
-                  </TextFlow>
+                   <TextFlow fx:id="changepassword" layoutX="29.0" layoutY="49.0" prefHeight="20.0" prefWidth="197.0" />
                   <TextFlow layoutX="28.0" layoutY="82.0" prefHeight="25.0" prefWidth="197.0" />
+                  <Label fx:id="iduser" layoutX="10.0" layoutY="55.0" prefHeight="30.0" prefWidth="75.0" text="iduser" />
+                  <Label fx:id="username" layoutX="10.0" layoutY="95.0" prefHeight="30.0" prefWidth="200.0" text="username" />
+                  <Label fx:id="email" layoutX="10.0" layoutY="135.0" prefHeight="30.0" prefWidth="250.0" text="email" />
+                  
                </children>
             </Pane>
             <Pane fx:id="noti" layoutX="866.0" layoutY="87.0" prefHeight="362.0" prefWidth="394.0" visible="false">
@@ -543,7 +542,37 @@
                   <Font name="System Bold" size="10.0" />
                </font>
             </Label>
+            <Pane fx:id="boxchange" layoutX="442.0" layoutY="207.0" prefHeight="341.0" prefWidth="499.0" style="-fx-background-color: EBEBEB; -fx-background-radius: 10; -fx-border-radius: 10;" visible="false">
+               <children>
+                  <Label fx:id="old" layoutX="415.0" layoutY="25.0" prefHeight="35.0" prefWidth="80.0" text="wrong!" textFill="RED" visible="false" />
+                  <Label fx:id="neww" layoutX="415.0" layoutY="100.0" prefHeight="35.0" prefWidth="80.0" text="exsited!" textFill="RED" visible="false" />
+                  <Label layoutX="10.0" layoutY="175.0" prefHeight="35.0" prefWidth="142.0" text="Verify password" textFill="#030303" />
+                  <Label layoutX="10.0" layoutY="100.0" prefHeight="35.0" prefWidth="115.0" text="New password" />
+                  <Label layoutX="10.0" layoutY="25.0" prefHeight="35.0" prefWidth="115.0" text="Old password" />
+                  <TextField fx:id="newpass" layoutX="150.0" layoutY="100.0" prefHeight="35.0" prefWidth="240.0" promptText="enter new password" />
+                  <Button fx:id="save" layoutX="358.0" layoutY="273.0" mnemonicParsing="false" onAction="#changePassword" prefHeight="37.0" prefWidth="107.0" text="Save" />
+                  <TextField fx:id="verifypass" layoutX="150.0" layoutY="175.0" prefHeight="35.0" prefWidth="240.0" promptText="enter password again" />
+                  <TextField fx:id="oldpass" layoutX="150.0" layoutY="25.0" prefHeight="35.0" prefWidth="240.0" promptText="enter old password" />
+                  <Button fx:id="cancel" layoutX="467.0" mnemonicParsing="false" onAction="#gotoChangePass" prefHeight="27.0" prefWidth="32.0" text="X" textFill="RED" />
+                  <Label fx:id="verify" layoutX="415.0" layoutY="175.0" prefHeight="35.0" prefWidth="80.0" text="incorrect!" textFill="RED" visible="false" />
+               </children>
+            </Pane>
          </children>
       </Pane>
+      <Button fx:id="returnBook" layoutX="942.0" layoutY="322.0" mnemonicParsing="false" text="Return" visible="false" />
+      <Button fx:id="borrowBook" layoutX="834.0" layoutY="322.0" mnemonicParsing="false" text="Borrow" visible="false" /> 
+      <Button fx:id="assessment" layoutX="442.0" layoutY="207.0" mnemonicParsing="false" onAction="#gotoAssessment" prefHeight="25.0" prefWidth="70" text="assess" visible="false" />
+      <Pane fx:id="commentPane" layoutX="834.0" layoutY="251.0" prefHeight="140.0" prefWidth="284.0" visible="false ">
+         <children>
+            <TextField fx:id="comment" layoutX="95.0" layoutY="58.0" prefHeight="32.0" prefWidth="189.0" />
+            <Button fx:id="addComment" layoutX="226.0" layoutY="110.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="60.0" text="add" />
+            <Canvas fx:id="star1" height="20.0" layoutX="15.0" layoutY="15.0" width="20.0" />
+            <Canvas fx:id="star2" height="20.0" layoutX="50.0" layoutY="15.0" width="20.0" />
+            <Canvas fx:id="star3" height="20.0" layoutX="85.0" layoutY="15.0" width="20.0" />
+            <Canvas fx:id="star4" height="20.0" layoutX="120.0" layoutY="15.0" width="20.0" />
+            <Canvas fx:id="star5" height="20.0" layoutX="155.0" layoutY="15.0" width="20.0" />
+            <Label layoutX="9.0" layoutY="60.0" prefHeight="30.0" prefWidth="73.0" text="Comment :" />
+            <Button fx:id="closeCommentPane" layoutX="263.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="15.0" text="X" textFill="RED" />
+         </children></Pane>
    </children>
 </AnchorPane>
