@@ -148,7 +148,4 @@ LibraryManagementSystem/<br>
 ## Kế hoạch phát triển
 - **Phiên bản 1.0:** Hoàn thiện các tính năng cơ bản và giao diện người dùng (Done)
 <<<<<<< HEAD
-- **Phiên bản 2.0:** Tăng cường hiệu suất, bảo mật và thêm các tính năng nâng cao hơn, ... (Comming soon)
-=======
-- **Phiên bản 2.0:** Tăng cường hiệu suất, bảo mật và thêm các tính năng nâng cao hơn, ... (Comming soon)
->>>>>>> bc79f291806f43cfdf8f20f0bd83c744830ea468
+- **Phiên bản 2.0:** Tăng cường hiệu suất, bảo mật và thêm các tính năng nâng cao hơn, ... (Donate to use...)
